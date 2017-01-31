@@ -1,0 +1,57 @@
+.buttonStaticRight {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    left: 19px;
+    top: 1px;
+    border-radius: 50%;
+    background-color: white;
+}
+
+
+.rightToLeft {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    left: 19px;
+    top: 1px;
+    border-radius: 50%;
+    background-color: white;
+    animation-duration: 0.5s;
+    animation-name: slidein;
+    transform: translateZ(0);
+    /*left:0;*/
+}
+
+@keyframes slidein {
+    from {
+        /*transform: translateX(0px);*/
+        /*top:0px;*/
+        left: 19px;
+    }
+    to {
+        left: 1px;
+    }
+}
+
+.leftToRight {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    left: 19px;
+    top: 1px;
+    border-radius: 50%;
+    background-color: white;
+    animation-duration: 0.5s;
+    animation-name: slideout;
+    transform: translateZ(0);
+}
+
+@keyframes slideout {
+    from {
+        left: 1px;
+    }
+    to {
+        left: 19px;
+    }
+}

@@ -1,0 +1,45 @@
+.commentInput {
+  animation-duration: 0.2s;
+  animation-name: slidein;
+  position: relative;
+  transform: translateZ(0);
+}
+textarea::-webkit-input-placeholder {
+    text-shadow: none;
+    -webkit-text-fill-color: initial;
+    padding-left: 4px;
+}
+
+@keyframes slidein {
+  from {
+    /*transform: translateY(-10px);*/
+    padding-bottom: 0%;
+    /*width: 300%;*/
+  }
+
+  to {
+    padding-bottom:auto;
+    /*transform: translateY(0px);*/
+  }
+}
+
+.addSendButton{
+  margin: '10px 40px 10px 0px';
+  /*transition*/
+}
+.commentHide {
+  animation-duration: 0.2s;
+  animation-name: slideout;
+  position: relative;
+}
+
+@keyframes slideout {
+  from {
+    padding-bottom: auto;
+    /*width: 300%;*/
+  }
+
+  to {
+    padding-bottom:0%;
+  }
+}

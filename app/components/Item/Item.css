@@ -1,0 +1,28 @@
+.contentHide {
+    position: flex;
+    display: -webkit-box;
+    -webkit-line-clamp: 7;
+    -webkit-box-orient: vertical;
+    word-wrap: break-word;
+    text-overflow: ellipsis;
+    white-space:pre-wrap;
+    cursor:pointer;
+    margin-bottom:8px,
+}
+.hideItems{
+  display: none
+}
+.itemSlide{
+  animation-duration: 0.2s;
+  animation-name: slidein;
+  transform: translateZ(0);
+}
+@keyframes slidein {
+  from {
+    padding-bottom: 0%;
+  }
+
+  to {
+    padding-bottom:auto;
+  }
+}
