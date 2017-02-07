@@ -1,7 +1,4 @@
-
 import React from 'react';
-import {render} from 'react-dom';
-
 
 class More extends React.Component {
     constructor(props) {
@@ -15,7 +12,7 @@ class More extends React.Component {
         var divStyles = {
             display:'flex',
             justifyContent:'center',
-            marginBottom:'65px',
+            padding:'15px 0px'
         };
         var styles = {
             color: '#42b983',

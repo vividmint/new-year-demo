@@ -2,6 +2,7 @@ import React from 'react';
 import {render} from 'react-dom';
 import Css from './CommentInput.css';
 import Textarea from 'react-textarea-autosize';
+import {request} from '../../utils';
 
 class CommentInput extends React.Component {
 
@@ -22,13 +23,24 @@ class CommentInput extends React.Component {
     }
     handleChange(e) {
         //处理input框change事件
-        this.setState({text: e.target.value});
+        this.setState({text:e.target.value});
     }
+
     clickSend() {
         //发布评论
-        if (this.state.text) {
-            this.props.clickSend({comment: this.state.text});
+        if(!this.state.text){
+            showNotice({message: '评论内容不能为空！', level: 'error'});
+        }else{
+            request({method: 'POST', url: `/api/like/post?postId=${this.props.data.id}`}).then(result => {
+                console.log(result);
+            });
+
         }
+        // if (this.state.text) {
+        //     this.props.clickSend({comment: this.state.text});
+        // }else{
+        //     showNotice({message: '评论内容不能为空！', level: 'error'});
+        // }
     }
     render() {
         const styles = {
@@ -39,7 +51,7 @@ class CommentInput extends React.Component {
             alignItems: 'center',
             color: 'rgba(0,0,0,0.8)',
             fontSize: '16px',
-            padding: '15px 0px 10px 0px'
+            padding: '0px 0px 15px 0px'
         };
         const inputStyles = {
             backgroundColor: '#F2F2F2',
@@ -56,16 +68,16 @@ class CommentInput extends React.Component {
         };
         const send = {
             position: 'absolute',
-            top: '20px',
-            right: '0px',
+            top: '5px',
+            right: '20px',
             color: '#AAAAAA',
             fontSize: '16px',
             textAlign: 'center'
         };
         const sendActive = {
             position: 'absolute',
-            top: '23px',
-            right: '0px',
+            top: '5px',
+            right: '20px',
             color: '#42b983',
             fontSize: '16px',
             textAlign: 'center'

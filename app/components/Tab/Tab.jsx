@@ -1,5 +1,4 @@
 import React from 'react';
-import {render} from 'react-dom';
 import {setHash} from '../../utils.js';
 import TiHome from 'react-icons/lib/ti/home';
 import MdAddCircle from 'react-icons/lib/md/add-circle';
@@ -9,8 +8,7 @@ import MdAccountCircle from 'react-icons/lib/md/account-circle';
 class Tab extends React.Component {
     toHomeHash(){
       //跳转首页
-        // window.location.hash= '#page=index';
-
+        window.location.hash= '#page=index';
     }
 
     toUserHash(){
@@ -38,13 +36,11 @@ class Tab extends React.Component {
             flex:1
         };
         return (
-            // <div style={boxStyles}>
                 <div style={styles}>
                     <div onTouchTap={setHash.bind(this,'page=index')} style={buttonStyles}><TiHome /></div>
                     <div  onTouchTap={setHash.bind(this,'page=sendText')} style={buttonStyles}><MdAddCircle /></div>
                     <div onTouchTap={setHash.bind(this,'page=user')} style={buttonStyles}><MdAccountCircle /></div>
                 </div>
-            //</div>
         );
     }
 }

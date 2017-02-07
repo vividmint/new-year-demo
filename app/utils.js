@@ -11,6 +11,8 @@ export function request(params) {
     let method;
     if (!params.method) {
         method = 'GET';
+    } else {
+        method = params.method;
     }
     var obj = {
         method: params.method,
@@ -32,21 +34,21 @@ export function request(params) {
             return Promise.reject(err);
         });
     } else {
-        return new Promise(function(resolve,reject){
-            console.log(url);
+        return new Promise(function(resolve, reject) {
+            // console.log(url);
             var httpRequest = new XMLHttpRequest();
             httpRequest.onreadystatechange = function() {
                 if (httpRequest.readyState === 4) {
                     if (httpRequest.status === 200) {
-                        try{
+                        try {
                             // console.log(httpRequest.response);
                             var data = JSON.parse(httpRequest.response);
                             resolve(data);
-                        }catch(e){
+                        } catch (e) {
                             reject('json解析错误');
                         }
 
-                    }else{
+                    } else {
                         var e = JSON.parse(httpRequest.response);
                         console.log(e);
                         reject(e);
@@ -54,37 +56,60 @@ export function request(params) {
                 }
 
             };
-            httpRequest.open(method,url,true);
-            // httpRequest.setRequestHeader('Content-Type','application/json');
-            httpRequest.send(null);
+            httpRequest.open(method, url, true);
+            if (method === 'GET') {
+                httpRequest.send(null);
+            } else if (method === 'POST'||method === 'DELETE'||method==='PUT') {
+                httpRequest.setRequestHeader('Content-Type', 'application/json');
+                httpRequest.send(obj.body);
+            }
 
         });
     }
 }
-export function getHash(key){
-    if(key===undefined){
+export function getHash(key) {
+    if (key === undefined) {
         return getHashObj();
-    }else{
+    } else {
         return getHashObj()[key];
     }
 }
-export function getHashObj(){
+export function getHashObj() {
     return qs.parse(window.location.hash.substr(1));
 }
-export function getQueryObj(){
+export function getQueryObj() {
     var tt = window.location.search;
     // var tt = qs.parse(window.location.search.substr(1));
     // console.log(tt);
     return tt;
 }
-export function getQuery(key){
-    if(key===undefined){
+export function getQuery(key) {
+    if (key === undefined) {
         return getQueryObj();
-    }else{
+    } else {
         return getQueryObj()[key];
 
     }
 }
-export function setHash (hash){
-    window.location.hash= '#'+hash ;
+export function getCurrentUrl() {
+    return window.location.href;
+}
+export function setHash(hash) {
+    window.location.hash = '#' + hash;
+}
+export function setUrl(url) {
+    window.location.href = url;
+}
+export function getDocumentHeight(){
+    let body = document.body,
+        html = document.documentElement;
+    let height = Math.max( body.scrollHeight, body.offsetHeight,
+                       html.clientHeight, html.scrollHeight, html.offsetHeight );
+    return height;
+}
+export function getTime(date){
+    if(date){
+        return parseInt(date.getTime()/1000);
+    }
+    return parseInt(new Date().getTime()/1000);
 }

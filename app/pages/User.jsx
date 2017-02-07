@@ -1,20 +1,35 @@
 import React from 'react';
-import {render} from 'react-dom';
-import Tab from '../components/Tab/Tab.jsx';
+import {getUser} from '../load';
+import Tab from '../components/Tab/Tab';
+import UserDetail from '../components/UserDetail';
+import UserItems from '../components/UserItems';
 
 class User extends React.Component {
-
-    render() {
-        const avatar = {
-            width: 50,
-            height: 50
-        };
-        return (
-            <div>User lalala
-                <Tab/>
-            </div>
-        );
+    constructor(props) {
+        super(props);
     }
+    componentDidMount() {
+        if (this.props.userData === null) {
+            getUser().then(data => {
+                this.props.onLoadUser({userData: data});
+            }).catch(err => {
+                console.log(err);
+            });
+        }
+
+    }
+
+    render(){
+        return (
+        <div>
+          <UserDetail userData={this.props.userData}/>
+          <UserItems/>
+            <Tab/>
+        </div>
+        );
+
+    }
+
 }
 
 export default User;

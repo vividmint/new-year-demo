@@ -1,0 +1,89 @@
+:root {
+    --primaryColor: #42b983;
+}
+textarea::-webkit-input-placeholder {
+    text-shadow: none;
+    -webkit-text-fill-color: initial;
+    padding-left: 4px;
+}
+.check-switch {
+    box-sizing: border-box;
+    border: 1px solid #DDDDDD;
+    appearance: none;
+    outline: none;
+    display: inline-block;
+    width: 40.5px;
+    height: 23px;
+    margin: 0px 20px;
+    position: relative;
+    background-color: #efedec;
+    box-shadow: #dfdfdf 0 0 0 0 inset;
+    border-radius: 20px;
+    transition: cubic-bezier(0, 0, 0, 1) 0.4s, box-shadow cubic-bezier(0, 0, 0, 1) 0.4s;
+}
+
+[data-role="check-switch"]:before {
+    content: '';
+    width: 21px;
+    height: 21px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    border-radius: 20px;
+    background-color: white;
+    /*box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);*/
+    transition: left 0.3s;
+}
+
+[data-role="check-switch"]:checked {
+    border: none;
+    height: 23px;
+    box-shadow: var(--primaryColor) 0 0 0 16px inset;
+    background-color: var(--primaryColor);
+    box-shadow: var(--primaryColor) 0 0 0 16px inset;
+    transition: border ease 0.4s, box-shadow ease 0.4s, background-color ease 1.2s;
+}
+
+[data-role="check-switch"]:checked:before {
+    left: 19px;
+    top:1px;
+    transition: left 0.3s;
+}
+
+
+/*.rightToLeft {
+    composes: buttonStaticRight;
+    left:1px;
+    animation-duration: 0.5s;
+    animation-name: slidein;
+    transform: translateZ(0);
+    animation-iteration-count:1;
+}
+
+@keyframes slidein {
+    from {
+        left: 19px;
+    }
+    to {
+        left: 1px;
+    }
+}
+
+.leftToRight {
+    composes: buttonStaticRight;
+    left: 1px;
+    animation-duration: 0.5s;
+    animation-name: slideout;
+    transform: translateZ(0);
+    animation-iteration-count:1;
+
+}
+
+@keyframes slideout {
+    from {
+        left: 1px;
+    }
+    to {
+        left: 19px;
+    }
+}*/

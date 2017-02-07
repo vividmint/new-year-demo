@@ -23,7 +23,7 @@ class Fold extends React.Component {
             fontSize: '14px',
             padding: '0px 15px',
             cursor: 'pointer',
-            marginBottom:15
+            margin:'0px 0px 15px 0px'
         };
         const hide ={
             display:'none'

@@ -18,6 +18,7 @@ module.exports = {
         },
         {
             test: /\.css$/,
+            exclude: /node_modules/ ,
             use: [{
                 loader: 'style-loader'
             },
@@ -26,24 +27,18 @@ module.exports = {
                 options: {
                     modules: true
                 }
+            },
+            {
+                loader: 'postcss-loader'
             }
-            ]
-        },
-        {
-            test: /\.(sass|scss)$/,
-            use: [
-                'style-loader',
-                {
-                    loader: 'css-loader',
-                    options: {
-                        modules: true
-                    }
-                },
-                'sass-loader'
             ]
         }
         ]
     },
+    resolve:{
+        extensions:['.js','.json','.jsx']
+    },
+    devtool:'inline-source-map',
     //开发
     devServer: {
         contentBase: [path.join(__dirname, 'dist'), path.join(__dirname, 'public')], //将dist文件夹和public文件夹中的文件合并在根目录下
