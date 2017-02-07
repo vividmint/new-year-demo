@@ -61,7 +61,8 @@ class SendText extends React.Component {
                 padding: '10px 6px',
                 height: 180,
                 display: 'flex',
-                width: '100%'
+                width: '100%',
+                border: 'none'
             },
             bottom = {
                 display: 'flex',
