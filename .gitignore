@@ -1,6 +1,5 @@
 # Logs
 logs
-public
 *.log
 npm-debug.log*
 .DS_Store
