@@ -1,6 +1,5 @@
 # Logs
 logs
-public
 *.log
 npm-debug.log*
 .DS_Store
@@ -35,6 +34,7 @@ build/Release
 # Dependency directories
 node_modules
 jspm_packages
+public
 
 # Optional npm cache directory
 .npm
