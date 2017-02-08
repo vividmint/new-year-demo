@@ -25,7 +25,7 @@ class List extends React.Component {
             padding:'10px 0px'
         };
         let ItemArr = map(this.props.list, (id,i) => {
-            return (<Item key={'item' + i} list={this.props.list} onToggleLike={this.props.onToggleLike} data={this.props.data[id]} id={this.props.data[id].id}/>);
+            return (<Item key={'item' + i} list={this.props.list} onToggleLike={this.props.onToggleLike} data={this.props.data[id]} id={this.props.data[id].id} onToggleOther={this.props.onToggleOther}/>);
         });
         let moreButton = null;
         if (this.props.isShowMore) {

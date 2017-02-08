@@ -8,16 +8,13 @@ import {
     postLike,
     deleteLike
 } from '../load';
-import Avatar from '../components/Avatar.jsx';
-import UserName from '../components/UserName.jsx';
-import Moment from '../components/Moment.jsx';
+import ItemTop from '../components/ItemTop.jsx';
 import Loading from '../components/Loading.jsx';
 import BottomButtons from '../components/BottomButtons.jsx';
 import Textarea from 'react-textarea-autosize';
 import CommentList from '../components/CommentList';
 import {toLogin} from '../business';
-// import More from '../components/More';
-
+import Menu from '../components/Menu';
 class Detail extends React.Component {
     constructor(props) {
         super(props);
@@ -29,8 +26,11 @@ class Detail extends React.Component {
         this.onPostComment = this.onPostComment.bind(this); //当发送评论
         this.onShowCommentMenu = this.onShowCommentMenu.bind(this); //操作评论事件
         this.onToggleLike = this.onToggleLike.bind(this); //当点赞
+        this.deleteComment = this.deleteComment.bind(this);//删除评论
     }
     componentDidMount() {
+
+        document.body.scrollTop = 0;
         let postId = getHash('id');
         if (!this.props.data) {
             getPost({postId: postId}).then(data => {
@@ -60,25 +60,15 @@ class Detail extends React.Component {
         const styles = {
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            paddingTop:15
         };
         const main = {
             overflow: 'auto',
             margin: `0px 0px ${this.state.commentContainerHeight}px 0px`
         };
-
         const item = {
             padding: '0px 25px 4px 25px'
-        };
-        const topStyles = {
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: '15px 0px 0px 0px'
-        };
-        const userStyles = {
-            display: 'flex',
-            alignItems: 'center'
         };
         const contentStyles = {
             lineHeight: '25px',
@@ -96,26 +86,16 @@ class Detail extends React.Component {
 
         if (this.props.data) {
             let data = this.props.data;
-            let commentList = this.props.data.commentIdSets
-                ? (<CommentList commentData={this.props.commentData} commentIdSets={this.props.data.commentIdSets} onShowCommentMenu={this.onShowCommentMenu}/>)
+            let commentList = data.commentIdSets
+                ? (<CommentList commentData={this.props.commentData} commentIdSets={data.commentIdSets} onShowCommentMenu={this.onShowCommentMenu}/>)
                 : null;
             return (
                 <div style={styles}>
                     <div style={main}>
                         <div style={item}>
-                            <div style={topStyles}>
-                                <div style={userStyles}>
-                                    <Avatar data={{
-                                        avatar: data.avatar
-                                    }}/>
-                                    <UserName gender={data.gender} nickname={data.nickname}/>
-                                </div>
-                                <Moment data={{
-                                    date: data.date
-                                }}/>
-                            </div>
+                            <ItemTop data={data}/>
                             <div style={contentStyles}>{data.content}</div>
-                            <BottomButtons data={this.props.data} likeCount={this.props.data.likeCount} commentCount={this.props.data.commentCount} onToggleLike={this.onToggleLike}/>
+                            <BottomButtons data={data} likeCount={data.likeCount} commentCount={data.commentCount} onToggleLike={this.onToggleLike}/>
                         </div>
                         <div style={bar}></div>
                         {commentList}
@@ -195,35 +175,42 @@ class Detail extends React.Component {
 
     onShowCommentMenu(id) {
         //弹出评论菜单
+        let menus = [{
+            text:'回复',
+            onTap:()=>{
+                console.log('tap reply');
+            }
+        }];
+        let comment = this.props.commentData[id];
+        if(comment.author){
+          //是作者
+            menus.push({
+                text:'删除评论',
+                onTap:()=>{
+                    console.log('tap remove');
+                    this.deleteComment({
+                        postId: this.props.data.id,
+                        commentId: comment.id
+                    });
+                }
+            });
+        }
+
+        menus.push({
+            text:'取消',
+            onTap:()=>{
+                this.props.onRemoveNotice();
+            }
+        });
+
         this.props.onShowNotice({
             type: 'menu',
             level: 'success',
             dismissible: true,
             autoDismiss: 0,
             position: 'bc',
-            children: (
-                <div>
-                    <div style={{
-                        padding: '15px 0px',
-                        backgroundColor: 'white',
-                        borderBottom: '0.8px solid rgb(242, 242, 242)'
-                    }}>回复</div>
-                    <div onTouchTap={this.deleteComment.bind(this, {
-                        postId: this.props.data.id,
-                        commentId: id
-                    })} style={{
-                        display: this.props.commentData[id].author === 1
-                            ? 'block'
-                            : 'none',
-                        padding: '15px 0px',
-                        backgroundColor: 'white',
-                        borderBottom: '4px solid rgb(242, 242, 242)'
-                    }}>删除评论</div>
-                    <div onTouchTap={this.props.onRemoveNotice} style={{
-                        padding: '15px 0px',
-                        backgroundColor: 'white'
-                    }}>取消</div>
-                </div>
+            children:(
+              <Menu menus={menus} />
             )
         });
     }
@@ -372,12 +359,10 @@ class DetailCommentInput extends React.Component {
         if (this.state.text === '') {
             this.props.onShowNotice({message: '留言内容不能为空！', level: 'error'});
             return;
-        }
-        else if (this.state.text === this.state.lastText) {
+        } else if (this.state.text === this.state.lastText) {
             this.props.onShowNotice({message: '已有相同留言！', level: 'error'});
             return;
-        }
-        else if (this.state.text) {
+        } else if (this.state.text) {
             this.props.onPostComment({content: this.state.text});
             this.setState({lastText: this.state.text});
             this.setState({text: ''});

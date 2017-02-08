@@ -33,8 +33,9 @@ class App extends React.Component {
         this.onLoadMore = this.onLoadMore.bind(this); //加载更多帖子
         this.onLoadDetail = this.onLoadDetail.bind(this); //加载帖子详情页
         this.onToggleLike = this.onToggleLike.bind(this); //点赞帖子
+        this.onToggleOther = this.onToggleOther.bind(this);//点击三点点
         this.onLoadMoreError = this.onLoadMoreError.bind(this); //
-        this.onShowNotice = this.onShowNotice.bind(this); //展示弹窗
+        this.onShowNotice = this.onShowNotice.bind(this); //更改弹窗样式并展示
         this.onRemoveComment = this.onRemoveComment.bind(this); //删除评论
         this.onAddComment = this.onAddComment.bind(this); //增加评论
         this.onRemoveNotice = this.onRemoveNotice.bind(this); //清除弹窗
@@ -68,24 +69,25 @@ class App extends React.Component {
                 height: '100%'
             }}/>);
         } else {
-            pageContainer = (<Home onShowNotice={this.onShowNotice} onToggleLike={this.onToggleLike} onLoading={this.onLoading} onLoadList={this.onLoadList} onLoadMore={this.onLoadMore} onLoadMoreError={this.onLoadMoreError} data={this.state.data} list={this.state.list} isLoadingMore={this.state.isLoadingMore} isShowMore={this.state.isShowMore}/>);
+            pageContainer = (<Home onShowNotice={this.onShowNotice} onToggleLike={this.onToggleLike} onRemoveNotice={this.onRemoveNotice} onToggleOther={this.onToggleOther} onLoading={this.onLoading} onLoadList={this.onLoadList} onLoadMore={this.onLoadMore} onLoadMoreError={this.onLoadMoreError} data={this.state.data} list={this.state.list} isLoadingMore={this.state.isLoadingMore} isShowMore={this.state.isShowMore}/>);
         }
 
         return (
             <div>
                 {pageContainer}
-                <Notice noticeDialog={this.state.noticeDialog}/>
+                <Notice onTapMask={this.onRemoveNotice} noticeDialog={this.state.noticeDialog}/>
             </div>
         );
     }
     onShowNotice(params) {
-        //更改弹窗的样式类型
+        //更改弹窗的样式类型并展示
         this.setState({
             noticeDialog: {
                 type: params.type || 'tips'
             }
         });
         //弹窗
+        console.log(this.state.noticeDialog.type);
         popNotice(params);
     }
 
@@ -124,9 +126,9 @@ class App extends React.Component {
     onRemoveNotice(params) {
         //移除通知弹窗和蒙版
         this.setState({
-            noticeDialog: Object.assign(this.state.noticeDialog, {isMask: false})
+            noticeDialog: Object.assign(this.state.noticeDialog, {isMask: false,type:'tips'})
         });
-        console.log(this.state.noticeDialog);
+        // console.log(this.state.noticeDialog);
         removeNotice();
     }
 
@@ -156,6 +158,11 @@ class App extends React.Component {
             data[itemId].likeCount = params.likeCount - 1;
         }
         this.setState({data: data});
+    }
+    onToggleOther(params){
+      //点开某条帖子的三点点
+        let data = this.state.data;
+        let itemId = params.id;
     }
 
     onLoadDetail(params) {

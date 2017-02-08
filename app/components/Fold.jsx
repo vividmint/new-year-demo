@@ -8,8 +8,8 @@ class Fold extends React.Component {
         super(props);
         this.handleClick = this.handleClick.bind(this);
     }
-    handleClick(e) {
-        this.props.onTap(e);
+    handleClick() {
+        this.props.foldHandle();
     }
     render() {
         const styles = {
@@ -30,7 +30,7 @@ class Fold extends React.Component {
         };
         return (
             <div onTouchTap={this.handleClick} style={this.props.content.length>150?styles:hide}>
-                {this.props.textData.text}
+                {this.props.foldText.text}
             </div>
         );
     }

@@ -1,8 +1,25 @@
 const path = require('path');
+const webpack = require('webpack');
 const sourcePath = path.join(__dirname);
 const targetPath = path.join(__dirname, 'dist');
-console.log(sourcePath);
-
+const isProduction = function() {
+    return process.env.NODE_ENV === 'production';
+};
+const plugins = [new webpack.DefinePlugin({
+    'process.env': {
+        'NODE_ENV': JSON.stringify('production')
+    }
+})];
+if (isProduction()) {
+    plugins.push(
+        new webpack.optimize.UglifyJsPlugin({
+            test: /(\.jsx|\.js)$/,
+            compress: {
+                warnings: false
+            },
+        })
+    );
+}
 module.exports = {
     context: sourcePath, //上下文
     entry: './app/index.jsx',
@@ -18,7 +35,7 @@ module.exports = {
         },
         {
             test: /\.css$/,
-            exclude: /node_modules/ ,
+            exclude: /node_modules/,
             use: [{
                 loader: 'style-loader'
             },
@@ -35,11 +52,11 @@ module.exports = {
         }
         ]
     },
-    resolve:{
-        extensions:['.js','.json','.jsx']
+    plugins: plugins,
+    resolve: {
+        extensions: ['.js', '.json', '.jsx']
     },
-    devtool:'inline-source-map',
-    //开发
+    devtool: isProduction() ? false : 'source-map',
     devServer: {
         contentBase: [path.join(__dirname, 'dist'), path.join(__dirname, 'public')], //将dist文件夹和public文件夹中的文件合并在根目录下
         compress: true,

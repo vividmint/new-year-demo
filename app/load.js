@@ -44,7 +44,7 @@ export function getPost(params) {
 获取评论列表
 */
 export function getComments(params) {
-    let url = `/api/comments/?postId=${params.postId}?&pageSize=8`;
+    let url = `/api/comments/?postId=${params.postId}&pageSize=8`;
     if (params.fromId) {
         url += `&fromId=${params.fromId}`;
     }
@@ -52,7 +52,6 @@ export function getComments(params) {
         url
     }).then(result => {
         //获取当前帖子的评论列表
-        console.log(result);
         if (result.code === 200) {
             return result.data;
         } else {
