@@ -68,7 +68,7 @@ class App extends React.Component {
                 height: '100%'
             }}/>);
         } else {
-            pageContainer = (<Home onToggleLike={this.onToggleLike} onLoading={this.onLoading} onLoadList={this.onLoadList} onLoadMore={this.onLoadMore} onLoadMoreError={this.onLoadMoreError} data={this.state.data} list={this.state.list} isLoadingMore={this.state.isLoadingMore} isShowMore={this.state.isShowMore}/>);
+            pageContainer = (<Home onShowNotice={this.onShowNotice} onToggleLike={this.onToggleLike} onLoading={this.onLoading} onLoadList={this.onLoadList} onLoadMore={this.onLoadMore} onLoadMoreError={this.onLoadMoreError} data={this.state.data} list={this.state.list} isLoadingMore={this.state.isLoadingMore} isShowMore={this.state.isShowMore}/>);
         }
 
         return (
@@ -126,7 +126,8 @@ class App extends React.Component {
         this.setState({
             noticeDialog: Object.assign(this.state.noticeDialog, {isMask: false})
         });
-        removeNotice(params);
+        console.log(this.state.noticeDialog);
+        removeNotice();
     }
 
     onLoadList(params) {

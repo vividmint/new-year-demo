@@ -70,11 +70,11 @@ class Home extends React.Component {
             postLike({postId: itemId}).catch(err => {
                 if (err.code === 2015) {
                     //未登录
-                    this.onShowNotice({message: '请登录！', level: 'error'});
+                    this.props.onShowNotice({message: '请登录！', level: 'error'});
                     toLogin();
                 } else {
                     //点赞失败
-                    this.onShowNotice({message: '点赞失败！', level: 'error'});
+                    this.props.onShowNotice({message: '点赞失败！', level: 'error'});
                 }
             });
         } else {
@@ -82,11 +82,11 @@ class Home extends React.Component {
             deleteLike({postId: itemId}).catch(err => {
                 if (err.code === 2015) {
                     //未登录
-                    this.onShowNotice({message: '请登录！', level: 'error'});
+                    this.props.onShowNotice({message: '请登录！', level: 'error'});
                     toLogin();
                 } else {
                     //点赞失败
-                    this.onShowNotice({message: '取消点赞失败！', level: 'error'});
+                    this.props.onShowNotice({message: '取消点赞失败！', level: 'error'});
                 }
             });
         }
