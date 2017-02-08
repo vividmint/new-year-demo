@@ -3,7 +3,7 @@ import {getDocumentHeight} from '../utils.js';
 import Loading from '../components/Loading.jsx';
 import List from '../components/List.jsx';
 import Tab from '../components/Tab/Tab.jsx';
-import {getList,postLike, deleteLike} from '../load';
+import {getList, postLike, deleteLike} from '../load';
 import {toLogin} from '../business';
 import {INDEX_LIST_LOAD_MORE_DISTANCE} from '../constans/config';
 
@@ -17,9 +17,7 @@ class Home extends React.Component {
     }
     componentDidMount() {
         if (this.props.list === null) {
-            getList({
-                fromId:this.getFromId()
-            }).then(data => {
+            getList({fromId: this.getFromId()}).then(data => {
                 let _data = {},
                     list = [];
                 for (let i = 0; i < data.length; ++i) {
@@ -36,8 +34,8 @@ class Home extends React.Component {
             });
         }
         window.onscroll = () => {
-          //下拉刷新
-            let documentHeight = getDocumentHeight();//整个页面的高度
+            //下拉刷新
+            let documentHeight = getDocumentHeight(); //整个页面的高度
             let distance = documentHeight - (window.document.body.scrollTop + window.screen.height);
             //window.screen.height  屏幕的高度
             //window.document.body.scrollTop  屏幕顶部距离页面顶部的距离
@@ -71,7 +69,9 @@ class Home extends React.Component {
                 if (err.code === 2015) {
                     //未登录
                     this.props.onShowNotice({message: '请登录！', level: 'error'});
-                    toLogin();
+                    setTimeout(() => {
+                        toLogin();
+                    }, 2000);
                 } else {
                     //点赞失败
                     this.props.onShowNotice({message: '点赞失败！', level: 'error'});
@@ -83,10 +83,15 @@ class Home extends React.Component {
                 if (err.code === 2015) {
                     //未登录
                     this.props.onShowNotice({message: '请登录！', level: 'error'});
-                    toLogin();
+                    setTimeout(() => {
+                        toLogin();
+                    }, 2000);
                 } else {
                     //点赞失败
                     this.props.onShowNotice({message: '取消点赞失败！', level: 'error'});
+                    setTimeout(() => {
+                        toLogin();
+                    }, 2000);
                 }
             });
         }
@@ -94,7 +99,7 @@ class Home extends React.Component {
     getFromId() {
         //获取加载更多时候的初始帖子id
         if (this.props.list) {
-            let fromId = this.props.list[this.props.list.length-1];
+            let fromId = this.props.list[this.props.list.length - 1];
             return fromId;
         } else {
             return null;
@@ -102,7 +107,7 @@ class Home extends React.Component {
     }
 
     onLoadMore(params) {
-      //当加载更多时
+        //当加载更多时
         if (this.props.isLoadingMore === false) {
             this.props.onLoading();
             getList({fromId: params.fromId}).then(data => {
@@ -124,7 +129,6 @@ class Home extends React.Component {
             });
         }
     }
-
 
 }
 

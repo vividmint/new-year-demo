@@ -1,6 +1,13 @@
 import React from 'react';
 import {getHash, getDocumentHeight} from '../utils.js';
-import {getPost, getComments, postComment, deleteComment,postLike, deleteLike} from '../load';
+import {
+    getPost,
+    getComments,
+    postComment,
+    deleteComment,
+    postLike,
+    deleteLike
+} from '../load';
 import Avatar from '../components/Avatar.jsx';
 import UserName from '../components/UserName.jsx';
 import Moment from '../components/Moment.jsx';
@@ -17,11 +24,11 @@ class Detail extends React.Component {
         this.state = {
             commentContainerHeight: 63, //评论框组件高度
         };
-        this.getFromId = this.getFromId.bind(this);//获取最后一条评论id
-        this.onHeightChange = this.onHeightChange.bind(this);//当评论框高度变化时
-        this.onPostComment = this.onPostComment.bind(this);//当发送评论
-        this.onShowCommentMenu = this.onShowCommentMenu.bind(this);//操作评论事件
-        this.onToggleLike = this.onToggleLike.bind(this);//当点赞
+        this.getFromId = this.getFromId.bind(this); //获取最后一条评论id
+        this.onHeightChange = this.onHeightChange.bind(this); //当评论框高度变化时
+        this.onPostComment = this.onPostComment.bind(this); //当发送评论
+        this.onShowCommentMenu = this.onShowCommentMenu.bind(this); //操作评论事件
+        this.onToggleLike = this.onToggleLike.bind(this); //当点赞
     }
     componentDidMount() {
         let postId = getHash('id');
@@ -117,9 +124,7 @@ class Detail extends React.Component {
                 </div>
             );
         } else {
-            return (
-                <Loading/>
-            );
+            return (<Loading/>);
         }
 
     }
@@ -130,6 +135,13 @@ class Detail extends React.Component {
             this.props.onAddComment({postId: this.props.data.id, commentId: data.id, nickname: data.nickname, avatar: data.avatar, content: params.content});
         }).catch(err => {
             console.log(err);
+            if (err.code === 2015) {
+                this.props.onShowNotice({message: '请登录！', level: 'error'});
+                setTimeout(() => {
+                    toLogin();
+                }, 2000);
+
+            }
         });
     }
     getFromId() {
@@ -141,7 +153,7 @@ class Detail extends React.Component {
         }
     }
     getCommentList(params) {
-      //加载评论
+        //加载评论
         getComments({postId: params.postId}).then(data => {
             let _data = {};
             let commentIdSets = new Set();
@@ -181,8 +193,6 @@ class Detail extends React.Component {
         this.setState({commentContainerHeight: height});
     }
 
-
-
     onShowCommentMenu(id) {
         //弹出评论菜单
         this.props.onShowNotice({
@@ -219,7 +229,7 @@ class Detail extends React.Component {
     }
 
     deleteComment(params) {
-        deleteComment({commentId: params.commentId}).then(()=> {
+        deleteComment({commentId: params.commentId}).then(() => {
             this.props.onRemoveNotice();
             this.props.onShowNotice({message: '删除成功！', level: 'success', dismissible: true, autoDismiss: 2});
             this.props.onRemoveComment(params);
@@ -239,11 +249,16 @@ class Detail extends React.Component {
             postLike({postId: itemId}).catch(err => {
                 if (err.code === 2015) {
                     //未登录
-                    this.onShowNotice({message: '请登录！', level: 'error'});
-                    toLogin();
+                    this.props.onShowNotice({message: '请登录！', level: 'error'});
+                    setTimeout(() => {
+                        toLogin();
+                    }, 2000);
                 } else {
                     //点赞失败
-                    this.onShowNotice({message: '点赞失败！', level: 'error'});
+                    this.props.onShowNotice({message: '点赞失败！', level: 'error'});
+                    setTimeout(() => {
+                        toLogin();
+                    }, 2000);
                 }
             });
         } else {
@@ -251,11 +266,16 @@ class Detail extends React.Component {
             deleteLike({postId: itemId}).catch(err => {
                 if (err.code === 2015) {
                     //未登录
-                    this.onShowNotice({message: '请登录！', level: 'error'});
-                    toLogin();
+                    this.props.onShowNotice({message: '请登录！', level: 'error'});
+                    setTimeout(() => {
+                        toLogin();
+                    }, 2000);
                 } else {
                     //点赞失败
-                    this.onShowNotice({message: '取消点赞失败！', level: 'error'});
+                    this.props.onShowNotice({message: '取消点赞失败！', level: 'error'});
+                    setTimeout(() => {
+                        toLogin();
+                    }, 2000);
                 }
             });
         }
@@ -273,8 +293,8 @@ class DetailCommentInput extends React.Component {
             text: '', //文本框的内容
             lastText: '' //上次发送的评论内容
         };
-        this.onChange = this.onChange.bind(this);//当评论框内容改变的时候
-        this.onClickSend = this.onClickSend.bind(this);//当点击发送按钮
+        this.onChange = this.onChange.bind(this); //当评论框内容改变的时候
+        this.onClickSend = this.onClickSend.bind(this); //当点击发送按钮
 
     }
 
@@ -349,16 +369,18 @@ class DetailCommentInput extends React.Component {
     }
     onClickSend() {
         //发布评论
-        if (this.state.text === this.state.lastText) {
+        if (this.state.text === '') {
+            this.props.onShowNotice({message: '留言内容不能为空！', level: 'error'});
+            return;
+        }
+        else if (this.state.text === this.state.lastText) {
             this.props.onShowNotice({message: '已有相同留言！', level: 'error'});
             return;
-        } else if (this.state.text) {
+        }
+        else if (this.state.text) {
             this.props.onPostComment({content: this.state.text});
             this.setState({lastText: this.state.text});
             this.setState({text: ''});
-        } else if (this.state.text === '') {
-            this.props.onShowNotice({message: '留言内容不能为空！', level: 'error'});
-            return;
         }
     }
 

@@ -1,5 +1,4 @@
 import React from 'react';
-import {render} from 'react-dom';
 import FaHeartO from 'react-icons/lib/fa/heart-o';
 import FaCommentO from 'react-icons/lib/fa/comment-o';
 // import FaEllipsisH from 'react-icons/lib/fa/ellipsis-h';
@@ -7,7 +6,6 @@ import FaCommentO from 'react-icons/lib/fa/comment-o';
 // import MdChatBubbleOutline from 'react-icons/lib/md/chat-bubble-outline';
 import MdKeyboardControl from 'react-icons/lib/md/keyboard-control';
 import Loading from './Loading.jsx';
-import {request} from '../utils';
 import {toLogin} from '../business';
 
 class BottomButtons extends React.Component {
@@ -17,12 +15,18 @@ class BottomButtons extends React.Component {
             // class: null
         };
         this.onToggleLike = this.onToggleLike.bind(this);
+        this.onClickComment = this.onClickComment.bind(this);
     }
-    toggleComment(action) {
+    // toggleComment(action) {
         //点击评论框
-        if (typeof(this.props.toggleComment) === 'function') {
-            this.props.toggleComment(action);
-        }
+        // if (typeof(this.props.toggleComment) === 'function') {
+        //     this.props.toggleComment(action);
+        // }
+        // window.location.hash= '#page=detail';
+    // }
+    onClickComment(){
+      //点击评论按钮跳转帖子详情页
+        window.location.hash= `#page=detail&id=${this.props.data.id}`;
     }
     clickLike() {
         this.props.clickLike();
@@ -93,7 +97,7 @@ class BottomButtons extends React.Component {
                 <div style={icon}>
                     <div style={this.props.isShowCommentInput
                         ? isComment
-                        : unComment} onTouchTap={this.toggleComment.bind(this, 'toggle')}><FaCommentO/></div>
+                        : unComment} onTouchTap={this.onClickComment}><FaCommentO/></div>
                     <div style={number}>{this.props.commentCount || 0}</div>
                 </div>
                 <div style={otherStyles}><MdKeyboardControl/></div>
