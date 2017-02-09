@@ -24,9 +24,11 @@ class List extends React.Component {
             fontSize: '50px',
             padding:'10px 0px'
         };
-        let ItemArr = map(this.props.list, (id,i) => {
-            return (<Item key={'item' + i} list={this.props.list} onToggleLike={this.props.onToggleLike} data={this.props.data[id]} id={this.props.data[id].id} onToggleOther={this.props.onToggleOther}/>);
-        });
+        let ItemArr = [];
+        for(let id of this.props.idSets){
+            ItemArr.push(<Item key={'item' +id}  onToggleLike={this.props.onToggleLike} data={this.props.data[id]}  onToggleOther={this.props.onToggleOther}/>);
+        }
+
         let moreButton = null;
         if (this.props.isShowMore) {
             moreButton = <More onTap={this.props.onLoadMore} text="查看更多"/>;

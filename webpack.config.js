@@ -5,20 +5,26 @@ const targetPath = path.join(__dirname, 'dist');
 const isProduction = function() {
     return process.env.NODE_ENV === 'production';
 };
-const plugins = [new webpack.DefinePlugin({
-    'process.env': {
-        'NODE_ENV': JSON.stringify('production')
-    }
-})];
+const plugins = [];
 if (isProduction()) {
+    plugins.push(new webpack.optimize.DedupePlugin());
     plugins.push(
         new webpack.optimize.UglifyJsPlugin({
             test: /(\.jsx|\.js)$/,
+            minimize: true,
             compress: {
                 warnings: false
             },
+            output: {
+                comments: false,
+            },
         })
     );
+    plugins.push(new webpack.DefinePlugin({
+        'process.env': {
+            'NODE_ENV': JSON.stringify('production')
+        }
+    }));
 }
 module.exports = {
     context: sourcePath, //上下文

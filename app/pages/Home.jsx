@@ -3,11 +3,10 @@ import {getDocumentHeight} from '../utils.js';
 import Loading from '../components/Loading.jsx';
 import List from '../components/List.jsx';
 import Tab from '../components/Tab/Tab.jsx';
-import {getList, postLike, deleteLike} from '../load';
+import {getList, postLike, deleteLike, deletePost} from '../load';
 import {toLogin} from '../business';
 import {INDEX_LIST_LOAD_MORE_DISTANCE} from '../constans/config';
 import Menu from '../components/Menu';
-
 
 class Home extends React.Component {
     constructor(props) {
@@ -16,13 +15,16 @@ class Home extends React.Component {
         this.getFromId = this.getFromId.bind(this);
         this.onToggleLike = this.onToggleLike.bind(this);
         this.onToggleOther = this.onToggleOther.bind(this);
+        this.deletePost = this.deletePost.bind(this);
+        this.reportPost = this.reportPost.bind(this);
 
     }
 
     getFromId() {
         //获取加载更多时候的初始帖子id
-        if (this.props.list) {
-            let fromId = this.props.list[this.props.list.length - 1];
+        if (this.props.idSets) {
+            let list = Array.from(this.props.idSets);
+            let fromId = list[list.length - 1];
             return fromId;
         } else {
             return null;
@@ -30,21 +32,21 @@ class Home extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.list === null) {
+        if (this.props.idSets === null) {
             getList({fromId: this.getFromId()}).then(data => {
                 let _data = {},
-                    list = [];
+                    idSets = new Set();
                 for (let i = 0; i < data.length; ++i) {
                     let id = data[i].id;
                     _data[id] = data[i];
-                    list.push(id);
+                    idSets.add(id);
                 }
-                //设置初始的data,list,已经加载更多按钮是展示的，设置本次加载的列表中的最后一个id
-                this.props.onLoadList({data: _data, list: list, fromId: this.getFromId()});
+                //设置初始的data,idSets,已经加载更多按钮是展示的，设置本次加载的列表中的最后一个id
+                this.props.onLoadList({data: _data, idSets: idSets, fromId: this.getFromId()});
             }).catch(err => {
                 console.log('请求错误');
                 console.log(err);
-                this.setState({isShowLoading: false, list: []});
+                this.setState({isShowLoading: false, idSets: new Set()});
             });
         }
         window.onscroll = () => {
@@ -60,14 +62,14 @@ class Home extends React.Component {
 
     }
     render() {
-        if (this.props.list === null) {
+        if (this.props.idSets === null) {
             return <Loading/>;
-        } else if (this.props.list && this.props.list.length === 0) {
+        } else if (this.props.idSets && this.props.idSets.size === 0) {
             return <div>没有帖子</div>;
         } else {
             return (
                 <div >
-                    <List data={this.props.data} list={this.props.list} onToggleLike={this.onToggleLike} onLoadMore={this.onLoadMore} isShowMore={this.props.isShowMore} isLoadingMore={this.props.isLoadingMore} onToggleOther={this.onToggleOther}/>
+                    <List data={this.props.data} idSets={this.props.idSets} onToggleLike={this.onToggleLike} onLoadMore={this.onLoadMore} isShowMore={this.props.isShowMore} isLoadingMore={this.props.isLoadingMore} onToggleOther={this.onToggleOther}/>
                     <Tab/>
                 </div>
             );
@@ -79,17 +81,13 @@ class Home extends React.Component {
         if (this.props.isLoadingMore === false) {
             this.props.onLoading();
             getList({fromId: params.fromId}).then(data => {
-                let _data = this.props.data,
-                    list = [];
+                let _data = this.props.data;
                 for (let i = 0; i < data.length; ++i) {
                     let id = data[i].id;
-                    if (!data[id]) {
-                        list.push(id);
-                    }
+                    this.props.idSets.add(id);
                     _data[id] = data[i];
                 }
-                list = this.props.list.concat(list);
-                this.props.onLoadMore({data: _data, list: list, fromId: this.getFromId()});
+                this.props.onLoadMore({data: _data, idSets: this.props.idSets, fromId: this.getFromId()});
             }).catch(err => {
                 console.log('请求错误');
                 console.log(err);
@@ -121,12 +119,14 @@ class Home extends React.Component {
             deleteLike({postId: itemId}).catch(err => {
                 if (err.code === 2015) {
                     //未登录
+                    this.props.onRemoveNotice();
                     this.props.onShowNotice({message: '请登录！', level: 'error'});
                     setTimeout(() => {
                         toLogin();
                     }, 2000);
                 } else {
                     //点赞失败
+                    this.props.onRemoveNotice();
                     this.props.onShowNotice({message: '取消点赞失败！', level: 'error'});
                     setTimeout(() => {
                         toLogin();
@@ -135,32 +135,40 @@ class Home extends React.Component {
             });
         }
     }
-    onToggleOther(params){
+    deletePost(params) {
+        let itemId = params.id;
+        deletePost({id: itemId}).then(() => {
+            this.props.onRemoveNotice();
+            this.props.onShowNotice({message: '删除成功！', level: 'success'});
+            this.props.onRemovePost({id: itemId});
+        }).catch(err => {
+            console.log(err);
+            this.props.onRemoveNotice();
+            this.props.onShowNotice({message: '删除失败！', level: 'error'});
+        });
+    }
+    reportPost(id) {}
+    onToggleOther(params) {
         let itemId = params.id;
         let menus = [];
-        if(params.author===1){
+        if (params.author === 1 || params.level === 1) {
             menus.push({
-                text:'删除',
-                onTap:()=>{
-                    console.log('tap remove');
-                    this.deleteComment({
-                        postId: itemId
-                    });
+                text: '删除',
+                onTap: () => {
+                    this.deletePost({id: itemId});
                 }
             });
         }
         menus.push({
-            text:'举报',
-            onTap:()=>{
+            text: '举报',
+            onTap: () => {
                 console.log('tap remove');
-                this.deleteComment({
-                    postId: itemId
-                });
+                this.reportPost({postId: itemId});
             }
         });
         menus.push({
-            text:'取消',
-            onTap:()=>{
+            text: '取消',
+            onTap: () => {
                 this.props.onRemoveNotice();
             }
         });
@@ -170,32 +178,7 @@ class Home extends React.Component {
             dismissible: true,
             autoDismiss: 0,
             position: 'bc',
-            children:(
-              <Menu menus={menus}/>
-            )
-          //   children: (
-          //     <div>
-          //         <div style={{
-          //             padding: '15px 0px',
-          //             backgroundColor: 'white',
-          //             borderBottom: '0.8px solid rgb(242, 242, 242)'
-          //         }}>分享到微博</div>
-          //         <div style={{
-          //             padding: '15px 0px',
-          //             backgroundColor: 'white',
-          //             borderBottom: '0.8px solid rgb(242, 242, 242)'
-          //         }}>举报</div>
-          //         <div style={{
-          //             padding: '15px 0px',
-          //             backgroundColor: 'white',
-          //             borderBottom: '4px solid rgb(242, 242, 242)'
-          //         }}>删除</div>
-          //       <div style={{
-          //           padding: '15px 0px',
-          //           backgroundColor: 'white'
-          //       }}>取消</div>
-          //     </div>
-          // )
+            children: (<Menu menus={menus}/>)
         });
 
     }

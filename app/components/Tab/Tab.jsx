@@ -25,11 +25,11 @@ class Tab extends React.Component {
             bottom: 0,
             backgroundColor: 'white',
             flexDirection: 'row',
-            height: '50px',
             alignItems: 'center',
             textAlign:'center',
             borderTop: '1px solid #F2F2F2',
-            fontSize:'30px',
+            fontSize:'32px',
+            padding:'5px 0px 8px 0px',
             color:'#AAAAAA',
         };
         const buttonStyles = {

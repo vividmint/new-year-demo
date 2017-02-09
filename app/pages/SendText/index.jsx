@@ -5,6 +5,8 @@ import styles from './anonymity.css';
 import {setHash} from '../../utils';
 import {toLogin} from '../../business';
 import {postText} from '../../load';
+import {BASE_PRIMARY_COLOR} from '../../constans/styles';
+
 
 class SendText extends React.Component {
     constructor(props) {
@@ -22,7 +24,7 @@ class SendText extends React.Component {
         //使得评论框自动聚焦
         this.textInput.focus();
         setTimeout(() => {
-            this.textInput.focus();//移动端需要延迟加载
+            this.textInput.focus(); //移动端需要延迟加载
         }, 100);
     }
     render() {
@@ -66,23 +68,43 @@ class SendText extends React.Component {
             },
             bottom = {
                 display: 'flex',
-                justifyContent: 'flexEnd',
+                justifyContent: 'space-between',
                 width: '100%',
                 alignItems: 'center',
                 color: '#AAAAAA',
-                padding: '10px 0px',
+                padding: '10px 20px',
                 backgroundColor: '#F2F2F2',
                 borderTop: '0.8px solid rgb(236, 234, 234)'
+            },
+            bottomLeft={
+                display: 'flex',
+                alignItems: 'center',
             },
             text = {
                 textAlign: 'center',
                 fontSize: 18,
-                color: '#AAAAAA'
+                color: '#AAAAAA',
+                marginLeft:10
             },
             textActive = {
                 color: '#42b983',
                 textAlign: 'center',
-                fontSize: 18
+                fontSize: 18,
+                marginLeft:10
+            },
+            send =  {
+                color: '#AAAAAA',
+                textAlign: 'center',
+                fontSize: 16,
+                borderStyle:'solid',
+                borderWidth:1,
+                borderColor:'rgb(170, 170, 170)',
+                padding: '4px 15px',
+                borderRadius:20
+            },
+            _send = {
+                color:`${BASE_PRIMARY_COLOR}`,
+                borderColor:`${BASE_PRIMARY_COLOR}`,
             };
         return (
             <div>
@@ -96,10 +118,13 @@ class SendText extends React.Component {
                         this.textInput = input;
                     }} value={this.state.text} onChange={this.onChange}></textarea>
                     <div style={bottom}>
-                        <input type="checkbox" checked={this.state.secret} onChange={this.onChangeSign} className={styles['check-switch']} data-role="check-switch"></input>
-                        <div style={this.state.secret
-                            ? textActive
-                            : text}>匿名</div>
+                        <div style={bottomLeft}>
+                            <input type="checkbox" checked={this.state.secret} onChange={this.onChangeSign} className={styles['check-switch']} data-role="check-switch"></input>
+                            <div style={this.state.secret
+                                ? textActive
+                                : text}>匿名</div>
+                        </div>
+                        <div style={!this.state.text?send:Object.assign(send,_send)} onTouchTap={this.onSend} >发布</div>
                     </div>
                 </div>
             </div>
@@ -134,8 +159,9 @@ class SendText extends React.Component {
                     secret: this.state.secret,
                     content: this.state.text
                 }
-            }).then(() => {
+            }).then(data => {
                 this.props.onShowNotice({message: '发布成功！', level: 'success'});
+                this.props.onAddPost(data);
                 setTimeout(() => {
                     setHash('page=index');
                 }, 2000);

@@ -1,5 +1,4 @@
 import React from 'react';
-import {render} from 'react-dom';
 import Css from './CommentInput.css';
 import Textarea from 'react-textarea-autosize';
 import {request} from '../../utils';
@@ -29,7 +28,7 @@ class CommentInput extends React.Component {
     clickSend() {
         //发布评论
         if(!this.state.text){
-            showNotice({message: '评论内容不能为空！', level: 'error'});
+            this.OnShowNotice({message: '评论内容不能为空！', level: 'error'});
         }else{
             request({method: 'POST', url: `/api/like/post?postId=${this.props.data.id}`}).then(result => {
                 console.log(result);
@@ -71,7 +70,7 @@ class CommentInput extends React.Component {
             top: '5px',
             right: '20px',
             color: '#AAAAAA',
-            fontSize: '16px',
+            fontSize: '17px',
             textAlign: 'center'
         };
         const sendActive = {

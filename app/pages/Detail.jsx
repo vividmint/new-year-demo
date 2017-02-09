@@ -328,14 +328,14 @@ class DetailCommentInput extends React.Component {
             color: '#AAAAAA',
             flex: '0 1 35px',
             padding: '8px 0px',
-            fontSize: '16px',
+            fontSize: '17px',
             textAlign: 'center'
         };
         const sendActive = {
             flex: '0 1 35px',
             padding: '8px 0px',
             color: '#42b983',
-            fontSize: '16px',
+            fontSize: '17px',
             textAlign: 'center'
         };
         return (

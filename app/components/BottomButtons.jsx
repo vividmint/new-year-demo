@@ -16,28 +16,7 @@ class BottomButtons extends React.Component {
         this.onClickComment = this.onClickComment.bind(this);
         this.onToggleOther =  this.onToggleOther.bind(this);
     }
-    onClickComment(){
-      //点击评论按钮跳转帖子详情页
-        window.location.hash= `#page=detail&id=${this.props.data.id}`;
-    }
-    clickLike() {
-        this.props.clickLike();
-    }
-    onToggleLike(e) {
-        e.stopPropagation(); //阻止点赞事件冒泡
-        this.props.onToggleLike(this.props.data);
 
-    }
-    onToggleOther() {
-        this.props.onToggleOther(this.props.data);
-    }
-
-    handleClick() {
-        if (this.props.isShowCommentInput) {
-            this.props.toggleComment(false);
-        }
-
-    }
     render() {
         const styles = {
             display: 'flex',
@@ -100,6 +79,28 @@ class BottomButtons extends React.Component {
             return(<loading/>);
         }
         */
+
+    }
+    onClickComment(){
+      //点击评论按钮跳转帖子详情页
+        window.location.hash= `#page=detail&id=${this.props.data.id}`;
+    }
+    clickLike() {
+        this.props.clickLike();
+    }
+    onToggleLike(e) {
+        e.stopPropagation(); //阻止点赞事件冒泡
+        this.props.onToggleLike(this.props.data);
+
+    }
+    onToggleOther() {
+        this.props.onToggleOther(this.props.data);
+    }
+
+    handleClick() {
+        if (this.props.isShowCommentInput) {
+            this.props.toggleComment(false);
+        }
 
     }
 }

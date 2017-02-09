@@ -1,5 +1,4 @@
 // import {moment,locale} from 'moment/src/moment';
-// import * as moment from 'moment';
 import {timeFromNow} from '../utils';
 import React from 'react';
 //

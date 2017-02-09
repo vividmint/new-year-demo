@@ -1,7 +1,9 @@
 import {
     request
 } from './utils.js';
-import {toLogin} from './business';
+import {
+    toLogin
+} from './business';
 /**
 获取首页帖子列表
 */
@@ -39,7 +41,25 @@ export function getPost(params) {
         }
     });
 }
+/**
+ * 删除一条帖子
+ */
+export function deletePost(params) {
+    return request({
+        method: 'DELETE',
+        url: '/api/post',
+        body: {
+            id: params.id
+        }
+    }).then(result => {
+        if (result.code === 200) {
+            return Promise.resolve(result.data);
+        } else {
+            return Promise.reject(result);
 
+        }
+    });
+}
 /**
 获取评论列表
 */
@@ -110,7 +130,7 @@ export function deleteComment(params) {
 export function getUser() {
     return request({
         url: '/api/profile/'
-    }).then(result =>{
+    }).then(result => {
         if (result.code === 200) {
             return Promise.resolve(result.data);
         } else {
@@ -126,7 +146,7 @@ export function getUser() {
  * @param  {[type]} params [description]
  * @return {[type]}        [description]
  */
-export function postLike(params){
+export function postLike(params) {
     return request({
         method: 'POST',
         url: '/api/like/post',
@@ -136,7 +156,7 @@ export function postLike(params){
     }).then(result => {
         if (result.code === 200) {
             return result.data;
-        } else{
+        } else {
             return Promise.reject(result);
         }
     });
@@ -147,7 +167,7 @@ export function postLike(params){
  * @param  {[type]} params [description]
  * @return {[type]}        [description]
  */
-export function deleteLike(params){
+export function deleteLike(params) {
     return request({
         method: 'DELETE',
         url: '/api/like/post',
@@ -157,7 +177,7 @@ export function deleteLike(params){
     }).then(result => {
         if (result.code === 200) {
             return result.data;
-        } else{
+        } else {
             return Promise.reject(result);
         }
     });
@@ -166,7 +186,7 @@ export function deleteLike(params){
 /**
  * 发布帖子
  */
-export function postText (params){
+export function postText(params) {
     return request({
         'method': 'POST',
         'url': '/api/post',
@@ -174,7 +194,7 @@ export function postText (params){
     }).then(result => {
         if (result.code === 200) {
             return result.data;
-        } else{
+        } else {
             return Promise.reject(result);
         }
     });

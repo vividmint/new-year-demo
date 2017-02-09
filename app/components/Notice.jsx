@@ -59,7 +59,7 @@ export class Notice extends React.Component {
     }
     componentDidMount() {
         _notificationSystem = this.refs.notificationSystem;
-        console.log('didMount state',this.state);
+        // console.log('didMount state',this.state);
     }
 
     shouldComponentUpdate(nextProps,nextState){
@@ -67,8 +67,8 @@ export class Notice extends React.Component {
     }
     componentWillReceiveProps(nextProps){
         let style = this.state.style;
-        console.log('this',this.props);
-        console.log('next',nextProps);
+        // console.log('this',this.props);
+        // console.log('next',nextProps);
 
         // console.log(this.props.type,nextProps.type);
         if(nextProps.noticeDialog.type==='menu'){
@@ -107,7 +107,7 @@ export class Notice extends React.Component {
                 isMask:nextProps.noticeDialog.isMask
             });
         }
-        console.log('next2',nextProps);
+        // console.log('next2',nextProps);
     }
     render() {
         return (<div><NotificationSystem style={this.state.style} ref="notificationSystem"/>

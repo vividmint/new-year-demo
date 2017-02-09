@@ -14,7 +14,6 @@ textarea::-webkit-input-placeholder {
     display: inline-block;
     width: 40.5px;
     height: 23px;
-    margin: 0px 20px;
     position: relative;
     background-color: #efedec;
     box-shadow: #dfdfdf 0 0 0 0 inset;
@@ -37,7 +36,7 @@ textarea::-webkit-input-placeholder {
 
 [data-role="check-switch"]:checked {
     border: none;
-    height: 23px;
+    /*height: 23px;*/
     box-shadow: var(--primaryColor) 0 0 0 16px inset;
     background-color: var(--primaryColor);
     box-shadow: var(--primaryColor) 0 0 0 16px inset;
