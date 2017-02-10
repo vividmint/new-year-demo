@@ -1,5 +1,6 @@
 // import TiWeatherSunny from 'react-icons/lib/ti/weather-sunny';
-import FaSmileO from 'react-icons/lib/fa/smile-o';
+//import FaSmileO from 'react-icons/lib/fa/smile-o';
+import FaBomb from 'react-icons/lib/fa/bomb';
 import React from 'react';
 import {setHash} from '../../utils';
 
@@ -26,7 +27,7 @@ class HotPostsButton extends React.Component {
             };
         return (
             <div style={styles}>
-                <FaSmileO style={icon} onTouchTap={this.toHotListHash}/>
+                <FaBomb style={icon} onTouchTap={this.toHotListHash}/>
                 <div style={name}>热门帖</div>
             </div>
         );
