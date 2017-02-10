@@ -7,7 +7,6 @@ import Tab from '../components/Tab/Tab';
 class Hot extends React.Component {
     constructor(props) {
         super(props);
-        // this.onLoadHotList = this.onLoadHotList.bind(this);
     }
     getFromId() {
         //获取加载更多时候的初始评论id
@@ -31,7 +30,6 @@ class Hot extends React.Component {
         }
     }
     render() {
-        console.log(this.props.hotPostsIdSets);
         return (
             <div>
                 <List hotPostsData={this.props.hotPostsData} hotPostsIdSets={this.props.hotPostsIdSets}/>

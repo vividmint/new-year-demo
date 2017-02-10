@@ -1,4 +1,3 @@
-// import TiWeatherSunny from 'react-icons/lib/ti/weather-sunny';
 //import FaSmileO from 'react-icons/lib/fa/smile-o';
 import FaBomb from 'react-icons/lib/fa/bomb';
 import React from 'react';
