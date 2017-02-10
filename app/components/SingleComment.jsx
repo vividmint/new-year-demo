@@ -1,8 +1,8 @@
 import Moment from './Moment.jsx';
 import React from 'react';
-// import FaHeartO from 'react-icons/lib/fa/heart-o';
-import FaCommentO from 'react-icons/lib/fa/comment-o';
-import FaSmileO from 'react-icons/lib/fa/smile-o';
+import FaHeartO from 'react-icons/lib/fa/heart-o';
+// import FaCommentO from 'react-icons/lib/fa/comment-o';
+// import FaSmileO from 'react-icons/lib/fa/smile-o';
 // import FaHandPeaceO from 'react-icons/lib/fa/hand-peace-o';
 
 
@@ -10,13 +10,15 @@ class SingleComment extends React.Component {
     constructor(props) {
         super(props);
         this.onShowCommentMenu = this.onShowCommentMenu.bind(this);
+        this.toPersonHome =this.toPersonHome.bind(this);
+        this.onCommentToggleLike = this.onCommentToggleLike.bind(this);
     }
 
     render(){
         const styles = {
                 display:'flex',
                 flexDirection:'column',
-                padding:'0px 20px',
+                padding:'0px 10px 0px 20px',
                 borderTop:'0.8px solid rgb(240, 240, 240)',
 
             },
@@ -56,8 +58,7 @@ class SingleComment extends React.Component {
                 color:'rgb(170, 170, 170)'
             },
             like = {
-                padding:'0px 8px 0px 0px',
-                fontSize:22
+                fontSize:20
             },
             comment = {
                 padding:'0px 0px 0px 8px'
@@ -72,15 +73,15 @@ class SingleComment extends React.Component {
           <div style={styles} onTouchTap={this.onShowCommentMenu}>
                 <div style={top}>
                   <div style={topLeft}>
-                    <img style={avatar}src={data.avatar}></img>
+                    <img style={avatar} src={data.avatar} onTouchTap={this.toPerson} ></img>
                     <div style={leftRight}>
-                      <div style={nickname}>{data.nickname}</div>
+                      <div style={nickname} onTouchTap={this.toPersonHome}>{data.nickname}</div>
                       <div><Moment style={time} data={data}/></div>
                     </div>
                   </div>
                   <div style={topRight}>
-                    <div style={like}><FaSmileO/></div>
-                    <div style={comment}><FaCommentO/></div>
+                    <div style={like} onTouchTap={this.onCommentToggleLike}><FaHeartO/></div>
+                    <div style={comment}></div>
                   </div>
                 </div>
                 <div style={bottom}>{data.content}</div>
@@ -91,6 +92,13 @@ class SingleComment extends React.Component {
     onShowCommentMenu(){
         //显示评论操作菜单
         this.props.onShowCommentMenu(this.props.data.id);
+    }
+    toPersonHome(e){
+        e.stopPropagation(); //阻止跳转个人用户页事件冒泡
+
+    }
+    onCommentToggleLike(){
+        this.onCommentToggleLike(this.props.data.id);
     }
 }
 export default SingleComment;

@@ -6,7 +6,8 @@ import {
     postComment,
     deleteComment,
     postLike,
-    deleteLike
+    deleteLike,
+    postCommentLike
 } from '../load';
 import ItemTop from '../components/ItemTop.jsx';
 import Loading from '../components/Loading.jsx';
@@ -26,10 +27,11 @@ class Detail extends React.Component {
         this.onPostComment = this.onPostComment.bind(this); //当发送评论
         this.onShowCommentMenu = this.onShowCommentMenu.bind(this); //操作评论事件
         this.onToggleLike = this.onToggleLike.bind(this); //当点赞
-        this.deleteComment = this.deleteComment.bind(this);//删除评论
+        this.deleteComment = this.deleteComment.bind(this); //删除评论
+        this.onCommentToggleLike = this.onCommentToggleLike.bind(this); //点赞评论
+
     }
     componentDidMount() {
-
         document.body.scrollTop = 0;
         let postId = getHash('id');
         if (!this.props.data) {
@@ -61,7 +63,7 @@ class Detail extends React.Component {
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
-            paddingTop:15
+            paddingTop: 15
         };
         const main = {
             overflow: 'auto',
@@ -87,7 +89,7 @@ class Detail extends React.Component {
         if (this.props.data) {
             let data = this.props.data;
             let commentList = data.commentIdSets
-                ? (<CommentList commentData={this.props.commentData} commentIdSets={data.commentIdSets} onShowCommentMenu={this.onShowCommentMenu}/>)
+                ? (<CommentList onCommentToggleLike={this.onCommentToggleLike} commentData={this.props.commentData} commentIdSets={data.commentIdSets} onShowCommentMenu={this.onShowCommentMenu}/>)
                 : null;
             return (
                 <div style={styles}>
@@ -146,7 +148,6 @@ class Detail extends React.Component {
         }).catch(err => {
             console.log(err);
         });
-
     }
 
     onLoadMoreComment(params) {
@@ -175,30 +176,29 @@ class Detail extends React.Component {
 
     onShowCommentMenu(id) {
         //弹出评论菜单
-        let menus = [{
-            text:'回复',
-            onTap:()=>{
-                console.log('tap reply');
+        let menus = [
+            {
+                text: '回复',
+                onTap: () => {
+                    console.log('tap reply');
+                }
             }
-        }];
+        ];
         let comment = this.props.commentData[id];
-        if(comment.author){
-          //是作者
+        if (comment.author) {
+            //是作者
             menus.push({
-                text:'删除评论',
-                onTap:()=>{
+                text: '删除评论',
+                onTap: () => {
                     console.log('tap remove');
-                    this.deleteComment({
-                        postId: this.props.data.id,
-                        commentId: comment.id
-                    });
+                    this.deleteComment({postId: this.props.data.id, commentId: comment.id});
                 }
             });
         }
 
         menus.push({
-            text:'取消',
-            onTap:()=>{
+            text: '取消',
+            onTap: () => {
                 this.props.onRemoveNotice();
             }
         });
@@ -209,9 +209,7 @@ class Detail extends React.Component {
             dismissible: true,
             autoDismiss: 0,
             position: 'bc',
-            children:(
-              <Menu menus={menus} />
-            )
+            children: (<Menu menus={menus}/>)
         });
     }
 
@@ -266,6 +264,11 @@ class Detail extends React.Component {
                 }
             });
         }
+    }
+    onCommentToggleLike(params) {
+        postCommentLike({commentId: params.commentId}).then(() => {}).catch(err => {
+            console.log(err);
+        });
     }
 
 }

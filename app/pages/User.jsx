@@ -8,6 +8,7 @@ class User extends React.Component {
     constructor(props) {
         super(props);
     }
+
     componentDidMount() {
         if (this.props.userData === null) {
             getUser().then(data => {
@@ -16,19 +17,19 @@ class User extends React.Component {
                 console.log(err);
             });
         }
-
+        
     }
 
-    render(){
+    render() {
         return (
-        <div>
-          <UserDetail userData={this.props.userData}/>
-          <UserItems/>
-            <Tab/>
-        </div>
+            <div>
+                <UserDetail userData={this.props.userData}/>
+                <UserItems/>
+                <Tab/>
+            </div>
         );
-
     }
+
 
 }
 

@@ -7,29 +7,38 @@ import {setHash} from '../../utils.js';
 class Item extends React.Component {
     constructor(props) {
         super(props);
-        let data = this.props.data;
-        let preview = data.content.length > 150
-            ? data.content.substring(0, 149).concat('......')
-            : data.content;
         this.state = {
-            data: this.props.data, //当前item的数据
+            preview: null, //预览的文字
             isFold: true, //帖子是否处于预览状态，是的话处于预览
-            preview: preview, //预览的文字
         };
-
         this.toDetailHash = this.toDetailHash.bind(this);
         this.foldHandle = this.foldHandle.bind(this);
+    }
+    componentDidMount() {
+        let data = this.props.data;
+        let preview;
+        if (this.props.data.content) {
+            preview = data.content.length > 150
+                ? data.content.substring(0, 149).concat('......')
+                : data.content;
+        } else {
+            preview = data.title;
+        }
+        this.setState({preview: preview, idFold: true});
     }
 
     foldHandle() {
         //折叠toggle
         this.setState({
-            isFold: !this.state.isFold
+            isFold: this.props.data.content
+                ? !this.state.isFold
+                : true
         });
     }
     toDetailHash() {
         //跳转帖子详情页
-        setHash(`page=detail&id=${this.state.data.id}`);
+        let id = this.props.data.id;
+        setHash(`page=detail&id=${id}`);
     }
     render() {
         let styles = {
@@ -65,7 +74,9 @@ class Item extends React.Component {
                         }
                         : {
                             text: '收起'
-                        }} content={data.content} foldHandle={this.foldHandle}/>
+                        }} content={data.content
+                        ? data.content
+                        : data.title} foldHandle={this.foldHandle}/>
 
                 </div>
                 <BottomButtons showNotice={this.props.showNotice} data={data} likeCount={data.likeCount} commentCount={data.commentCount} onToggleLike={this.props.onToggleLike} onToggleOther={this.props.onToggleOther}/>
@@ -73,6 +84,5 @@ class Item extends React.Component {
         );
     }
 }
-
 
 export default Item;

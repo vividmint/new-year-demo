@@ -99,7 +99,7 @@ class SendText extends React.Component {
                 borderStyle:'solid',
                 borderWidth:1,
                 borderColor:'rgb(170, 170, 170)',
-                padding: '4px 15px',
+                padding: '3px 13px',
                 borderRadius:20
             },
             _send = {

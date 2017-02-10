@@ -1,8 +1,10 @@
 import React from 'react';
 import {render} from 'react-dom';
-import {getHash, setHash,getTime} from './utils.js';
+import {getHash, setHash, getTime} from './utils.js';
 import Home from './pages/Home';
+import Hot from './pages/Hot';
 import User from './pages/User';
+import UserLiked from './pages/UserLiked';
 import SendText from './pages/SendText';
 import Detail from './pages/Detail.jsx';
 import injectTapEventPlugin from 'react-tap-event-plugin';
@@ -16,6 +18,8 @@ class App extends React.Component {
         this.state = {
             data: null, //所有的内容
             idSets: null, //帖子列表的id集合
+            hotPostsData: null,
+            hotPostsIdSets: null,
             commentData: {}, //评论数据
             page: page, //当前页面
             userData: null, //当前登录用户信息
@@ -27,7 +31,12 @@ class App extends React.Component {
             },
             noticeDialog: {
                 type: 'tips', //弹窗类型
-            }
+            },
+            likedPostsData: null, //赞过的帖子数据
+            likedPostsIdSets: null,
+            personalPostsData: null, //发过的帖子数据
+            personalPostsIdSets: null,
+
         };
         this.onLoadList = this.onLoadList.bind(this); //载入首页列表
         this.onLoadMore = this.onLoadMore.bind(this); //加载更多帖子
@@ -44,6 +53,9 @@ class App extends React.Component {
         this.onLoading = this.onLoading.bind(this); //设置首页列表为加载中
         this.onAddPost = this.onAddPost.bind(this); //
         this.onRemovePost = this.onRemovePost.bind(this);
+        this.onCommentToggleLike = this.onCommentToggleLike.bind(this); //点赞评论
+        this.onLoadLikedPosts = this.onLoadLikedPosts.bind(this); //获取用户赞过的帖子列表
+        this.onLoadHotList = this.onLoadHotList.bind(this);
 
         window.onhashchange = () => {
             //当url里的hash发生变化的时候
@@ -57,21 +69,26 @@ class App extends React.Component {
         let pageContainer = null;
         if (this.state.page === 'detail') {
             let id = getHash('id');
-            pageContainer = (<Detail onAddComment={this.onAddComment} onRemoveComment={this.onRemoveComment} onRemoveNotice={this.onRemoveNotice} onShowNotice={this.onShowNotice} onToggleLike={this.onToggleLike} onLoadDetail={this.onLoadDetail} commentData={this.state.commentData} onLoadCommentList={this.onLoadCommentList} data={this.state.data
+            pageContainer = (<Detail onAddComment={this.onAddComment} onCommentToggleLike={this.onCommentToggleLike} onRemoveComment={this.onRemoveComment} onRemoveNotice={this.onRemoveNotice} onShowNotice={this.onShowNotice} onToggleLike={this.onToggleLike} onLoadDetail={this.onLoadDetail} commentData={this.state.commentData} onLoadCommentList={this.onLoadCommentList} data={this.state.data
                 ? this.state.data[id]
                 : null}/>);
-        } else if (this.state.page === 'user') {
-            pageContainer = (
-                <div>
-                    <User userData={this.state.userData} onLoadUser={this.onLoadUser}/>
-                </div>
-            );
-        } else if (this.state.page === 'sendText') {
+        }
+        else if (this.state.page === 'user') {
+            pageContainer = (<User userData={this.state.userData} onLoadUser={this.onLoadUser} onLoadLikedPosts={this.onLoadLikedPosts}/>);
+        }
+        else if (this.state.page === 'hot') {
+            pageContainer = (<Hot idSets={this.state.idSets} data={this.state.data} onLoadHotList={this.onLoadHotList} hotPostsData={this.state.hotPostsData} hotPostsIdSets={this.state.hotPostsIdSets}/>);
+        }
+        else if (this.state.page === 'userLiked') {
+            pageContainer = (<UserLiked idSets={this.state.idSets} data={this.state.data} onLoadLikedPosts={this.onLoadLikedPosts} likedPostsIdSets={this.state.likedPostsIdSets} likedPostsData={this.state.likedPostsData}/>);
+        }
+        else if (this.state.page === 'sendText') {
             pageContainer = (<SendText onAddPost={this.onAddPost} data={this.state.data} userData={this.state.userData} onShowNotice={this.onShowNotice} style={{
                 height: '100%'
             }}/>);
-        } else {
-            pageContainer = (<Home idSets={this.state.idSets} onShowNotice={this.onShowNotice} onToggleLike={this.onToggleLike} onRemoveNotice={this.onRemoveNotice} onToggleOther={this.onToggleOther} onLoading={this.onLoading} onLoadList={this.onLoadList} onLoadMore={this.onLoadMore} onLoadMoreError={this.onLoadMoreError} data={this.state.data} isLoadingMore={this.state.isLoadingMore} isShowMore={this.state.isShowMore} onRemovePost={this.onRemovePost} />);
+        }
+        else {
+            pageContainer = (<Home idSets={this.state.idSets} onShowNotice={this.onShowNotice} onToggleLike={this.onToggleLike} onRemoveNotice={this.onRemoveNotice} onToggleOther={this.onToggleOther} onLoading={this.onLoading} onLoadList={this.onLoadList} onLoadMore={this.onLoadMore} onLoadMoreError={this.onLoadMoreError} data={this.state.data} isLoadingMore={this.state.isLoadingMore} isShowMore={this.state.isShowMore} onRemovePost={this.onRemovePost}/>);
         }
 
         return (
@@ -205,9 +222,10 @@ class App extends React.Component {
     }
 
     onAddPost(params) {
-        let idSets = this.state.idSets,data=this.state.data;
+        let idSets = this.state.idSets,
+            data = this.state.data;
         let id = params.insertId;
-        let obj= {};
+        let obj = {};
         let list = Array.from(idSets);
 
         if (idSets) {
@@ -231,10 +249,37 @@ class App extends React.Component {
             data: Object.assign(data, obj)
         });
     }
-    onRemovePost(params){
+    onRemovePost(params) {
         let idSets = this.state.idSets;
         idSets.delete(params.id);
         this.setState({idSets: idSets});
+    }
+    onCommentToggleLike(params) {
+        let commentId = params.commentId,
+            id = params.postId;
+        // data[id].
+    }
+    onLoadLikedPosts(params) {
+        if (!this.state.likedPostsData) {
+            this.setState({likedPostsData: params.likedPostsData, likedPostsIdSets: params.likedPostsIdSets});
+        } else {
+            this.setState({
+                likedPostsData: Object.assign(this.state.likedPostsData, params.likedPostsData),
+                likedPostsIdSets: this.state.likedPostsIdSets.add(params.likedPostsIdSets)
+            });
+        }
+
+    }
+    onLoadHotList(params) {
+        console.log(params);
+        if (!this.state.hotPostsData) {
+            this.setState({hotPostsData: params.hotPostsData, hotPostsIdSets: params.hotPostsIdSets});
+        }else {
+            this.setState({
+                hotPostsData: Object.assign(this.state.hotPostsData, params.hotPostsData),
+                hotPostsIdSets: this.state.hotPostsIdSets.add(params.hotPostsIdSets)
+            });
+        }
     }
 }
 

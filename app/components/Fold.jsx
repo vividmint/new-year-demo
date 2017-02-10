@@ -1,7 +1,4 @@
-
 import React from 'react';
-import {render} from 'react-dom';
-
 
 class Fold extends React.Component {
     constructor(props) {
@@ -28,8 +25,9 @@ class Fold extends React.Component {
         const hide ={
             display:'none'
         };
+
         return (
-            <div onTouchTap={this.handleClick} style={this.props.content.length>150?styles:hide}>
+            <div onTouchTap={this.handleClick} style={this.props.content?this.props.content.length>150?styles:hide:hide}>
                 {this.props.foldText.text}
             </div>
         );

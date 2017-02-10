@@ -13,7 +13,25 @@ export function getList(params) {
         url += `&fromId=${params.fromId}`;
     }
     return request({
-        url
+        url: url
+    }).then(result => {
+        if (result.code === 200) {
+            return result.data;
+        } else {
+            return Promise.reject(result);
+        }
+    });
+}
+/**
+ * 获取热门帖子列表
+ */
+export function getHotList(params){
+    let url = '/api/hot/?pageSize=15';
+    if (params.fromId) {
+        url += `&fromId=${params.fromId}`;
+    }
+    return request({
+        url: url
     }).then(result => {
         if (result.code === 200) {
             return result.data;
@@ -123,6 +141,27 @@ export function deleteComment(params) {
     });
 }
 /**
+ * 点赞评论
+ */
+export function postCommentLike(params) {
+    return request({
+        method: 'POST',
+        url: '/api/like/comment',
+        body: {
+            id: params.commentId
+        }
+    }).then(result => {
+        if (result.code === 200) {
+            return Promise.resolve(result.data);
+        } else {
+            toLogin();
+            return Promise.reject(result);
+
+        }
+    });
+}
+
+/**
  * 获取用户个人资料
  * @param  {[type]} params [description]
  * @return {[type]}        [description]
@@ -135,6 +174,26 @@ export function getUser() {
             return Promise.resolve(result.data);
         } else {
             toLogin();
+            return Promise.reject(result);
+
+        }
+    });
+}
+
+/**
+ * 获取赞过的帖子
+ */
+export function getLikedPosts(params) {
+    let url = '/api/posts/like/?pageSize=15';
+    if (params.fromId) {
+        url += `&fromId=${params.fromId}`;
+    }
+    return request({
+        url: url
+    }).then(result => {
+        if (result.code === 200) {
+            return Promise.resolve(result.data);
+        } else {
             return Promise.reject(result);
 
         }

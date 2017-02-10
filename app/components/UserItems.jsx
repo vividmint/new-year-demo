@@ -1,4 +1,5 @@
 import React from 'react';
+import HotPostsButton from './Tools/HotPostsButton';
 
 class UserItems extends React.Component {
     render() {
@@ -23,7 +24,7 @@ class UserItems extends React.Component {
             item={
                 width:'100%',
                 height:'100%',
-                padding:'48px',
+                padding:'20px 26px 10px 26px',
                 display: 'flex',
                 alignItems:'center',
                 flexDirection: 'column',
@@ -32,21 +33,21 @@ class UserItems extends React.Component {
         return (
             <div style={styles}>
                 <div style={columnItem}>
-                    <div style={item}>1</div>
-                    <div style={item}>1</div>
-                    <div style={item}>1</div>
+                    <div style={item}><HotPostsButton/></div>
+                    <div style={item}><HotPostsButton/></div>
+                    <div style={item}><HotPostsButton/></div>
 
                 </div>
                 <div style={columnItem}>
-                    <div style={item}>1</div>
-                    <div style={item}>1</div>
-                    <div style={item}>1</div>
+                    <div style={item}><HotPostsButton/></div>
+                    <div style={item}><HotPostsButton/></div>
+                    <div style={item}><HotPostsButton/></div>
 
                 </div>
                 <div style={columnLastItem}>
-                    <div style={item}>1</div>
-                    <div style={item}>1</div>
-                    <div style={item}>1</div>
+                    <div style={item}><HotPostsButton/></div>
+                    <div style={item}><HotPostsButton/></div>
+                    <div style={item}><HotPostsButton/></div>
 
                 </div>
             </div>

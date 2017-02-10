@@ -15,7 +15,7 @@ class CommentList extends React.Component {
         };
         let commentComponentArr = [];
         for(let item of this.props.commentIdSets){
-            commentComponentArr.push(<SingleComment onShowCommentMenu={this.props.onShowCommentMenu} key={'comment' +item} data={this.props.commentData[item]}/>);
+            commentComponentArr.push(<SingleComment onCommentToggleLike={this.props.onCommentToggleLike} onShowCommentMenu={this.props.onShowCommentMenu} key={'comment' +item} data={this.props.commentData[item]}/>);
         }
         return (
             <div style={styles}>
