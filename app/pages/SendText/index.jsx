@@ -38,7 +38,7 @@ class SendText extends React.Component {
                 display: 'flex',
                 alignItems: 'center',
                 height: 42,
-                backgroundColor: '#42b983'
+                backgroundColor: `${BASE_PRIMARY_COLOR}`,
             },
             topButton = {
                 fontSize: 22,

@@ -17,7 +17,87 @@ class Home extends React.Component {
         this.onToggleOther = this.onToggleOther.bind(this);
         this.deletePost = this.deletePost.bind(this);
         this.reportPost = this.reportPost.bind(this);
+        let idSets = null,type = this.props.page;
+        if(type === 'index'){
+            idSets = this.props.idSets;
+        }else if(type === 'hot'){
+            idSets = this.props.hotIdSets;
+        }else if(type === 'liked'){
+            idSets = this.props.likedIdSets;
+        }
+        this.state = {
+            type,
+            idSets
+        };
 
+    }
+
+
+    componentWillReceiveProps(nextProps){
+        let type = nextProps.page,idSets = null;
+        if(type === 'index'){
+            idSets = nextProps.idSets;
+        }else if(type === 'hot'){
+            idSets = nextProps.hotIdSets;
+        }else if(type === 'liked'){
+            idSets = nextProps.likedIdSets;
+        }
+        this.setState({
+            type,
+            idSets
+        });
+    }
+    componentDidMount() {
+        if (!this.state.idSets) {
+            let type = this.state.type;
+            getList({type,fromId: this.getFromId()}).then(data => {
+                let _data = {},
+                    idSets = new Set();
+                for (let i = 0; i < data.length; ++i) {
+                    let id = data[i].id;
+                    _data[id] = data[i];
+                    idSets.add(id);
+                }
+                //设置初始的data,idSets,已经加载更多按钮是展示的，设置本次加载的列表中的最后一个id
+                this.props.onLoadList({data: _data,type, idSets: idSets, fromId: this.getFromId()});
+            }).catch(err => {
+                if(err.code===2015||err.code===1003){
+                //未登录
+                    this.props.onShowNotice({message: '请登录！', level: 'error'});
+                    setTimeout(() => {
+                        toLogin();
+                    }, 2000);
+                }
+                console.log(err);
+            });
+        }
+        window.onscroll = () => {
+            //下拉刷新
+            let documentHeight = getDocumentHeight(); //整个页面的高度
+            let distance = documentHeight - (window.document.body.scrollTop + window.screen.height);
+            //window.screen.height  屏幕的高度
+            //window.document.body.scrollTop  屏幕顶部距离页面顶部的距离
+            if (distance <= INDEX_LIST_LOAD_MORE_DISTANCE && distance > 0) {
+                this.onLoadMore({fromId: this.getFromId(),type:this.state.type});
+            }
+        };
+
+    }
+    render() {
+        let condition = null;
+        if (this.state.idSets === null) {
+            return <Loading/>;
+        } else if (this.state.idSets && this.state.idSets.size === 0) {
+            return <div>没有帖子</div>;
+        } else {
+            console.log(this.state);
+            return (
+                <div >
+                    <List data={this.props.data} idSets={this.state.idSets} onToggleLike={this.onToggleLike} onLoadMore={this.onLoadMore} isShowMore={this.props.isShowMore} isLoadingMore={this.props.isLoadingMore} onToggleOther={this.onToggleOther}/>
+                    <Tab/>
+                </div>
+            );
+        }
     }
 
     getFromId() {
@@ -31,63 +111,19 @@ class Home extends React.Component {
         }
     }
 
-    componentDidMount() {
-        if (this.props.idSets === null) {
-            getList({fromId: this.getFromId()}).then(data => {
-                let _data = {},
-                    idSets = new Set();
-                for (let i = 0; i < data.length; ++i) {
-                    let id = data[i].id;
-                    _data[id] = data[i];
-                    idSets.add(id);
-                }
-                //设置初始的data,idSets,已经加载更多按钮是展示的，设置本次加载的列表中的最后一个id
-                this.props.onLoadList({data: _data, idSets: idSets, fromId: this.getFromId()});
-            }).catch(err => {
-                console.log('请求错误');
-                console.log(err);
-                this.setState({isShowLoading: false, idSets: new Set()});
-            });
-        }
-        window.onscroll = () => {
-            //下拉刷新
-            let documentHeight = getDocumentHeight(); //整个页面的高度
-            let distance = documentHeight - (window.document.body.scrollTop + window.screen.height);
-            //window.screen.height  屏幕的高度
-            //window.document.body.scrollTop  屏幕顶部距离页面顶部的距离
-            if (distance <= INDEX_LIST_LOAD_MORE_DISTANCE && distance > 0) {
-                this.onLoadMore({fromId: this.getFromId()});
-            }
-        };
-
-    }
-    render() {
-        if (this.props.idSets === null) {
-            return <Loading/>;
-        } else if (this.props.idSets && this.props.idSets.size === 0) {
-            return <div>没有帖子</div>;
-        } else {
-            return (
-                <div >
-                    <List data={this.props.data} idSets={this.props.idSets} onToggleLike={this.onToggleLike} onLoadMore={this.onLoadMore} isShowMore={this.props.isShowMore} isLoadingMore={this.props.isLoadingMore} onToggleOther={this.onToggleOther}/>
-                    <Tab/>
-                </div>
-            );
-        }
-    }
-
     onLoadMore(params) {
         //当加载更多时
+        let type = params.type;
         if (this.props.isLoadingMore === false) {
             this.props.onLoading();
-            getList({fromId: params.fromId}).then(data => {
+            getList({type:type,fromId: params.fromId}).then(data => {
                 let _data = this.props.data;
                 for (let i = 0; i < data.length; ++i) {
                     let id = data[i].id;
-                    this.props.idSets.add(id);
+                    this.state.idSets.add(id);
                     _data[id] = data[i];
                 }
-                this.props.onLoadMore({data: _data, idSets: this.props.idSets, fromId: this.getFromId()});
+                this.props.onLoadList({data: _data, type,idSets: this.state.idSets});
             }).catch(err => {
                 console.log('请求错误');
                 console.log(err);

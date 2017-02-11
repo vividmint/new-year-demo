@@ -27,7 +27,7 @@ class HotPostsButton extends React.Component {
         return (
             <div style={styles}>
                 <FaBomb style={icon} onTouchTap={this.toHotListHash}/>
-                <div style={name}>热门帖</div>
+                <div style={name} onTouchTap={this.toHotListHash}>热门帖</div>
             </div>
         );
     }

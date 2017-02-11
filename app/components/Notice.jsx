@@ -13,21 +13,21 @@ export function popNotice(params) {
             ? 1.5
             : params.autoDismiss,
         dismissible: false,
-        type:'tips'
+        type: 'tips'
     });
     _currentNotice = _notificationSystem.addNotification(_params);
-    return  _currentNotice;
+    return _currentNotice;
 }
 export function removeNotice(params) {
     params = params || _currentNotice;
-    return  _notificationSystem.removeNotification(params);
+    return _notificationSystem.removeNotification(params);
 }
 export class Notice extends React.Component {
     constructor(props) {
         super(props);
         _notificationSystem = null;
         this.state = {
-            style:{
+            style: {
                 Containers: {
                     DefaultStyle: {
                         width: window.document.documentElement.clientWidth,
@@ -62,30 +62,27 @@ export class Notice extends React.Component {
         // console.log('didMount state',this.state);
     }
 
-    shouldComponentUpdate(nextProps,nextState){
+    shouldComponentUpdate(nextProps, nextState) {
         return true;
     }
-    componentWillReceiveProps(nextProps){
+    componentWillReceiveProps(nextProps) {
         let style = this.state.style;
         // console.log('this',this.props);
         // console.log('next',nextProps);
 
         // console.log(this.props.type,nextProps.type);
-        if(nextProps.noticeDialog.type==='menu'){
-            style.NotificationItem.DefaultStyle = Object.assign(style.NotificationItem.DefaultStyle,{
+        if (nextProps.noticeDialog.type === 'menu') {
+            style.NotificationItem.DefaultStyle = Object.assign(style.NotificationItem.DefaultStyle, {
                 height: 75,
-                fontSize:16,
-                display:'inline',
-                color:'rgba(0,0,0,0.8)',
-                padding:'8px 0px',
-                bottom:0
+                fontSize: 16,
+                display: 'inline',
+                color: 'rgba(0,0,0,0.8)',
+                padding: '8px 0px',
+                bottom: 0
             });
-            this.setState({
-                style:style,
-                isMask:true
-            });
-        }else{
-            style.NotificationItem.DefaultStyle =  {
+            this.setState({style: style, isMask: true});
+        } else {
+            style.NotificationItem.DefaultStyle = {
                 margin: 0,
                 height: 42,
                 borderWidth: '0px',
@@ -97,23 +94,19 @@ export class Notice extends React.Component {
                 alignItems: 'center',
                 justifyContent: 'center'
             };
-            this.setState({
-                style:style,
-                isMask:false
-            });
+            this.setState({style: style, isMask: false});
         }
-        if(nextProps.noticeDialog.isMask!==undefined){
-            this.setState({
-                isMask:nextProps.noticeDialog.isMask
-            });
+        if (nextProps.noticeDialog.isMask !== undefined) {
+            this.setState({isMask: nextProps.noticeDialog.isMask});
         }
         // console.log('next2',nextProps);
     }
     render() {
-        return (<div><NotificationSystem style={this.state.style} ref="notificationSystem"/>
-      <Mask onTap={this.props.onTapMask} isMask={this.state.isMask}/>
+        return (
+            <div><NotificationSystem style={this.state.style} ref="notificationSystem"/>
+                <Mask onTap={this.props.onTapMask} isMask={this.state.isMask}/>
 
-    </div>
+            </div>
         );
     }
 }

@@ -17,13 +17,9 @@ class Item extends React.Component {
     componentDidMount() {
         let data = this.props.data;
         let preview;
-        if (this.props.data.content) {
-            preview = data.content.length > 150
+        preview = data.content.length > 150
                 ? data.content.substring(0, 149).concat('......')
                 : data.content;
-        } else {
-            preview = data.title;
-        }
         this.setState({preview: preview, idFold: true});
     }
 

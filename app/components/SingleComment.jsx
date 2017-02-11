@@ -98,7 +98,7 @@ class SingleComment extends React.Component {
 
     }
     onCommentToggleLike(){
-        this.onCommentToggleLike(this.props.data.id);
+        // this.onCommentToggleLike(this.props.data.id);
     }
 }
 export default SingleComment;

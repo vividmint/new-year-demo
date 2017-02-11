@@ -97,7 +97,7 @@ class UserDetail extends React.Component {
 
     toUserLikeHash() {
         //跳转赞过的帖子列表
-        setHash('page=userLiked');
+        setHash('page=liked');
     }
 
 }

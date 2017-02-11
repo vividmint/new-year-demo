@@ -1,5 +1,7 @@
 import React from 'react';
-
+/**
+ * 蒙版
+ */
 class Mask extends React.Component {
     render(){
         const styles={

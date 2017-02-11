@@ -49,6 +49,9 @@ class Detail extends React.Component {
             }
         }
         window.onscroll = () => {
+            if(this.props.isLoadingCommentEnd){
+                return;
+            }
             //加载更多评论
             let documentHeight = getDocumentHeight();
             let distance = documentHeight - (window.document.body.scrollTop + window.screen.height);
@@ -155,6 +158,10 @@ class Detail extends React.Component {
         let postId = params.postId;
 
         getComments(params).then(data => {
+            if(data.length===0){
+                this.props.onLoadCommentListEnd();
+                return;
+            }
             let _data = {};
             let commentIdSets = new Set();
             for (let i = 0; i < data.length; ++i) {
@@ -266,9 +273,12 @@ class Detail extends React.Component {
         }
     }
     onCommentToggleLike(params) {
-        postCommentLike({commentId: params.commentId}).then(() => {}).catch(err => {
-            console.log(err);
-        });
+        console.log('kkk');
+        // postCommentLike({commentId: params.commentId,postId:params.postId}).then(() => {
+        //     this.props.onCommentToggleLike();
+        // }).catch(err => {
+        //     console.log(err);
+        // });
     }
 
 }

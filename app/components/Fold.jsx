@@ -27,7 +27,7 @@ class Fold extends React.Component {
         };
 
         return (
-            <div onTouchTap={this.handleClick} style={this.props.content?this.props.content.length>150?styles:hide:hide}>
+            <div onTouchTap={this.handleClick} style={this.props.content.length>150?styles:hide}>
                 {this.props.foldText.text}
             </div>
         );

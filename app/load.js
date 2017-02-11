@@ -4,11 +4,18 @@ import {
 import {
     toLogin
 } from './business';
+import {LIST_DEFAULT_LENTH} from './constans/config.js';
 /**
 获取首页帖子列表
 */
 export function getList(params) {
-    let url = '/api/posts?pageSize=15';
+    let url = '/api/posts';
+    if (params.type === 'hot'){
+        url = '/api/hot';
+    }else if(params.type === 'liked'){
+        url = '/api/posts/like';
+    }
+    url = `${url}?pageSize=${LIST_DEFAULT_LENTH}`;
     if (params.fromId) {
         url += `&fromId=${params.fromId}`;
     }
