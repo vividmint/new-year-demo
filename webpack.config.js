@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const sourcePath = path.join(__dirname);
 const targetPath = path.join(__dirname, 'dist');
 const isProduction = function() {
@@ -26,11 +27,16 @@ if (isProduction()) {
         }
     }));
 }
+
+plugins.push(new HtmlWebpackPlugin({
+    title: 'demo info',
+    template: './public/index.ejs', // Load a custom template (ejs by default see the FAQ for details)
+}));
 module.exports = {
     context: sourcePath, //上下文
     entry: './app/index.jsx',
     output: {
-        filename: 'bundle.js',
+        filename: 'bundle.[chunkhash].js',
         path: targetPath
     },
     module: {
@@ -64,7 +70,7 @@ module.exports = {
     },
     devtool: isProduction() ? false : 'source-map',
     devServer: {
-        contentBase: [path.join(__dirname, 'dist'), path.join(__dirname, 'public')], //将dist文件夹和public文件夹中的文件合并在根目录下
+        contentBase: [path.join(__dirname, 'dist')], //将dist文件夹和public文件夹中的文件合并在根目录下
         compress: true,
         port: 9002, //端口设定
         host: '0.0.0.0'
