@@ -1,12 +1,10 @@
 import React from 'react';
+import {BASE_PRIMARY_COLOR} from '../constans/styles';
 
-class More extends React.Component {
+
+class Button extends React.Component {
     constructor(props) {
         super(props);
-        this.handleClick = this.handleClick.bind(this);
-    }
-    handleClick(e) {
-        this.props.onTap(e);
     }
     render() {
         var divStyles = {
@@ -17,7 +15,7 @@ class More extends React.Component {
         var styles = {
             color: '#42b983',
             fontSize: '16px',
-            border: '1px solid #42b983',
+            border: `1px solid ${BASE_PRIMARY_COLOR}`,
             width:'120px',
             height:'35px',
             backgroundColor:'white',
@@ -25,7 +23,7 @@ class More extends React.Component {
         };
         return (
             <div style={divStyles}>
-                <button style={styles} onTouchTap={this.handleClick.bind(this)}>
+                <button style={styles} onTouchTap={this.props.onTap}>
                     {this.props.text}
                 </button>
             </div>
@@ -33,4 +31,4 @@ class More extends React.Component {
     }
 }
 
-export default More;
+export default Button;

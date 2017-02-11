@@ -3,11 +3,8 @@ import React from 'react';
 class Fold extends React.Component {
     constructor(props) {
         super(props);
-        this.handleClick = this.handleClick.bind(this);
     }
-    handleClick() {
-        this.props.foldHandle();
-    }
+
     render() {
         const styles = {
             display: 'inline-block',
@@ -22,13 +19,9 @@ class Fold extends React.Component {
             cursor: 'pointer',
             margin:'0px 0px 15px 0px'
         };
-        const hide ={
-            display:'none'
-        };
-
         return (
-            <div onTouchTap={this.handleClick} style={this.props.content.length>150?styles:hide}>
-                {this.props.foldText.text}
+            <div onTouchTap={this.props.onToggleFold} style={styles}>
+                {this.props.foldText}
             </div>
         );
     }

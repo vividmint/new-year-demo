@@ -13,6 +13,7 @@ class Home extends React.Component {
         super(props);
         this.onLoadMore = this.onLoadMore.bind(this);
         this.getFromId = this.getFromId.bind(this);
+        this.getList = this.getList.bind(this);
         this.onToggleLike = this.onToggleLike.bind(this);
         this.onToggleOther = this.onToggleOther.bind(this);
         this.deletePost = this.deletePost.bind(this);
@@ -34,12 +35,48 @@ class Home extends React.Component {
 
 
     componentWillReceiveProps(nextProps){
+        console.log('will',nextProps);
         let type = nextProps.page,idSets = null;
+
         if(type === 'index'){
+            if(nextProps.idSets === this.state.idSets){
+                return;
+            }
+            if(!nextProps.idSets){
+                this.setState({idSets:null,isLoadingEnd:false});
+                // this.props.onLoading();
+                this.getList({
+                    type
+                });
+                return;
+            }
             idSets = nextProps.idSets;
         }else if(type === 'hot'){
+            if(nextProps.hotIdSets === this.state.idSets){
+                return;
+            }
             idSets = nextProps.hotIdSets;
+            if(!nextProps.hotIdSets){
+                this.setState({idSets:null,isLoadingEnd:false});
+
+                // this.props.onLoading();
+                this.getList({
+                    type
+                });
+                return;
+            }
         }else if(type === 'liked'){
+            if(nextProps.likedIdSets === this.state.idSets){
+                return;
+            }
+            if(!nextProps.likedIdSets){
+                this.setState({idSets:null,isLoadingEnd:false});
+                // this.props.onLoading();
+                this.getList({
+                    type
+                });
+                return;
+            }
             idSets = nextProps.likedIdSets;
         }
         this.setState({
@@ -48,30 +85,17 @@ class Home extends React.Component {
         });
     }
     componentDidMount() {
+        console.log('didMount',this.state);
         if (!this.state.idSets) {
             let type = this.state.type;
-            getList({type,fromId: this.getFromId()}).then(data => {
-                let _data = {},
-                    idSets = new Set();
-                for (let i = 0; i < data.length; ++i) {
-                    let id = data[i].id;
-                    _data[id] = data[i];
-                    idSets.add(id);
-                }
-                //设置初始的data,idSets,已经加载更多按钮是展示的，设置本次加载的列表中的最后一个id
-                this.props.onLoadList({data: _data,type, idSets: idSets, fromId: this.getFromId()});
-            }).catch(err => {
-                if(err.code===2015||err.code===1003){
-                //未登录
-                    this.props.onShowNotice({message: '请登录！', level: 'error'});
-                    setTimeout(() => {
-                        toLogin();
-                    }, 2000);
-                }
-                console.log(err);
+            this.getList({
+                type
             });
         }
         window.onscroll = () => {
+            if(this.state.isLoadingEnd){
+                return;
+            }
             //下拉刷新
             let documentHeight = getDocumentHeight(); //整个页面的高度
             let distance = documentHeight - (window.document.body.scrollTop + window.screen.height);
@@ -82,6 +106,37 @@ class Home extends React.Component {
             }
         };
 
+    }
+    getList(params){
+        let type = params.type;
+        getList({type,fromId: this.getFromId()}).then(data => {
+            if(data.length===0){
+                this.setState({
+                    isLoadingEnd:true
+                });
+                return;
+            }
+            let _data = Object.assign({},this.props.data),
+                idSets = new Set();
+            for (let i = 0; i < data.length; ++i) {
+                let id = data[i].id;
+                _data[id] = data[i];
+                idSets.add(id);
+            }
+          //设置初始的data,idSets,已经加载更多按钮是展示的，设置本次加载的列表中的最后一个id
+            this.props.onLoadList({data: _data,type, idSets: idSets, fromId: this.getFromId()});
+        }).catch(err => {
+            if(err.code===2015||err.code===1003){
+          //未登录
+                this.props.onShowNotice({message: '请登录！', level: 'error'});
+                setTimeout(() => {
+                    toLogin();
+                    return;
+                }, 2000);
+                return;
+            }
+            console.log(err);
+        });
     }
     render() {
         let condition = null;
@@ -102,8 +157,8 @@ class Home extends React.Component {
 
     getFromId() {
         //获取加载更多时候的初始帖子id
-        if (this.props.idSets) {
-            let list = Array.from(this.props.idSets);
+        if (this.state.idSets) {
+            let list = Array.from(this.state.idSets);
             let fromId = list[list.length - 1];
             return fromId;
         } else {
@@ -117,6 +172,12 @@ class Home extends React.Component {
         if (this.props.isLoadingMore === false) {
             this.props.onLoading();
             getList({type:type,fromId: params.fromId}).then(data => {
+                if(data.length===0){
+                    this.setState({
+                        isLoadingEnd:true
+                    });
+                    return;
+                }
                 let _data = this.props.data;
                 for (let i = 0; i < data.length; ++i) {
                     let id = data[i].id;

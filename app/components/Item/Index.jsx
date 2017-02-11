@@ -7,28 +7,31 @@ import {setHash} from '../../utils.js';
 class Item extends React.Component {
     constructor(props) {
         super(props);
+        let data = this.props.data;
+        let content = data.content;
+        let regex = content.match(/([\s\S]*?)\n{4}/);
+        let foldContent = '';
+        let isShowFoldButton = false;
+        if(regex){
+            foldContent = regex[0];
+            isShowFoldButton = true;
+        }else{
+            isShowFoldButton = content.length > 150;
+            foldContent = data.content.substring(0, 149).concat('......');
+        }
         this.state = {
-            preview: null, //预览的文字
-            isFold: true, //帖子是否处于预览状态，是的话处于预览
+            foldContent,
+            allContent:this.props.data.content,
+            isShowFoldButton,
+            isFold: true
         };
         this.toDetailHash = this.toDetailHash.bind(this);
-        this.foldHandle = this.foldHandle.bind(this);
+        this.onToggleFold = this.onToggleFold.bind(this);
     }
-    componentDidMount() {
-        let data = this.props.data;
-        let preview;
-        preview = data.content.length > 150
-                ? data.content.substring(0, 149).concat('......')
-                : data.content;
-        this.setState({preview: preview, idFold: true});
-    }
-
-    foldHandle() {
+    onToggleFold() {
         //折叠toggle
         this.setState({
-            isFold: this.props.data.content
-                ? !this.state.isFold
-                : true
+            isFold: !this.state.isFold
         });
     }
     toDetailHash() {
@@ -49,31 +52,13 @@ class Item extends React.Component {
                 textAlign: 'justify'
             };
         let data = this.props.data;
-        let isFold = this.state.isFold;
-        let preview = this.state.preview;
-
-        let showContent = null;
-        showContent = preview
-            ? isFold
-                ? preview
-                : data.content
-            : data.content;
-
+        let foldComponent = this.state.isShowFoldButton?(<Fold foldText={this.state.isFold?'展开全文':'收起'} onToggleFold={this.onToggleFold}/>):null;
         return (
             <div style={styles}>
                 <ItemTop data={data}/>
                 <div>
-                    <div style={contentStyles} onTouchTap={this.toDetailHash}>{showContent}</div>
-                    <Fold onTouchTap={this.foldHandle} foldText={isFold
-                        ? {
-                            text: '展开全文'
-                        }
-                        : {
-                            text: '收起'
-                        }} content={data.content
-                        ? data.content
-                        : data.title} foldHandle={this.foldHandle}/>
-
+                    <div style={contentStyles} onTouchTap={this.toDetailHash}>{this.state.isFold?this.state.foldContent:this.state.allContent}</div>
+                    {foldComponent}
                 </div>
                 <BottomButtons showNotice={this.props.showNotice} data={data} likeCount={data.likeCount} commentCount={data.commentCount} onToggleLike={this.props.onToggleLike} onToggleOther={this.props.onToggleOther}/>
             </div>

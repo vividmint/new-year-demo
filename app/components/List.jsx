@@ -1,6 +1,6 @@
 import React from 'react';
-import Item from './Item/Item.jsx';
-import More from './More.jsx';
+import Item from './Item';
+import Button from './Button';
 import FaSpinner from 'react-icons/lib/fa/spinner';
 
 class List extends React.Component {
@@ -31,7 +31,7 @@ class List extends React.Component {
 
         let moreButton = null;
         if (this.props.isShowMore) {
-            moreButton = <More onTap={this.props.onLoadMore} text="查看更多"/>;
+            moreButton = <Button onTap={this.props.onLoadMore} text="查看更多"/>;
         }
         let loading = null;
         if (this.props.isLoadingMore) {

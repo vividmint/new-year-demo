@@ -55,6 +55,7 @@ class App extends React.Component {
             let page = getHash('page') || 'index'; //获取当前hash值
             if (page !== this.state.page) {
                 this.setState({page: page});
+                console.log('state',this.state);
             }
         };
     }
@@ -62,7 +63,7 @@ class App extends React.Component {
         let pageContainer = null;
         if (this.state.page === 'detail') {
             let id = getHash('id');
-            pageContainer = (<Detail onLoadMore={this.onLoadMore} onLoadCommentListEnd={this.onLoadCommentListEnd} isLoadingCommentEnd={this.state.isLoadingCommentEnd} onLoading={this.onLoading} onLoadMoreError={this.onLoadMoreError} isLoadingMore={this.state.isLoadingMore} onAddComment={this.onAddComment} onCommentToggleLike={this.onCommentToggleLike} onRemoveComment={this.onRemoveComment} onRemoveNotice={this.onRemoveNotice} onShowNotice={this.onShowNotice} onToggleLike={this.onToggleLike} onLoadDetail={this.onLoadDetail} commentData={this.state.commentData} onLoadCommentList={this.onLoadCommentList} data={this.state.data
+            pageContainer = (<Detail onLoadMore={this.onLoadMore} onLoadCommentListEnd={this.onLoadCommentListEnd} onLoading={this.onLoading} onLoadMoreError={this.onLoadMoreError} isLoadingMore={this.state.isLoadingMore} onAddComment={this.onAddComment} onCommentToggleLike={this.onCommentToggleLike} onRemoveComment={this.onRemoveComment} onRemoveNotice={this.onRemoveNotice} onShowNotice={this.onShowNotice} onToggleLike={this.onToggleLike} onLoadDetail={this.onLoadDetail} commentData={this.state.commentData} onLoadCommentList={this.onLoadCommentList} data={this.state.data
                 ? this.state.data[id]
                 : null}/>);
         } else if (this.state.page === 'user') {
@@ -92,9 +93,11 @@ class App extends React.Component {
         popNotice(params);
     }
 
-    onLoadCommentListEnd() {
+    onLoadCommentListEnd(params) {
         //停止加载评论
-        this.setState({isLoadingCommentEnd: true});
+        let data = this.state.data;
+        data[params.postId].isCommentListEnd = true;
+        this.setState({data: data});
     }
 
     onLoadCommentList(params) {
@@ -124,20 +127,25 @@ class App extends React.Component {
     }
     onLoadList(params) {
         //获取帖子list
+        // let idSets = new Set();
+        // for(let item of params.idSets){
+        //     idSets.add(item);
+        // }
+        let idSets = params.idSets;
         if (params.type === 'index') {
-            this.setState({data: params.data, idSets: params.idSets, isShowMore: true, isLoadingMore: false});
+            this.setState({data: params.data, idSets: idSets, isShowMore: true, isLoadingMore: false});
 
         }
 
         if (params.type === 'hot') {
-            this.setState({data: params.data, hotIdSets: params.idSets, isShowMore: true, isLoadingMore: false});
-
+            this.setState({data: params.data, hotIdSets: idSets, isShowMore: true, isLoadingMore: false});
         }
 
         if (params.type === 'liked') {
-            this.setState({data: params.data, likedIdSets: params.idSets, isShowMore: true, isLoadingMore: false});
+            this.setState({data: params.data, likedIdSets:idSets, isShowMore: true, isLoadingMore: false});
 
         }
+        console.log('load State',this.state);
     }
 
     onLoadMoreError() {

@@ -18,13 +18,13 @@ class SingleComment extends React.Component {
         const styles = {
                 display:'flex',
                 flexDirection:'column',
-                padding:'0px 10px 0px 20px',
+                padding:'0px 20px',
                 borderTop:'0.8px solid rgb(240, 240, 240)',
 
             },
             top = {
                 display:'flex',
-                padding:'8px 0px',
+                padding:'8px 0px 4px 0px',
                 justifyContent:'space-between'
             },
             topLeft = {
@@ -60,13 +60,11 @@ class SingleComment extends React.Component {
             like = {
                 fontSize:20
             },
-            comment = {
-                padding:'0px 0px 0px 8px'
-            },
             bottom = {
                 padding:'0px 0px 6px 0px',
                 lineHeight:'22px',
-                fontSize:15
+                fontSize:15,
+                textAlign:'justify'
             };
         const data = this.props.data;
         return (
@@ -81,7 +79,6 @@ class SingleComment extends React.Component {
                   </div>
                   <div style={topRight}>
                     <div style={like} onTouchTap={this.onCommentToggleLike}><FaHeartO/></div>
-                    <div style={comment}></div>
                   </div>
                 </div>
                 <div style={bottom}>{data.content}</div>

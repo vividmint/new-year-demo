@@ -5,10 +5,17 @@ import {
     toLogin
 } from './business';
 import {LIST_DEFAULT_LENTH} from './constans/config.js';
+const loadStatus ={
+    getList:false
+};
 /**
 获取首页帖子列表
 */
 export function getList(params) {
+    if(loadStatus.getList){
+        return;
+    }
+    loadStatus.getList = true;
     let url = '/api/posts';
     if (params.type === 'hot'){
         url = '/api/hot';
@@ -22,6 +29,7 @@ export function getList(params) {
     return request({
         url: url
     }).then(result => {
+        loadStatus.getList = false;
         if (result.code === 200) {
             return result.data;
         } else {

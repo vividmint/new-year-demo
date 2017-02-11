@@ -33,6 +33,7 @@ class Detail extends React.Component {
     }
     componentDidMount() {
         document.body.scrollTop = 0;
+        // console.log('ref',this.detailCommentRef);
         let postId = getHash('id');
         if (!this.props.data) {
             getPost({postId: postId}).then(data => {
@@ -49,7 +50,7 @@ class Detail extends React.Component {
             }
         }
         window.onscroll = () => {
-            if(this.props.isLoadingCommentEnd){
+            if(this.props.data.isCommentListEnd){
                 return;
             }
             //加载更多评论
@@ -113,6 +114,7 @@ class Detail extends React.Component {
         }
 
     }
+
     onPostComment(params) {
         //发布评论
         postComment({postId: this.props.data.id, content: params.content}).then(data => {
@@ -295,6 +297,10 @@ class DetailCommentInput extends React.Component {
         };
         this.onChange = this.onChange.bind(this); //当评论框内容改变的时候
         this.onClickSend = this.onClickSend.bind(this); //当点击发送按钮
+        this.onInputFocus = this.onInputFocus.bind(this);//当评论框获得焦点
+        this.onInputBlur = this.onInputBlur.bind(this);//当评论框失去焦点
+    }
+    componentDidMount(){
 
     }
 
@@ -340,13 +346,13 @@ class DetailCommentInput extends React.Component {
         const HideSend = {
             color: '#AAAAAA',
             flex: '0 1 35px',
-            padding: '8px 0px',
+            padding: '4px 0px',
             fontSize: '17px',
             textAlign: 'center'
         };
         const sendActive = {
             flex: '0 1 35px',
-            padding: '8px 0px',
+            padding: '4px 0px',
             color: '#42b983',
             fontSize: '17px',
             textAlign: 'center'
@@ -355,7 +361,11 @@ class DetailCommentInput extends React.Component {
             <div ref={(commentInput) => {
                 this.commentContainer = commentInput;
             }} style={commentStyles}>
-                <Textarea maxRows={5} style={inputStyles} onChange={this.onChange} placeholder='发表评论' value={this.state.text}></Textarea>
+                <Textarea onFocus={e=>{
+                    this.onInputFocus(e);
+                }} onBlur={e=>{
+                    this.onInputBlur(e);
+                }} maxRows={5} style={inputStyles} onChange={this.onChange} placeholder='发表评论' value={this.state.text}></Textarea>
                 <div style={this.state.text
                     ? sendActive
                     : HideSend} onTouchTap={this.onClickSend}>发送</div>
@@ -363,6 +373,14 @@ class DetailCommentInput extends React.Component {
         );
     }
 
+    onInputBlur(){
+
+    }
+    onInputFocus(){
+        setTimeout(()=>{
+            document.body.scrollTop = document.body.scrollHeight;
+        },400);
+    }
     onChange(e) {
         //处理input框change事件
         this.setState({text: e.target.value});
