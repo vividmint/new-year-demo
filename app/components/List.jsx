@@ -1,5 +1,5 @@
 import React from 'react';
-import Item from './Item/Index.jsx';
+import Item from './Item';
 import Button from './Button';
 import FaSpinner from 'react-icons/lib/fa/spinner';
 
