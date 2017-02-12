@@ -1,9 +1,6 @@
 import Moment from './Moment.jsx';
 import React from 'react';
-import FaHeartO from 'react-icons/lib/fa/heart-o';
-// import FaCommentO from 'react-icons/lib/fa/comment-o';
-// import FaSmileO from 'react-icons/lib/fa/smile-o';
-// import FaHandPeaceO from 'react-icons/lib/fa/hand-peace-o';
+// import FaHeartO from 'react-icons/lib/fa/heart-o';
 
 
 class SingleComment extends React.Component {
@@ -18,7 +15,7 @@ class SingleComment extends React.Component {
         const styles = {
                 display:'flex',
                 flexDirection:'column',
-                padding:'0px 20px',
+                padding:'0px 25px',
                 borderTop:'0.8px solid rgb(240, 240, 240)',
 
             },
@@ -32,10 +29,10 @@ class SingleComment extends React.Component {
                 alignItems:'center',
             },
             avatar = {
-                height:36,
-                width:36,
+                height:38,
+                width:38,
                 borderRadius:'50%',
-                marginRight:10
+                marginRight:15
 
             },
             leftRight = {
@@ -44,11 +41,11 @@ class SingleComment extends React.Component {
                 justifyContent:'center'
             },
             nickname = {
-                padding:'2px 0px',
+                padding:'3px 0px',
                 fontSize:14,
             },
             time = {
-                padding:'2px 0px',
+                padding:'3px 0px',
                 fontSize:12
             },
 
@@ -78,7 +75,7 @@ class SingleComment extends React.Component {
                     </div>
                   </div>
                   <div style={topRight}>
-                    <div style={like} onTouchTap={this.onCommentToggleLike}><FaHeartO/></div>
+                    <div style={like} onTouchTap={this.onCommentToggleLike}></div>
                   </div>
                 </div>
                 <div style={bottom}>{data.content}</div>

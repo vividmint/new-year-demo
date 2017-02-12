@@ -3,8 +3,10 @@ import {render} from 'react-dom';
 import {getHash, setHash, getTime} from './utils.js';
 import Home from './pages/Home';
 import User from './pages/User';
+import Signin from './pages/Signin';
 import SendText from './pages/SendText';
 import Detail from './pages/Detail.jsx';
+import GlobalLoading from './components/GlobalLoading';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import {popNotice, removeNotice, Notice} from './components/Notice';
 injectTapEventPlugin(); //给所有组件添加onTouchTap事件
@@ -18,6 +20,7 @@ class App extends React.Component {
             idSets: null, //帖子列表的id集合
             hotIdSets: null, //热门帖子列表id集合
             likedIdSets: null, //喜欢的帖子列表id集合
+            postedIdSets: null, //发过的帖子列表id集合
             commentData: {}, //评论数据
             page: page, //当前页面
             userData: null, //当前登录用户信息
@@ -30,10 +33,16 @@ class App extends React.Component {
             },
             noticeDialog: {
                 type: 'tips', //弹窗类型
+            },
+            globalLoading: {
+                isShow: false,
+                isMask: true,
+                text: ''
             }
 
         };
         this.onLoadList = this.onLoadList.bind(this); //载入列表
+        this.refresh = this.refresh.bind(this); //刷新列表
         this.onLoadDetail = this.onLoadDetail.bind(this); //加载帖子详情页
         this.onToggleLike = this.onToggleLike.bind(this); //点赞帖子
         this.onToggleOther = this.onToggleOther.bind(this); //点击三点点
@@ -46,16 +55,18 @@ class App extends React.Component {
         this.onLoadCommentListEnd = this.onLoadCommentListEnd.bind(this); //加载评论列表
         this.onLoadUser = this.onLoadUser.bind(this); //加载用户信息
         this.onLoading = this.onLoading.bind(this); //设置首页列表为加载中
-        this.onAddPost = this.onAddPost.bind(this); //
-        this.onRemovePost = this.onRemovePost.bind(this);
+        this.onAddPost = this.onAddPost.bind(this); //当添加文章
+        this.onRemovePost = this.onRemovePost.bind(this); //当删除文章
         this.onCommentToggleLike = this.onCommentToggleLike.bind(this); //点赞评论
-
+        this.closeGlobalLoading = this.closeGlobalLoading.bind(this);
+        this.showGlobalLoading = this.showGlobalLoading.bind(this);
+        this.resetIdSets = this.resetIdSets.bind(this);//重置idSets
         window.onhashchange = () => {
             //当url里的hash发生变化的时候
             let page = getHash('page') || 'index'; //获取当前hash值
             if (page !== this.state.page) {
                 this.setState({page: page});
-                console.log('state',this.state);
+                console.log('state', this.state);
             }
         };
     }
@@ -63,21 +74,23 @@ class App extends React.Component {
         let pageContainer = null;
         if (this.state.page === 'detail') {
             let id = getHash('id');
-            pageContainer = (<Detail onLoadMore={this.onLoadMore} onLoadCommentListEnd={this.onLoadCommentListEnd} onLoading={this.onLoading} onLoadMoreError={this.onLoadMoreError} isLoadingMore={this.state.isLoadingMore} onAddComment={this.onAddComment} onCommentToggleLike={this.onCommentToggleLike} onRemoveComment={this.onRemoveComment} onRemoveNotice={this.onRemoveNotice} onShowNotice={this.onShowNotice} onToggleLike={this.onToggleLike} onLoadDetail={this.onLoadDetail} commentData={this.state.commentData} onLoadCommentList={this.onLoadCommentList} data={this.state.data
+            pageContainer = (<Detail showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onRemovePost={this.onRemovePost} onLoadMore={this.onLoadMore} onLoadCommentListEnd={this.onLoadCommentListEnd} onLoading={this.onLoading} onLoadMoreError={this.onLoadMoreError} isLoadingMore={this.state.isLoadingMore} onAddComment={this.onAddComment} onCommentToggleLike={this.onCommentToggleLike} onRemoveComment={this.onRemoveComment} onRemoveNotice={this.onRemoveNotice} onShowNotice={this.onShowNotice} onToggleLike={this.onToggleLike} onLoadDetail={this.onLoadDetail} commentData={this.state.commentData} onLoadCommentList={this.onLoadCommentList} data={this.state.data
                 ? this.state.data[id]
                 : null}/>);
         } else if (this.state.page === 'user') {
-            pageContainer = (<User userData={this.state.userData} onLoadUser={this.onLoadUser} onLoadLikedPosts={this.onLoadLikedPosts} onLoadMore={this.onLoadMore} onLoadMoreError={this.onLoadMoreError} isLoadingMore={this.state.isLoadingMore}/>);
+            pageContainer = (<User showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onShowNotice={this.onShowNotice} userData={this.state.userData} onLoadUser={this.onLoadUser} onLoadLikedPosts={this.onLoadLikedPosts} onLoadMore={this.onLoadMore} onLoadMoreError={this.onLoadMoreError} isLoadingMore={this.state.isLoadingMore} loading={this.state.globalLoading}/>);
         } else if (this.state.page === 'sendText') {
-            pageContainer = (<SendText onAddPost={this.onAddPost} data={this.state.data} userData={this.state.userData} onShowNotice={this.onShowNotice}/>);
-        } else if (this.state.page === 'index' || this.state.page === 'hot' || this.state.page === 'liked') {
-            pageContainer = (<Home page={this.state.page} idSets={this.state.idSets} hotIdSets={this.state.hotIdSets} likedIdSets={this.state.likedIdSets} onShowNotice={this.onShowNotice} onToggleLike={this.onToggleLike} onRemoveNotice={this.onRemoveNotice} onToggleOther={this.onToggleOther} onLoading={this.onLoading} onLoadList={this.onLoadList} onLoadMore={this.onLoadMore} onLoadMoreError={this.onLoadMoreError} data={this.state.data} isLoadingMore={this.state.isLoadingMore} isShowMore={this.state.isShowMore} onRemovePost={this.onRemovePost}/>);
+            pageContainer = (<SendText showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onAddPost={this.onAddPost} data={this.state.data} userData={this.state.userData} onShowNotice={this.onShowNotice}/>);
+        } else if (this.state.page === 'index' || this.state.page === 'posted' || this.state.page === 'hot' || this.state.page === 'liked') {
+            pageContainer = (<Home resetIdSets={this.resetIdSets} page={this.state.page} idSets={this.state.idSets} hotIdSets={this.state.hotIdSets} likedIdSets={this.state.likedIdSets} postedIdSets={this.state.postedIdSets} onShowNotice={this.onShowNotice} onToggleLike={this.onToggleLike} onRemoveNotice={this.onRemoveNotice} onToggleOther={this.onToggleOther} onLoading={this.onLoading} onLoadList={this.onLoadList} onLoadMore={this.onLoadMore} onLoadMoreError={this.onLoadMoreError} data={this.state.data} isLoadingMore={this.state.isLoadingMore} isShowMore={this.state.isShowMore} onRemovePost={this.onRemovePost} closeGlobalLoading={this.closeGlobalLoading} showGlobalLoading={this.showGlobalLoading}/>);
+        } else if (this.state.page === 'signin') {
+            pageContainer = (<Signin/>);
         }
-
         return (
             <div>
                 {pageContainer}
                 <Notice onTapMask={this.onRemoveNotice} noticeDialog={this.state.noticeDialog}/>
+                <GlobalLoading loading={this.state.globalLoading}/>
             </div>
         );
     }
@@ -115,6 +128,11 @@ class App extends React.Component {
             data: data
         });
     }
+    resetIdSets(){
+        this.setState({
+            idSets:null
+        });
+    }
 
     onLoadUser(params) {
         //加载user页
@@ -127,10 +145,6 @@ class App extends React.Component {
     }
     onLoadList(params) {
         //获取帖子list
-        // let idSets = new Set();
-        // for(let item of params.idSets){
-        //     idSets.add(item);
-        // }
         let idSets = params.idSets;
         if (params.type === 'index') {
             this.setState({data: params.data, idSets: idSets, isShowMore: true, isLoadingMore: false});
@@ -142,12 +156,23 @@ class App extends React.Component {
         }
 
         if (params.type === 'liked') {
-            this.setState({data: params.data, likedIdSets:idSets, isShowMore: true, isLoadingMore: false});
+            this.setState({data: params.data, likedIdSets: idSets, isShowMore: true, isLoadingMore: false});
 
         }
-        console.log('load State',this.state);
+        if (params.type === 'posted') {
+            this.setState({data: params.data, postedIdSets: idSets, isShowMore: true, isLoadingMore: false});
+
+        }
+        console.log(this.state);
+
     }
 
+    refresh() {
+        // this.setState({idSets: null, data: null});
+        // this.onLoadList({type: 'index'});
+        // this.setState({data: this.state.data, idSets: this.state.idSets, isShowMore: true, isLoadingMore: false});
+        // console.log('refresh',this.state);
+    }
     onLoadMoreError() {
         //加载出错
         this.setState({isShowMore: false, idSets: []});
@@ -230,9 +255,9 @@ class App extends React.Component {
             data = this.state.data;
         let id = params.insertId;
         let obj = {};
-        let list = Array.from(idSets);
-
+        let list = [];
         if (idSets) {
+            list = Array.from(idSets);
             list.unshift(id);
         } else {
             setHash('page=index');
@@ -256,13 +281,30 @@ class App extends React.Component {
     onRemovePost(params) {
         //移除某条帖子
         let idSets = this.state.idSets;
-        idSets.delete(params.id);
-        this.setState({idSets: idSets});
+        if (idSets) {
+            idSets.delete(params.id);
+            this.setState({idSets: idSets});
+        }
+
     }
     onCommentToggleLike(params) {
         // let commentId = params.commentId,
         //     id = params.postId;
         // data[id].
+    }
+    closeGlobalLoading() {
+        this.setState({
+            globalLoading: {
+                isShow: false
+            }
+        });
+    }
+    showGlobalLoading(params) {
+        this.setState({
+            globalLoading: Object.assign({
+                isShow: true
+            }, params)
+        });
     }
 
 }

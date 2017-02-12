@@ -59,7 +59,7 @@ export function request(params) {
             httpRequest.open(method, url, true);
             if (method === 'GET') {
                 httpRequest.send(null);
-            } else if (method === 'POST'||method === 'DELETE'||method==='PUT') {
+            } else if (method === 'POST' || method === 'DELETE' || method === 'PUT') {
                 httpRequest.setRequestHeader('Content-Type', 'application/json');
                 httpRequest.send(obj.body);
             }
@@ -67,21 +67,33 @@ export function request(params) {
         });
     }
 }
+
+export function getBrowerType() {
+    var ua = window.navigator.userAgent.toLowerCase();
+    return (/micromessenger/.test(ua)) ? 'wechat' : 'others';
+}
 export function getHash(key) {
     if (key === undefined) {
         return getHashObj();
     } else {
+        console.log('hash',getHashObj());
         return getHashObj()[key];
     }
 }
 export function getHashObj() {
-    return qs.parse(window.location.hash.substr(1));
+    console.log(window.location.hash,window.location.hash.substr(1));
+    let hash = window.location.hash.substr(1);
+    let hashObj = {};
+    let keyValueArr = hash.split('&');
+    keyValueArr.forEach(keyValue=>{
+        let keyValueSmallArr = keyValue.split('=');
+        hashObj[keyValueSmallArr[0]] = keyValueSmallArr[1] || '';
+    });
+    return hashObj;
+
 }
 export function getQueryObj() {
-    var tt = window.location.search;
-    // var tt = qs.parse(window.location.search.substr(1));
-    // console.log(tt);
-    return tt;
+    return qs.parse(window.location.search.substr(1));
 }
 export function getQuery(key) {
     if (key === undefined) {
@@ -94,24 +106,27 @@ export function getQuery(key) {
 export function getCurrentUrl() {
     return window.location.href;
 }
+export function getCurrentHost() {
+    return window.location.protocol + '//' + window.location.host;
+}
 export function setHash(hash) {
     window.location.hash = '#' + hash;
 }
 export function setUrl(url) {
     window.location.href = url;
 }
-export function getDocumentHeight(){
+export function getDocumentHeight() {
     let body = document.body,
         html = document.documentElement;
-    let height = Math.max( body.scrollHeight, body.offsetHeight,
-                       html.clientHeight, html.scrollHeight, html.offsetHeight );
+    let height = Math.max(body.scrollHeight, body.offsetHeight,
+        html.clientHeight, html.scrollHeight, html.offsetHeight);
     return height;
 }
-export function getTime(date){
-    if(date){
-        return parseInt(date.getTime()/1000);
+export function getTime(date) {
+    if (date) {
+        return parseInt(date.getTime() / 1000);
     }
-    return parseInt(new Date().getTime()/1000);
+    return parseInt(new Date().getTime() / 1000);
 }
 /**
  * 计算几分钟之前
@@ -142,5 +157,5 @@ export function timeFromNow(date) {
     if (interval >= 1) {
         return interval + '分钟前';
     }
-    return (Math.floor(seconds)+1)+ '秒前';
+    return (Math.floor(seconds) + 1) + '秒前';
 }

@@ -1,11 +1,16 @@
 import React from 'react';
-import MdKeyboardControl from 'react-icons/lib/md/keyboard-control';
+// import MdKeyboardControl from 'react-icons/lib/md/keyboard-control';
+import MdSettings from 'react-icons/lib/md/settings';
 import {setHash} from '../utils';
+import {signout,getIndexUrl} from '../business';
+import Menu from './Menu';
 
 class UserDetail extends React.Component {
     constructor(props) {
         super(props);
         this.toUserLikeHash = this.toUserLikeHash.bind(this);
+        this.toUserPostHash = this.toUserPostHash.bind(this);
+        this.onShowProfieMenu = this.onShowProfieMenu.bind(this);
     }
     render() {
         const styles = {
@@ -32,18 +37,18 @@ class UserDetail extends React.Component {
                 height: 55,
                 width: 55,
                 borderRadius: '50%',
-                marginBottom: 12
+                marginBottom: 8
             },
-            dot = {
+            settings = {
                 position: 'absolute',
-                top: 6,
+                top: 8,
                 right: 10,
-                fontSize: 30,
+                fontSize: 26,
                 color: 'rgba(0,0,0,0.8)'
             },
             userBottom = {
                 display: 'flex',
-                padding: '13px 0px 0px 0px',
+                padding: '8px 0px 0px 0px',
                 textAlign: 'center',
                 width: '100%'
             },
@@ -74,7 +79,7 @@ class UserDetail extends React.Component {
         if (this.props.userData) {
             userAvatar = <img style={avatar} src={this.props.userData.avatar}></img>;
             nickName = <div style={nickName}>{this.props.userData.nickname}</div>;
-            posts = <div style={count}>{this.props.userData.postsCount}</div>;
+            posts = <div style={count} onTouchTap={this.toUserPostHash} >{this.props.userData.postsCount}</div>;
             like = <div style={count} onTouchTap={this.toUserLikeHash} >{this.props.userData.likePostsCount}</div>;
         }
         return (
@@ -82,11 +87,11 @@ class UserDetail extends React.Component {
                 <div style={userInfo}>
                     <div style={userTop}>
                         {userAvatar}
-                        <MdKeyboardControl style={dot}/> {nickName}
+                        <MdSettings style={settings} onTouchTap={this.onShowProfieMenu}/> {nickName}
                     </div>
                     <div style={userBottom}>
                         <div style={left}>
-                            <div style={countName}>帖子</div>{posts}</div>
+                            <div style={countName} onTouchTap={this.toUserPostHash}>帖子</div>{posts}</div>
                         <div style={right}>
                             <div style={countName} onTouchTap={this.toUserLikeHash}>喜欢</div>{like}</div>
                     </div>
@@ -98,6 +103,32 @@ class UserDetail extends React.Component {
     toUserLikeHash() {
         //跳转赞过的帖子列表
         setHash('page=liked');
+    }
+    toUserPostHash() {
+        //跳转赞过的帖子列表
+        setHash('page=posted');
+    }
+    onShowProfieMenu(){
+        let menus = [];
+        menus.push({
+            text: '反馈',
+            onTap: () => {
+            }
+        });
+        menus.push({
+            text: '退出登录',
+            onTap: () => {
+                signout({redirectUrl:getIndexUrl()});
+            }
+        });
+        this.props.onShowNotice({
+            type: 'menu',
+            level: 'success',
+            dismissible: true,
+            autoDismiss: 0,
+            position: 'bc',
+            children: (<Menu menus={menus}/>)
+        });
     }
 
 }

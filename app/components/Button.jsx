@@ -7,12 +7,13 @@ class Button extends React.Component {
         super(props);
     }
     render() {
-        var divStyles = {
+        var styles = {
             display:'flex',
             justifyContent:'center',
-            padding:'15px 0px'
+            backgroundColor:'#F2F2F2',
+            paddingBottom:4
         };
-        var styles = {
+        var button = {
             color: '#42b983',
             fontSize: '16px',
             border: `1px solid ${BASE_PRIMARY_COLOR}`,
@@ -22,8 +23,8 @@ class Button extends React.Component {
             borderRadius:'5px',
         };
         return (
-            <div style={divStyles}>
-                <button style={styles} onTouchTap={this.props.onTap}>
+            <div style={styles}>
+                <button style={button} onTouchTap={this.props.onTap}>
                     {this.props.text}
                 </button>
             </div>

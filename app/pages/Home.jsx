@@ -1,6 +1,6 @@
 import React from 'react';
 import {getDocumentHeight} from '../utils.js';
-import Loading from '../components/Loading.jsx';
+import GlobalLoading from '../components/GlobalLoading.jsx';
 import List from '../components/List.jsx';
 import Tab from '../components/Tab/Tab.jsx';
 import {getList, postLike, deleteLike, deletePost} from '../load';
@@ -16,15 +16,20 @@ class Home extends React.Component {
         this.getList = this.getList.bind(this);
         this.onToggleLike = this.onToggleLike.bind(this);
         this.onToggleOther = this.onToggleOther.bind(this);
-        this.deletePost = this.deletePost.bind(this);
+        this.onDeletePost = this.onDeletePost.bind(this);
+        this.onRefresh = this.onRefresh.bind(this);
         this.reportPost = this.reportPost.bind(this);
-        let idSets = null,type = this.props.page;
-        if(type === 'index'){
+
+        let idSets = null,
+            type = this.props.page;
+        if (type === 'index') {
             idSets = this.props.idSets;
-        }else if(type === 'hot'){
+        } else if (type === 'hot') {
             idSets = this.props.hotIdSets;
-        }else if(type === 'liked'){
+        } else if (type === 'liked') {
             idSets = this.props.likedIdSets;
+        } else if (type === 'posted') {
+            idSets = this.props.postedIdSets;
         }
         this.state = {
             type,
@@ -33,67 +38,61 @@ class Home extends React.Component {
 
     }
 
-
-    componentWillReceiveProps(nextProps){
-        console.log('will',nextProps);
-        let type = nextProps.page,idSets = null;
-
-        if(type === 'index'){
-            if(nextProps.idSets === this.state.idSets){
+    componentWillReceiveProps(nextProps) {
+        let type = nextProps.page,
+            idSets = null;
+        if (type === 'index') {
+            if (nextProps.idSets === this.state.idSets) {
                 return;
             }
-            if(!nextProps.idSets){
-                this.setState({idSets:null,isLoadingEnd:false});
+            if (!nextProps.idSets) {
+                this.setState({idSets: null, isLoadingEnd: false});
+                console.log('state',this.state);
                 // this.props.onLoading();
-                this.getList({
-                    type
-                });
+                this.getList({type,fromId:null});
                 return;
             }
             idSets = nextProps.idSets;
-        }else if(type === 'hot'){
-            if(nextProps.hotIdSets === this.state.idSets){
+        } else if (type === 'hot') {
+            if (nextProps.hotIdSets === this.state.idSets) {
                 return;
             }
             idSets = nextProps.hotIdSets;
-            if(!nextProps.hotIdSets){
-                this.setState({idSets:null,isLoadingEnd:false});
-
-                // this.props.onLoading();
-                this.getList({
-                    type
-                });
+            if (!nextProps.hotIdSets) {
+                this.setState({idSets: null, isLoadingEnd: false});
+                this.getList({type,fromId:null});
                 return;
             }
-        }else if(type === 'liked'){
-            if(nextProps.likedIdSets === this.state.idSets){
+        } else if (type === 'liked') {
+            if (nextProps.likedIdSets === this.state.idSets) {
                 return;
             }
-            if(!nextProps.likedIdSets){
-                this.setState({idSets:null,isLoadingEnd:false});
-                // this.props.onLoading();
-                this.getList({
-                    type
-                });
+            if (!nextProps.likedIdSets) {
+                this.setState({idSets: null, isLoadingEnd: false});
+                this.getList({type,fromId:null});
                 return;
             }
             idSets = nextProps.likedIdSets;
+        } else if (type === 'posted') {
+            if (nextProps.postedIdSets === this.state.idSets) {
+                return;
+            }
+            if (!nextProps.postedIdSets) {
+                this.setState({idSets: null, isLoadingEnd: false});
+                this.getList({type,fromId:null});
+                return;
+            }
+            idSets = nextProps.postedIdSets;
         }
-        this.setState({
-            type,
-            idSets
-        });
+        this.setState({type, idSets});
     }
     componentDidMount() {
-        console.log('didMount',this.state);
         if (!this.state.idSets) {
             let type = this.state.type;
-            this.getList({
-                type
-            });
+            this.getList({type});
         }
         window.onscroll = () => {
-            if(this.state.isLoadingEnd){
+            if (this.state.isLoadingEnd) {
                 return;
             }
             //下拉刷新
@@ -102,32 +101,53 @@ class Home extends React.Component {
             //window.screen.height  屏幕的高度
             //window.document.body.scrollTop  屏幕顶部距离页面顶部的距离
             if (distance <= INDEX_LIST_LOAD_MORE_DISTANCE && distance > 0) {
-                this.onLoadMore({fromId: this.getFromId(),type:this.state.type});
+                this.onLoadMore({fromId: this.getFromId(), type: this.state.type});
             }
         };
 
     }
-    getList(params){
+
+    render() {
+        if (this.state.idSets === null) {
+            return (
+                <div>
+                    <GlobalLoading loading={{
+                        isShow: true,
+                        isMask: false
+                    }}/>
+                    <Tab/>
+                </div>
+            );
+        } else if (this.state.idSets && this.state.idSets.size === 0) {
+            return <div>没有帖子</div>;
+        } else {
+            return (
+                <div >
+                    <List data={this.props.data} idSets={this.state.idSets} onToggleLike={this.onToggleLike} onLoadMore={this.onLoadMore} isShowMore={this.props.isShowMore} isLoadingMore={this.props.isLoadingMore} onToggleOther={this.onToggleOther}/>
+                    <Tab onRefresh={this.onRefresh} page={this.props.page}/>
+                </div>
+            );
+        }
+    }
+    getList(params) {
         let type = params.type;
-        getList({type,fromId: this.getFromId()}).then(data => {
-            if(data.length===0){
-                this.setState({
-                    isLoadingEnd:true
-                });
+        getList({type, fromId: params.fromId===undefined?this.getFromId():params.fromId}).then(data => {
+            if (data.length === 0) {
+                this.setState({isLoadingEnd: true});
                 return;
             }
-            let _data = Object.assign({},this.props.data),
+            let _data = Object.assign({}, this.props.data),
                 idSets = new Set();
             for (let i = 0; i < data.length; ++i) {
                 let id = data[i].id;
                 _data[id] = data[i];
                 idSets.add(id);
             }
-          //设置初始的data,idSets,已经加载更多按钮是展示的，设置本次加载的列表中的最后一个id
-            this.props.onLoadList({data: _data,type, idSets: idSets, fromId: this.getFromId()});
+            //设置初始的data,idSets,已经加载更多按钮是展示的，设置本次加载的列表中的最后一个id
+            this.props.onLoadList({data: _data, type, idSets: idSets, fromId: this.getFromId()});
         }).catch(err => {
-            if(err.code===2015||err.code===1003){
-          //未登录
+            if (err.code === 2015 || err.code === 1003) {
+                //未登录
                 this.props.onShowNotice({message: '请登录！', level: 'error'});
                 setTimeout(() => {
                     toLogin();
@@ -138,21 +158,11 @@ class Home extends React.Component {
             console.log(err);
         });
     }
-    render() {
-        let condition = null;
-        if (this.state.idSets === null) {
-            return <Loading/>;
-        } else if (this.state.idSets && this.state.idSets.size === 0) {
-            return <div>没有帖子</div>;
-        } else {
-            console.log(this.state);
-            return (
-                <div >
-                    <List data={this.props.data} idSets={this.state.idSets} onToggleLike={this.onToggleLike} onLoadMore={this.onLoadMore} isShowMore={this.props.isShowMore} isLoadingMore={this.props.isLoadingMore} onToggleOther={this.onToggleOther}/>
-                    <Tab/>
-                </div>
-            );
-        }
+    onRefresh(){
+        this.props.resetIdSets();
+        // this.getList({
+        //     type:'index'
+        // });
     }
 
     getFromId() {
@@ -171,11 +181,9 @@ class Home extends React.Component {
         let type = params.type;
         if (this.props.isLoadingMore === false) {
             this.props.onLoading();
-            getList({type:type,fromId: params.fromId}).then(data => {
-                if(data.length===0){
-                    this.setState({
-                        isLoadingEnd:true
-                    });
+            getList({type: type, fromId: params.fromId}).then(data => {
+                if (data.length === 0) {
+                    this.setState({isLoadingEnd: true});
                     return;
                 }
                 let _data = this.props.data;
@@ -184,7 +192,7 @@ class Home extends React.Component {
                     this.state.idSets.add(id);
                     _data[id] = data[i];
                 }
-                this.props.onLoadList({data: _data, type,idSets: this.state.idSets});
+                this.props.onLoadList({data: _data, type, idSets: this.state.idSets});
             }).catch(err => {
                 console.log('请求错误');
                 console.log(err);
@@ -232,15 +240,18 @@ class Home extends React.Component {
             });
         }
     }
-    deletePost(params) {
+    onDeletePost(params) {
+        this.props.showGlobalLoading();
         let itemId = params.id;
         deletePost({id: itemId}).then(() => {
             this.props.onRemoveNotice();
+            this.props.closeGlobalLoading();
             this.props.onShowNotice({message: '删除成功！', level: 'success'});
             this.props.onRemovePost({id: itemId});
         }).catch(err => {
             console.log(err);
             this.props.onRemoveNotice();
+            this.props.closeGlobalLoading();
             this.props.onShowNotice({message: '删除失败！', level: 'error'});
         });
     }
@@ -252,7 +263,7 @@ class Home extends React.Component {
             menus.push({
                 text: '删除',
                 onTap: () => {
-                    this.deletePost({id: itemId});
+                    this.onDeletePost({id: itemId});
                 }
             });
         }

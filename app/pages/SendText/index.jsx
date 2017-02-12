@@ -4,9 +4,8 @@ import FaCheck from 'react-icons/lib/fa/check';
 import styles from './anonymity.css';
 import {setHash} from '../../utils';
 import {toLogin} from '../../business';
-import {postText} from '../../load';
+import {postText, getUser} from '../../load';
 import {BASE_PRIMARY_COLOR} from '../../constans/styles';
-
 
 class SendText extends React.Component {
     constructor(props) {
@@ -21,6 +20,15 @@ class SendText extends React.Component {
         this.onChangeSign = this.onChangeSign.bind(this);
     }
     componentDidMount() {
+        getUser().catch(err => {
+            console.log(err);
+            if (err.code === 1003) {
+                this.props.onShowNotice({message: '请登录！', level: 'error'});
+                setTimeout(() => {
+                    toLogin();
+                }, 1500);
+            }
+        });
         //使得评论框自动聚焦
         this.textInput.focus();
         setTimeout(() => {
@@ -38,7 +46,7 @@ class SendText extends React.Component {
                 display: 'flex',
                 alignItems: 'center',
                 height: 42,
-                backgroundColor: `${BASE_PRIMARY_COLOR}`,
+                backgroundColor: `${BASE_PRIMARY_COLOR}`
             },
             topButton = {
                 fontSize: 22,
@@ -76,35 +84,35 @@ class SendText extends React.Component {
                 backgroundColor: '#F2F2F2',
                 borderTop: '0.8px solid rgb(236, 234, 234)'
             },
-            bottomLeft={
+            bottomLeft = {
                 display: 'flex',
-                alignItems: 'center',
+                alignItems: 'center'
             },
             text = {
                 textAlign: 'center',
                 fontSize: 18,
                 color: '#AAAAAA',
-                marginLeft:10
+                marginLeft: 10
             },
             textActive = {
                 color: '#42b983',
                 textAlign: 'center',
                 fontSize: 18,
-                marginLeft:10
+                marginLeft: 10
             },
-            send =  {
+            send = {
                 color: '#AAAAAA',
                 textAlign: 'center',
                 fontSize: 16,
-                borderStyle:'solid',
-                borderWidth:1,
-                borderColor:'rgb(170, 170, 170)',
+                borderStyle: 'solid',
+                borderWidth: 1,
+                borderColor: 'rgb(170, 170, 170)',
                 padding: '3px 13px',
-                borderRadius:20
+                borderRadius: 20
             },
             _send = {
-                color:`${BASE_PRIMARY_COLOR}`,
-                borderColor:`${BASE_PRIMARY_COLOR}`,
+                color: `${BASE_PRIMARY_COLOR}`,
+                borderColor: `${BASE_PRIMARY_COLOR}`
             };
         return (
             <div>
@@ -124,7 +132,9 @@ class SendText extends React.Component {
                                 ? textActive
                                 : text}>匿名</div>
                         </div>
-                        <div style={!this.state.text?send:Object.assign(send,_send)} onTouchTap={this.onSend} >发布</div>
+                        <div style={!this.state.text
+                            ? send
+                            : Object.assign(send, _send)} onTouchTap={this.onSend}>发布</div>
                     </div>
                 </div>
             </div>
@@ -154,18 +164,21 @@ class SendText extends React.Component {
         if (this.state.text === '') {
             this.props.onShowNotice({message: '帖子内容不能为空！', level: 'error'});
         } else {
+            this.props.showGlobalLoading();
             postText({
                 body: {
                     secret: this.state.secret,
                     content: this.state.text
                 }
             }).then(data => {
+                this.props.closeGlobalLoading();
                 this.props.onShowNotice({message: '发布成功！', level: 'success'});
                 this.props.onAddPost(data);
                 setTimeout(() => {
                     setHash('page=index');
-                }, 2000);
+                }, 1000);
             }).catch(err => {
+                this.props.closeGlobalLoading();
                 this.props.onShowNotice({
                     message: err.message || '发布失败！',
                     level: 'error'

@@ -17,7 +17,7 @@ textarea::-webkit-input-placeholder {
     position: relative;
     background-color: #efedec;
     box-shadow: #dfdfdf 0 0 0 0 inset;
-    border-radius: 20px;
+    border-radius: 30px;
     transition: cubic-bezier(0, 0, 0, 1) 0.4s, box-shadow cubic-bezier(0, 0, 0, 1) 0.4s;
 }
 
@@ -28,7 +28,7 @@ textarea::-webkit-input-placeholder {
     position: absolute;
     top: 0px;
     left: 0px;
-    border-radius: 20px;
+    border-radius: 30px;
     background-color: white;
     /*box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);*/
     transition: left 0.3s;

@@ -18,7 +18,9 @@ class Mask extends React.Component {
         const hide = {
             display:'none'
         };
-        return(<div onTouchTap={this.props.onTap} style={this.props.isMask?styles:hide}></div>);
+        return(<div onTouchTap={()=>{
+            this.props.onTap && this.props.onTap();
+        }} style={this.props.isMask?styles:hide}></div>);
     }
 }
 export default Mask;

@@ -1,17 +1,17 @@
 import React from 'react';
-import {getHash, getDocumentHeight} from '../utils.js';
+import {getHash, setHash, getDocumentHeight} from '../utils.js';
 import {
     getPost,
     getComments,
     postComment,
     deleteComment,
+    deletePost,
     postLike,
     deleteLike,
     postCommentLike
 } from '../load';
-import ItemTop from '../components/ItemTop.jsx';
 import Loading from '../components/Loading.jsx';
-import BottomButtons from '../components/BottomButtons.jsx';
+import Item from '../components/Item';
 import Textarea from 'react-textarea-autosize';
 import CommentList from '../components/CommentList';
 import {toLogin} from '../business';
@@ -27,8 +27,10 @@ class Detail extends React.Component {
         this.onPostComment = this.onPostComment.bind(this); //当发送评论
         this.onShowCommentMenu = this.onShowCommentMenu.bind(this); //操作评论事件
         this.onToggleLike = this.onToggleLike.bind(this); //当点赞
-        this.deleteComment = this.deleteComment.bind(this); //删除评论
+        this.onDeleteComment = this.onDeleteComment.bind(this); //删除评论
         this.onCommentToggleLike = this.onCommentToggleLike.bind(this); //点赞评论
+        this.onToggleOther = this.onToggleOther.bind(this); //当点击...
+        this.onDeletePost = this.onDeletePost.bind(this); //当删除文章
 
     }
     componentDidMount() {
@@ -50,7 +52,7 @@ class Detail extends React.Component {
             }
         }
         window.onscroll = () => {
-            if(this.props.data.isCommentListEnd){
+            if (this.props.data.isCommentListEnd) {
                 return;
             }
             //加载更多评论
@@ -66,29 +68,12 @@ class Detail extends React.Component {
         const styles = {
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'space-between',
-            paddingTop: 15
+            justifyContent: 'space-between'
         };
         const main = {
             overflow: 'auto',
             margin: `0px 0px ${this.state.commentContainerHeight}px 0px`
         };
-        const item = {
-            padding: '0px 25px 4px 25px'
-        };
-        const contentStyles = {
-            lineHeight: '25px',
-            whiteSpace: 'pre-wrap',
-            padding: '6px 0px 10px 0px',
-            textAlign: 'justify'
-        };
-
-        const bar = Object.assign({
-            height: 15,
-            width: '100%',
-            backgroundColor: 'rgb(242, 242, 242)',
-            padding: 0
-        }, this.props.style);
 
         if (this.props.data) {
             let data = this.props.data;
@@ -98,13 +83,7 @@ class Detail extends React.Component {
             return (
                 <div style={styles}>
                     <div style={main}>
-                        <div style={item}>
-                            <ItemTop data={data}/>
-                            <div style={contentStyles}>{data.content}</div>
-                            <BottomButtons data={data} likeCount={data.likeCount} commentCount={data.commentCount} onToggleLike={this.onToggleLike}/>
-                        </div>
-                        <div style={bar}></div>
-                        {commentList}
+                        <Item isShowFoldButton={false} onToggleLike={this.onToggleLike} data={data} onToggleOther={this.onToggleOther}/> {commentList}
                     </div>
                     <DetailCommentInput onPostComment={this.onPostComment} onShowNotice={this.props.onShowNotice} onHeightChange={this.onHeightChange}/>
                 </div>
@@ -114,15 +93,67 @@ class Detail extends React.Component {
         }
 
     }
+    onDeletePost(params) {
+        this.props.showGlobalLoading();
+        let itemId = params.id;
+        deletePost({id: itemId}).then(() => {
+            this.props.onRemoveNotice();
+            this.props.closeGlobalLoading();
+            this.props.onShowNotice({message: '删除成功！', level: 'success'});
+            this.props.onRemovePost({id: itemId});
+            setHash('page=index');
+        }).catch(err => {
+            console.log(err);
+            this.props.onRemoveNotice();
+            this.props.closeGlobalLoading();
+            this.props.onShowNotice({message: '删除失败！', level: 'error'});
+        });
+    }
+    onToggleOther(params) {
+        let itemId = params.id;
+        let menus = [];
+        if (params.author === 1 || params.level === 1) {
+            menus.push({
+                text: '删除',
+                onTap: () => {
+                    this.onDeletePost({id: itemId});
+                }
+            });
+        }
+        menus.push({
+            text: '举报',
+            onTap: () => {
+                console.log('tap remove');
+                this.reportPost({postId: itemId});
+            }
+        });
+        menus.push({
+            text: '取消',
+            onTap: () => {
+                this.props.onRemoveNotice();
+            }
+        });
+        this.props.onShowNotice({
+            type: 'menu',
+            level: 'success',
+            dismissible: true,
+            autoDismiss: 0,
+            position: 'bc',
+            children: (<Menu menus={menus}/>)
+        });
 
+    }
     onPostComment(params) {
         //发布评论
+        this.props.showGlobalLoading();
         postComment({postId: this.props.data.id, content: params.content}).then(data => {
+            this.props.closeGlobalLoading();
             this.props.onShowNotice({message: '发送成功！', level: 'success'});
             this.props.onAddComment({postId: this.props.data.id, commentId: data.id, nickname: data.nickname, avatar: data.avatar, content: params.content});
         }).catch(err => {
             console.log(err);
             if (err.code === 2015) {
+                this.props.closeGlobalLoading();
                 this.props.onShowNotice({message: '请登录！', level: 'error'});
                 setTimeout(() => {
                     toLogin();
@@ -160,8 +191,8 @@ class Detail extends React.Component {
         let postId = params.postId;
 
         getComments(params).then(data => {
-            if(data.length===0){
-                this.props.onLoadCommentListEnd();
+            if (data.length === 0) {
+                this.props.onLoadCommentListEnd({postId});
                 return;
             }
             let _data = {};
@@ -200,7 +231,7 @@ class Detail extends React.Component {
                 text: '删除评论',
                 onTap: () => {
                     console.log('tap remove');
-                    this.deleteComment({postId: this.props.data.id, commentId: comment.id});
+                    this.onDeleteComment({postId: this.props.data.id, commentId: comment.id});
                 }
             });
         }
@@ -222,14 +253,17 @@ class Detail extends React.Component {
         });
     }
 
-    deleteComment(params) {
+    onDeleteComment(params) {
+        this.props.showGlobalLoading();
         deleteComment({commentId: params.commentId}).then(() => {
             this.props.onRemoveNotice();
+            this.props.closeGlobalLoading();
             this.props.onShowNotice({message: '删除成功！', level: 'success', dismissible: true, autoDismiss: 2});
             this.props.onRemoveComment(params);
         }).catch(err => {
             this.props.onRemoveNotice();
             console.log(err);
+            this.props.closeGlobalLoading();
             this.props.onShowNotice({message: '删除失败！', level: 'error', dismissible: true, autoDismiss: 2});
         });
 
@@ -297,12 +331,10 @@ class DetailCommentInput extends React.Component {
         };
         this.onChange = this.onChange.bind(this); //当评论框内容改变的时候
         this.onClickSend = this.onClickSend.bind(this); //当点击发送按钮
-        this.onInputFocus = this.onInputFocus.bind(this);//当评论框获得焦点
-        this.onInputBlur = this.onInputBlur.bind(this);//当评论框失去焦点
+        this.onInputFocus = this.onInputFocus.bind(this); //当评论框获得焦点
+        this.onInputBlur = this.onInputBlur.bind(this); //当评论框失去焦点
     }
-    componentDidMount(){
-
-    }
+    componentDidMount() {}
 
     shouldComponentUpdate(nextProps, nextState) {
         if (nextState.text !== this.state.text) {
@@ -361,9 +393,9 @@ class DetailCommentInput extends React.Component {
             <div ref={(commentInput) => {
                 this.commentContainer = commentInput;
             }} style={commentStyles}>
-                <Textarea onFocus={e=>{
+                <Textarea onFocus={e => {
                     this.onInputFocus(e);
-                }} onBlur={e=>{
+                }} onBlur={e => {
                     this.onInputBlur(e);
                 }} maxRows={5} style={inputStyles} onChange={this.onChange} placeholder='发表评论' value={this.state.text}></Textarea>
                 <div style={this.state.text
@@ -373,13 +405,11 @@ class DetailCommentInput extends React.Component {
         );
     }
 
-    onInputBlur(){
-
-    }
-    onInputFocus(){
-        setTimeout(()=>{
+    onInputBlur() {}
+    onInputFocus() {
+        setTimeout(() => {
             document.body.scrollTop = document.body.scrollHeight;
-        },400);
+        }, 400);
     }
     onChange(e) {
         //处理input框change事件

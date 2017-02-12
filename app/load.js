@@ -6,7 +6,7 @@ import {
 } from './business';
 import {LIST_DEFAULT_LENTH} from './constans/config.js';
 const loadStatus ={
-    getList:false
+    getList:false,
 };
 /**
 获取首页帖子列表
@@ -21,6 +21,8 @@ export function getList(params) {
         url = '/api/hot';
     }else if(params.type === 'liked'){
         url = '/api/posts/like';
+    }else if(params.type==='posted'){
+        url = '/api/posts/self';
     }
     url = `${url}?pageSize=${LIST_DEFAULT_LENTH}`;
     if (params.fromId) {
@@ -97,6 +99,10 @@ export function deletePost(params) {
 获取评论列表
 */
 export function getComments(params) {
+    if(loadStatus.getComments){
+        return;
+    }
+    loadStatus.getComments = true;
     let url = `/api/comments/?postId=${params.postId}&pageSize=8`;
     if (params.fromId) {
         url += `&fromId=${params.fromId}`;
@@ -104,6 +110,7 @@ export function getComments(params) {
     return request({
         url
     }).then(result => {
+        loadStatus.getComments = false;
         //获取当前帖子的评论列表
         if (result.code === 200) {
             return result.data;
@@ -188,7 +195,6 @@ export function getUser() {
         if (result.code === 200) {
             return Promise.resolve(result.data);
         } else {
-            toLogin();
             return Promise.reject(result);
 
         }

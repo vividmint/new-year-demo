@@ -12,18 +12,27 @@ class Item extends React.Component {
         let regex = content.match(/([\s\S]*?)\n{4}/);
         let foldContent = '';
         let isShowFoldButton = false;
+        let isFold = true;
         if(regex){
             foldContent = regex[0];
             isShowFoldButton = true;
         }else{
             isShowFoldButton = content.length > 150;
-            foldContent = data.content.substring(0, 149).concat('......');
+            if(isShowFoldButton){
+                foldContent = data.content.substring(0, 149).concat('......');
+            }else{
+                foldContent = data.content;
+            }
+        }
+        if(this.props.isShowFoldButton===false){
+            isShowFoldButton = false;
+            isFold = false;
         }
         this.state = {
             foldContent,
             allContent:this.props.data.content,
             isShowFoldButton,
-            isFold: true
+            isFold: isFold
         };
         this.toDetailHash = this.toDetailHash.bind(this);
         this.onToggleFold = this.onToggleFold.bind(this);
@@ -41,11 +50,11 @@ class Item extends React.Component {
     }
     render() {
         let styles = {
-                padding: '15px 25px 4px 25px',
+                padding: '12px 25px 4px 25px',
                 borderBottom: '15px solid #F2F2F2'
             },
             contentStyles = {
-                padding: '6px 0px 10px 0px',
+                padding: '4px 0px 10px 0px',
                 overflow: 'hidden',
                 lineHeight: '25px',
                 whiteSpace: 'pre-wrap',
