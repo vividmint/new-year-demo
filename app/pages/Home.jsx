@@ -5,7 +5,7 @@ import List from '../components/List.jsx';
 import Tab from '../components/Tab/Tab.jsx';
 import {getList, postLike, deleteLike, deletePost} from '../load';
 import {toLogin} from '../business';
-import {INDEX_LIST_LOAD_MORE_DISTANCE} from '../constans/config';
+import {INDEX_LIST_LOAD_MORE_DISTANCE,REPORT_TEXT} from '../constans/config';
 import Menu from '../components/Menu';
 
 class Home extends React.Component {
@@ -18,7 +18,6 @@ class Home extends React.Component {
         this.onToggleOther = this.onToggleOther.bind(this);
         this.onDeletePost = this.onDeletePost.bind(this);
         this.onRefresh = this.onRefresh.bind(this);
-        this.reportPost = this.reportPost.bind(this);
 
         let idSets = null,
             type = this.props.page;
@@ -255,7 +254,7 @@ class Home extends React.Component {
             this.props.onShowNotice({message: '删除失败！', level: 'error'});
         });
     }
-    reportPost(id) {}
+
     onToggleOther(params) {
         let itemId = params.id;
         let menus = [];
@@ -268,10 +267,11 @@ class Home extends React.Component {
             });
         }
         menus.push({
-            text: '举报',
+            text: `${REPORT_TEXT}`,
             onTap: () => {
-                console.log('tap remove');
-                this.reportPost({postId: itemId});
+                this.props.onRemoveNotice();
+                this.props.onReportPost({postId: itemId});
+                window.location.hash=('page=report');
             }
         });
         menus.push({

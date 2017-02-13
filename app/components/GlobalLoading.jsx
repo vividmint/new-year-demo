@@ -18,9 +18,11 @@ class GlobalLoading extends React.Component {
         }
         let loadingText = this.props.loading.text || '';
         return <div>
-            <Mask isMask={this.props.loading.isMask===undefined?true:this.props.loading.isMask}/>
+            <Mask isMask={this.props.loading.isMask === undefined
+                ? true
+                : this.props.loading.isMask}/>
             <div style={styles}>
-                <Loading delay={0} type='spin' color='black'  width='30px' height='30px'/> {loadingText}</div>
+                <Loading delay={0} type='spin' color='rgba(0,0,0,0.8)' width='30px' height='30px'/> {loadingText}</div>
         </div>;
     }
 }

@@ -1,10 +1,9 @@
 import React from 'react';
-import FaClose from 'react-icons/lib/fa/close';
-import FaCheck from 'react-icons/lib/fa/check';
+import TopBar from '../../components/TopBar';
 import styles from './anonymity.css';
 import {setHash} from '../../utils';
 import {toLogin} from '../../business';
-import {postText, getUser} from '../../load';
+import {postText, getUser, reportPost} from '../../load';
 import {BASE_PRIMARY_COLOR} from '../../constans/styles';
 
 class SendText extends React.Component {
@@ -12,7 +11,9 @@ class SendText extends React.Component {
         super(props);
         this.state = {
             secret: true, //是否匿名
-            text: '', //输入框文字内容
+            text: this.props.value
+                ? this.props.value
+                : '', //输入框文字内容
         };
         this.onCancle = this.onCancle.bind(this);
         this.onSend = this.onSend.bind(this);
@@ -42,25 +43,7 @@ class SendText extends React.Component {
                 flexDirection: 'column',
                 height: '100%'
             },
-            top = {
-                display: 'flex',
-                alignItems: 'center',
-                height: 42,
-                backgroundColor: `${BASE_PRIMARY_COLOR}`
-            },
-            topButton = {
-                fontSize: 22,
-                padding: '0px 20px',
-                alignItems: 'center',
-                justifyContent: 'center'
-            },
-            description = {
-                display: 'flex',
-                flex: 1,
-                fontSize: 18,
-                justifyContent: 'center'
 
-            },
             inputStyles = {
                 // flex: '1 1 auto',
                 // flexGrow: 'auto',
@@ -77,9 +60,9 @@ class SendText extends React.Component {
             bottom = {
                 display: 'flex',
                 justifyContent: 'space-between',
+                flexDirection: 'row-reverse',
                 width: '100%',
                 alignItems: 'center',
-                color: '#AAAAAA',
                 padding: '10px 20px',
                 backgroundColor: '#F2F2F2',
                 borderTop: '0.8px solid rgb(236, 234, 234)'
@@ -91,14 +74,11 @@ class SendText extends React.Component {
             text = {
                 textAlign: 'center',
                 fontSize: 18,
-                color: '#AAAAAA',
+                color: 'rgb(170, 170, 170)',
                 marginLeft: 10
             },
-            textActive = {
-                color: '#42b983',
-                textAlign: 'center',
-                fontSize: 18,
-                marginLeft: 10
+            _text = {
+                color: `${BASE_PRIMARY_COLOR}`
             },
             send = {
                 color: '#AAAAAA',
@@ -117,24 +97,24 @@ class SendText extends React.Component {
         return (
             <div>
                 <div style={style}>
-                    <div style={top}>
-                        <div style={topButton} onTouchTap={this.onCancle}><FaClose/></div>
-                        <div style={description}>发布</div>
-                        <div style={topButton} onTouchTap={this.onSend}><FaCheck/></div>
-                    </div>
-                    <textarea placeholder="写下你想说的话" className={styles.input} style={inputStyles} ref={(input) => {
+                    <TopBar text={this.props.topText} onCancle={this.onCancle} onSend={this.onSend}/>
+                    <textarea placeholder={this.props.placeholder || ''} className={styles.input} style={inputStyles} ref={(input) => {
                         this.textInput = input;
                     }} value={this.state.text} onChange={this.onChange}></textarea>
                     <div style={bottom}>
-                        <div style={bottomLeft}>
-                            <input type="checkbox" checked={this.state.secret} onChange={this.onChangeSign} className={styles['check-switch']} data-role="check-switch"></input>
-                            <div style={this.state.secret
-                                ? textActive
-                                : text}>匿名</div>
-                        </div>
                         <div style={!this.state.text
                             ? send
                             : Object.assign(send, _send)} onTouchTap={this.onSend}>发布</div>
+                        <div style={this.props.showCheckBox
+                            ? bottomLeft
+                            : {
+                                display: 'none'
+                            }}>
+                            <input type="checkbox" checked={this.state.secret} onChange={this.onChangeSign} className={styles['check-switch']} data-role="check-switch"></input>
+                            <div style={this.state.secret
+                                ? Object.assign(text, _text)
+                                : text}>匿名</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -165,29 +145,50 @@ class SendText extends React.Component {
             this.props.onShowNotice({message: '帖子内容不能为空！', level: 'error'});
         } else {
             this.props.showGlobalLoading();
-            postText({
-                body: {
-                    secret: this.state.secret,
-                    content: this.state.text
-                }
-            }).then(data => {
-                this.props.closeGlobalLoading();
-                this.props.onShowNotice({message: '发布成功！', level: 'success'});
-                this.props.onAddPost(data);
-                setTimeout(() => {
-                    setHash('page=index');
-                }, 1000);
-            }).catch(err => {
-                this.props.closeGlobalLoading();
-                this.props.onShowNotice({
-                    message: err.message || '发布失败！',
-                    level: 'error'
+            if (this.props.page === 'sendText' || this.props.page=== 'advise') {
+                postText({
+                    body: {
+                        secret: this.state.secret,
+                        content: this.state.text
+                    }
+                }).then(data => {
+                    this.props.closeGlobalLoading();
+                    this.props.onShowNotice({message: '发布成功！', level: 'success'});
+                    this.props.onAddPost(data);
+                    setTimeout(() => {
+                        setHash('page=index');
+                    }, 1000);
+                }).catch(err => {
+                    this.props.closeGlobalLoading();
+                    this.props.onShowNotice({
+                        message: err.message || '发布失败！',
+                        level: 'error'
+                    });
+                    if (err.code === 2015) {
+                        //未登录
+                        toLogin();
+                    }
                 });
-                if (err.code === 2015) {
-                    //未登录
-                    toLogin();
-                }
-            });
+            } else if (this.props.page === 'report') {
+                reportPost({postId: this.props.reportId, content: this.state.text}).then(() => {
+                    this.props.closeGlobalLoading();
+                    this.props.onShowNotice({message: '举报成功！', level: 'success'});
+                    setTimeout(() => {
+                        window.history.back();
+                    }, 1000);
+                }).catch(err => {
+                    this.props.closeGlobalLoading();
+                    this.props.onShowNotice({
+                        message: err.message || '举报失败！',
+                        level: 'error'
+                    });
+                    if (err.code === 2015) {
+                        //未登录
+                        toLogin();
+                    }
+                });
+            }
+
         }
 
     }

@@ -4,24 +4,26 @@ import {
 import {
     toLogin
 } from './business';
-import {LIST_DEFAULT_LENTH} from './constans/config.js';
-const loadStatus ={
-    getList:false,
+import {
+    LIST_DEFAULT_LENTH
+} from './constans/config.js';
+const loadStatus = {
+    getList: false,
 };
 /**
 获取首页帖子列表
 */
 export function getList(params) {
-    if(loadStatus.getList){
+    if (loadStatus.getList) {
         return;
     }
     loadStatus.getList = true;
     let url = '/api/posts';
-    if (params.type === 'hot'){
+    if (params.type === 'hot') {
         url = '/api/hot';
-    }else if(params.type === 'liked'){
+    } else if (params.type === 'liked') {
         url = '/api/posts/like';
-    }else if(params.type==='posted'){
+    } else if (params.type === 'posted') {
         url = '/api/posts/self';
     }
     url = `${url}?pageSize=${LIST_DEFAULT_LENTH}`;
@@ -42,7 +44,7 @@ export function getList(params) {
 /**
  * 获取热门帖子列表
  */
-export function getHotList(params){
+export function getHotList(params) {
     let url = '/api/hot/?pageSize=15';
     if (params.fromId) {
         url += `&fromId=${params.fromId}`;
@@ -99,7 +101,7 @@ export function deletePost(params) {
 获取评论列表
 */
 export function getComments(params) {
-    if(loadStatus.getComments){
+    if (loadStatus.getComments) {
         return;
     }
     loadStatus.getComments = true;
@@ -271,6 +273,26 @@ export function postText(params) {
         'method': 'POST',
         'url': '/api/post',
         'body': params.body
+    }).then(result => {
+        if (result.code === 200) {
+            return result.data;
+        } else {
+            return Promise.reject(result);
+        }
+    });
+}
+
+/**
+ * 举报帖子
+ */
+export function reportPost(params) {
+    return request({
+        method: 'POST',
+        url: '/api/report',
+        body: {
+            postId: params.postId,
+            content: params.content
+        }
     }).then(result => {
         if (result.code === 200) {
             return result.data;

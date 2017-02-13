@@ -15,7 +15,7 @@ textarea::-webkit-input-placeholder {
     width: 40.5px;
     height: 23px;
     position: relative;
-    background-color: #efedec;
+    background-color: rgba(250,250,250);
     box-shadow: #dfdfdf 0 0 0 0 inset;
     border-radius: 30px;
     transition: cubic-bezier(0, 0, 0, 1) 0.4s, box-shadow cubic-bezier(0, 0, 0, 1) 0.4s;
@@ -30,59 +30,20 @@ textarea::-webkit-input-placeholder {
     left: 0px;
     border-radius: 30px;
     background-color: white;
-    /*box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);*/
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
     transition: left 0.3s;
 }
 
 [data-role="check-switch"]:checked {
     border: none;
-    /*height: 23px;*/
     box-shadow: var(--primaryColor) 0 0 0 16px inset;
     background-color: var(--primaryColor);
+    border: 1px solid var(--primaryColor);
     box-shadow: var(--primaryColor) 0 0 0 16px inset;
     transition: border ease 0.4s, box-shadow ease 0.4s, background-color ease 1.2s;
 }
 
 [data-role="check-switch"]:checked:before {
-    left: 19px;
-    top:1px;
+    left: 17.5px;
     transition: left 0.3s;
 }
-
-
-/*.rightToLeft {
-    composes: buttonStaticRight;
-    left:1px;
-    animation-duration: 0.5s;
-    animation-name: slidein;
-    transform: translateZ(0);
-    animation-iteration-count:1;
-}
-
-@keyframes slidein {
-    from {
-        left: 19px;
-    }
-    to {
-        left: 1px;
-    }
-}
-
-.leftToRight {
-    composes: buttonStaticRight;
-    left: 1px;
-    animation-duration: 0.5s;
-    animation-name: slideout;
-    transform: translateZ(0);
-    animation-iteration-count:1;
-
-}
-
-@keyframes slideout {
-    from {
-        left: 1px;
-    }
-    to {
-        left: 19px;
-    }
-}*/

@@ -13,3 +13,5 @@ export const LIST_DEFAULT_LENTH = 15;
 export const INDEX_PATH = '/beta/';
 
 export const LOGIN_URL = '/login';
+
+export const REPORT_TEXT = '报告';

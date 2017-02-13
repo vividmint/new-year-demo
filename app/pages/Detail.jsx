@@ -11,6 +11,7 @@ import {
     postCommentLike,
     getUser
 } from '../load';
+import {REPORT_TEXT} from '../constans/config';
 import Loading from '../components/Loading.jsx';
 import Item from '../components/Item';
 import Textarea from 'react-textarea-autosize';
@@ -122,10 +123,12 @@ class Detail extends React.Component {
             });
         }
         menus.push({
-            text: '举报',
+            text: `${REPORT_TEXT}`,
             onTap: () => {
                 console.log('tap remove');
-                this.reportPost({postId: itemId});
+                this.props.onRemoveNotice();
+                this.props.onReportPost({postId: itemId});
+                window.location.hash = ('page=report');
             }
         });
         menus.push({
@@ -219,7 +222,7 @@ class Detail extends React.Component {
         //弹出评论菜单
         let menus = [
             {
-                text: '回复',
+                text: `${REPORT_TEXT}`,
                 onTap: () => {
                     console.log('tap reply');
                 }

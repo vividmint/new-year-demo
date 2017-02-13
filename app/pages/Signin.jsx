@@ -1,5 +1,4 @@
 import React from 'react';
-// import {BASE_PRIMARY_COLOR} from '../constans/styles';
 import FaWechat from 'react-icons/lib/fa/wechat';
 import FaWeibo from 'react-icons/lib/fa/weibo';
 import Tab from '../components/Tab/Tab';

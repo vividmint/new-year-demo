@@ -18,13 +18,13 @@ class UserDetail extends React.Component {
                 flexDirection: 'column',
                 alignItems: 'center',
                 backgroundColor: '#F2F2F2',
-                color: 'rgba(0, 0, 0, 0.5)'
+                color: 'rgba(0, 0, 0, 0.5)',
             },
             userInfo = {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                padding: '12px 0px',
+                padding: '15px 0px',
                 width: '100%'
             },
 
@@ -37,7 +37,7 @@ class UserDetail extends React.Component {
                 height: 55,
                 width: 55,
                 borderRadius: '50%',
-                marginBottom: 8
+                marginBottom: 12
             },
             settings = {
                 position: 'absolute',
@@ -48,7 +48,7 @@ class UserDetail extends React.Component {
             },
             userBottom = {
                 display: 'flex',
-                padding: '8px 0px 0px 0px',
+                paddingTop: 12,
                 textAlign: 'center',
                 width: '100%'
             },
@@ -113,6 +113,8 @@ class UserDetail extends React.Component {
         menus.push({
             text: '反馈',
             onTap: () => {
+                this.props.onRemoveNotice();
+                this.props.onAdvise();
             }
         });
         menus.push({

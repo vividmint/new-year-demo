@@ -1,6 +1,7 @@
 import React from 'react';
 import {render} from 'react-dom';
 import {getHash, setHash, getTime} from './utils.js';
+import {REPORT_TEXT} from './constans/config';
 import Home from './pages/Home';
 import User from './pages/User';
 import Signin from './pages/Signin';
@@ -38,7 +39,8 @@ class App extends React.Component {
                 isShow: false,
                 isMask: true,
                 text: ''
-            }
+            },
+            reportId:null
 
         };
         this.onLoadList = this.onLoadList.bind(this); //载入列表
@@ -60,13 +62,14 @@ class App extends React.Component {
         this.onCommentToggleLike = this.onCommentToggleLike.bind(this); //点赞评论
         this.closeGlobalLoading = this.closeGlobalLoading.bind(this);
         this.showGlobalLoading = this.showGlobalLoading.bind(this);
-        this.resetIdSets = this.resetIdSets.bind(this);//重置idSets
+        this.resetIdSets = this.resetIdSets.bind(this); //重置idSets
+        this.onReportPost = this.onReportPost.bind(this);//当点击举报按钮
+
         window.onhashchange = () => {
             //当url里的hash发生变化的时候
             let page = getHash('page') || 'index'; //获取当前hash值
             if (page !== this.state.page) {
                 this.setState({page: page});
-                console.log('state', this.state);
             }
         };
     }
@@ -74,15 +77,20 @@ class App extends React.Component {
         let pageContainer = null;
         if (this.state.page === 'detail') {
             let id = getHash('id');
-            pageContainer = (<Detail showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onRemovePost={this.onRemovePost} onLoadMore={this.onLoadMore} onLoadCommentListEnd={this.onLoadCommentListEnd} onLoading={this.onLoading} onLoadMoreError={this.onLoadMoreError} isLoadingMore={this.state.isLoadingMore} onAddComment={this.onAddComment} onCommentToggleLike={this.onCommentToggleLike} onRemoveComment={this.onRemoveComment} onRemoveNotice={this.onRemoveNotice} onShowNotice={this.onShowNotice} onToggleLike={this.onToggleLike} onLoadDetail={this.onLoadDetail} commentData={this.state.commentData} onLoadCommentList={this.onLoadCommentList} data={this.state.data
+            pageContainer = (<Detail onReportPost={this.onReportPost} showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onRemovePost={this.onRemovePost} onLoadMore={this.onLoadMore} onLoadCommentListEnd={this.onLoadCommentListEnd} onLoading={this.onLoading} onLoadMoreError={this.onLoadMoreError} isLoadingMore={this.state.isLoadingMore} onAddComment={this.onAddComment} onCommentToggleLike={this.onCommentToggleLike} onRemoveComment={this.onRemoveComment} onRemoveNotice={this.onRemoveNotice} onShowNotice={this.onShowNotice} onToggleLike={this.onToggleLike} onLoadDetail={this.onLoadDetail} commentData={this.state.commentData} onLoadCommentList={this.onLoadCommentList} data={this.state.data
                 ? this.state.data[id]
                 : null}/>);
         } else if (this.state.page === 'user') {
-            pageContainer = (<User showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onShowNotice={this.onShowNotice} userData={this.state.userData} onLoadUser={this.onLoadUser} onLoadLikedPosts={this.onLoadLikedPosts} onLoadMore={this.onLoadMore} onLoadMoreError={this.onLoadMoreError} isLoadingMore={this.state.isLoadingMore} loading={this.state.globalLoading}/>);
+            pageContainer = (<User showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onRemoveNotice={this.onRemoveNotice} onShowNotice={this.onShowNotice} userData={this.state.userData} onLoadUser={this.onLoadUser} onLoadLikedPosts={this.onLoadLikedPosts} onLoadMore={this.onLoadMore} onLoadMoreError={this.onLoadMoreError} isLoadingMore={this.state.isLoadingMore} loading={this.state.globalLoading}/>);
         } else if (this.state.page === 'sendText') {
-            pageContainer = (<SendText showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onAddPost={this.onAddPost} data={this.state.data} userData={this.state.userData} onShowNotice={this.onShowNotice}/>);
-        } else if (this.state.page === 'index' || this.state.page === 'posted' || this.state.page === 'hot' || this.state.page === 'liked') {
-            pageContainer = (<Home resetIdSets={this.resetIdSets} page={this.state.page} idSets={this.state.idSets} hotIdSets={this.state.hotIdSets} likedIdSets={this.state.likedIdSets} postedIdSets={this.state.postedIdSets} onShowNotice={this.onShowNotice} onToggleLike={this.onToggleLike} onRemoveNotice={this.onRemoveNotice} onToggleOther={this.onToggleOther} onLoading={this.onLoading} onLoadList={this.onLoadList} onLoadMore={this.onLoadMore} onLoadMoreError={this.onLoadMoreError} data={this.state.data} isLoadingMore={this.state.isLoadingMore} isShowMore={this.state.isShowMore} onRemovePost={this.onRemovePost} closeGlobalLoading={this.closeGlobalLoading} showGlobalLoading={this.showGlobalLoading}/>);
+            pageContainer = (<SendText topText='发布' placeholder='写下你想说的话' showCheckBox={true} page={this.state.page}  showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onAddPost={this.onAddPost} data={this.state.data} userData={this.state.userData} onShowNotice={this.onShowNotice}/>);
+        } else if (this.state.page === 'advise') {
+            pageContainer = (<SendText topText='反馈' showCheckBox={true} page={this.state.page} value='#建议#' showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onAddPost={this.onAddPost} data={this.state.data} userData={this.state.userData} onShowNotice={this.onShowNotice}/>);
+        } else if (this.state.page === 'report') {
+            pageContainer = (<SendText topText={`${REPORT_TEXT}`} showCheckBox={false}  placeholder='报告描述' reportId={this.state.reportId}  page={this.state.page}  showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onAddPost={this.onAddPost} data={this.state.data} userData={this.state.userData} onShowNotice={this.onShowNotice}/>);
+        }
+        else if (this.state.page === 'index' || this.state.page === 'posted' || this.state.page === 'hot' || this.state.page === 'liked') {
+            pageContainer = (<Home onReportPost={this.onReportPost} resetIdSets={this.resetIdSets} page={this.state.page} idSets={this.state.idSets} hotIdSets={this.state.hotIdSets} likedIdSets={this.state.likedIdSets} postedIdSets={this.state.postedIdSets} onShowNotice={this.onShowNotice} onToggleLike={this.onToggleLike} onRemoveNotice={this.onRemoveNotice} onToggleOther={this.onToggleOther} onLoading={this.onLoading} onLoadList={this.onLoadList} onLoadMore={this.onLoadMore} onLoadMoreError={this.onLoadMoreError} data={this.state.data} isLoadingMore={this.state.isLoadingMore} isShowMore={this.state.isShowMore} onRemovePost={this.onRemovePost} closeGlobalLoading={this.closeGlobalLoading} showGlobalLoading={this.showGlobalLoading}/>);
         } else if (this.state.page === 'signin') {
             pageContainer = (<Signin/>);
         }
@@ -128,10 +136,8 @@ class App extends React.Component {
             data: data
         });
     }
-    resetIdSets(){
-        this.setState({
-            idSets:null
-        });
+    resetIdSets() {
+        this.setState({idSets: null});
     }
 
     onLoadUser(params) {
@@ -304,6 +310,11 @@ class App extends React.Component {
             globalLoading: Object.assign({
                 isShow: true
             }, params)
+        });
+    }
+    onReportPost(params){
+        this.setState({
+            reportId:params.postId
         });
     }
 
