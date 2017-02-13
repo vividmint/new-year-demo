@@ -1,6 +1,6 @@
 import Moment from './Moment.jsx';
 import React from 'react';
-// import FaHeartO from 'react-icons/lib/fa/heart-o';
+import FaSmileO from 'react-icons/lib/fa/smile-o';
 
 
 class SingleComment extends React.Component {
@@ -49,11 +49,16 @@ class SingleComment extends React.Component {
 
             topRight = {
                 display:'flex',
-                fontSize:20,
-                color:'rgb(170, 170, 170)'
+                color: '#AAAAAA',
+                padding:'0px 4px'
             },
             like = {
-                fontSize:20
+                fontSize:25,
+                marginRight:6
+            },
+            likeCount = {
+                fontSize:18,
+                fontFamily:'sans-serif',
             },
             bottom = {
                 padding:'0px 0px 6px 0px',
@@ -62,6 +67,7 @@ class SingleComment extends React.Component {
                 textAlign:'justify'
             };
         const data = this.props.data;
+        console.log(this.props.data);
         return (
           <div style={styles} onTouchTap={this.onShowCommentMenu}>
                 <div style={top}>
@@ -73,7 +79,8 @@ class SingleComment extends React.Component {
                     </div>
                   </div>
                   <div style={topRight}>
-                    <div style={like} onTouchTap={this.onCommentToggleLike}></div>
+                    <FaSmileO style={like} onTouchTap={this.onCommentToggleLike}/>
+                    <div style={likeCount}>{this.props.data.likeCount}</div>
                   </div>
                 </div>
                 <div style={bottom}>{data.content}</div>

@@ -1,5 +1,6 @@
 import React from 'react';
 import {getHash, setHash, getDocumentHeight} from '../utils.js';
+import {INDEX_LIST_LOAD_MORE_DISTANCE,REPORT_TEXT} from '../constans/config';
 import {
     getPost,
     getComments,
@@ -11,13 +12,13 @@ import {
     postCommentLike,
     getUser
 } from '../load';
-import {REPORT_TEXT} from '../constans/config';
 import Loading from '../components/Loading.jsx';
 import Item from '../components/Item';
 import Textarea from 'react-textarea-autosize';
 import CommentList from '../components/CommentList';
 import {toLogin} from '../business';
 import Menu from '../components/Menu';
+
 class Detail extends React.Component {
     constructor(props) {
         super(props);
@@ -33,6 +34,9 @@ class Detail extends React.Component {
         this.onCommentToggleLike = this.onCommentToggleLike.bind(this); //点赞评论
         this.onToggleOther = this.onToggleOther.bind(this); //当点击...
         this.onDeletePost = this.onDeletePost.bind(this); //当删除文章
+        this.bindEvents = this.bindEvents.bind(this);
+        this.removeEvents = this.removeEvents.bind(this);
+        this.onScroll = this.onScroll.bind(this);
 
     }
     componentDidMount() {
@@ -53,18 +57,31 @@ class Detail extends React.Component {
                 this.getCommentList({postId: postId});
             }
         }
-        window.onscroll = () => {
-            if (this.props.data.isCommentListEnd) {
-                return;
-            }
-            //加载更多评论
-            let documentHeight = getDocumentHeight();
-            let distance = documentHeight - (window.document.body.scrollTop + window.screen.height);
-            if (distance <= 20 && distance > 0) {
-                this.onLoadMoreComment({postId: postId, fromId: this.getFromId()});
-            }
-        };
+        this.bindEvents();
 
+    }
+    componentWillUnmount() {
+        this.removeEvents();
+    }
+    removeEvents() {
+        window.removeEventListener('scroll', this.onScroll);
+    }
+    bindEvents() {
+        window.addEventListener('scroll', this.onScroll);
+
+    }
+    onScroll() {
+        if (this.state.isLoadingEnd) {
+            return;
+        }
+        //下拉刷新
+        let documentHeight = getDocumentHeight(); //整个页面的高度
+        let distance = documentHeight - (window.document.body.scrollTop + window.screen.height);
+        //window.screen.height  屏幕的高度
+        //window.document.body.scrollTop  屏幕顶部距离页面顶部的距离
+        if (distance <= INDEX_LIST_LOAD_MORE_DISTANCE && distance > 0) {
+            this.onLoadMore({fromId: this.getFromId(), type: this.state.type});
+        }
     }
     render() {
         const styles = {

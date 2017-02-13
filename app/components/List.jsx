@@ -26,7 +26,7 @@ class List extends React.Component {
 
         let moreButton = null;
         if (this.props.isShowMore) {
-            moreButton = <Button onTap={this.props.onLoadMore} text="查看更多"/>;
+            moreButton = <Button onTap={()=>{this.props.onLoadMore();}} text="查看更多"/>;
         }
         let loading = null;
         if (this.props.isLoadingMore) {

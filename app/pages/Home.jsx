@@ -18,7 +18,9 @@ class Home extends React.Component {
         this.onToggleOther = this.onToggleOther.bind(this);
         this.onDeletePost = this.onDeletePost.bind(this);
         this.onRefresh = this.onRefresh.bind(this);
-
+        this.bindEvents = this.bindEvents.bind(this);
+        this.removeEvents = this.removeEvents.bind(this);
+        this.onScroll = this.onScroll.bind(this);
         let idSets = null,
             type = this.props.page;
         if (type === 'index') {
@@ -90,20 +92,7 @@ class Home extends React.Component {
             let type = this.state.type;
             this.getList({type});
         }
-        window.onscroll = () => {
-            if (this.state.isLoadingEnd) {
-                return;
-            }
-            //下拉刷新
-            let documentHeight = getDocumentHeight(); //整个页面的高度
-            let distance = documentHeight - (window.document.body.scrollTop + window.screen.height);
-            //window.screen.height  屏幕的高度
-            //window.document.body.scrollTop  屏幕顶部距离页面顶部的距离
-            if (distance <= INDEX_LIST_LOAD_MORE_DISTANCE && distance > 0) {
-                this.onLoadMore({fromId: this.getFromId(), type: this.state.type});
-            }
-        };
-
+        this.bindEvents();
     }
 
     render() {
@@ -126,6 +115,29 @@ class Home extends React.Component {
                     <Tab onRefresh={this.onRefresh} page={this.props.page}/>
                 </div>
             );
+        }
+    }
+    componentWillUnmount(){
+        this.removeEvents();
+    }
+    removeEvents(){
+        window.removeEventListener('scroll',this.onScroll);
+    }
+    bindEvents(){
+        window.addEventListener('scroll',this.onScroll);
+
+    }
+    onScroll(){
+        if (this.state.isLoadingEnd) {
+            return;
+        }
+    //下拉刷新
+        let documentHeight = getDocumentHeight(); //整个页面的高度
+        let distance = documentHeight - (window.document.body.scrollTop + window.screen.height);
+    //window.screen.height  屏幕的高度
+    //window.document.body.scrollTop  屏幕顶部距离页面顶部的距离
+        if (distance <= INDEX_LIST_LOAD_MORE_DISTANCE && distance > 0) {
+            this.onLoadMore();
         }
     }
     getList(params) {
@@ -175,12 +187,12 @@ class Home extends React.Component {
         }
     }
 
-    onLoadMore(params) {
+    onLoadMore() {
         //当加载更多时
-        let type = params.type;
+        let type = this.state.type;
         if (this.props.isLoadingMore === false) {
             this.props.onLoading();
-            getList({type: type, fromId: params.fromId}).then(data => {
+            getList({type: type, fromId: this.getFromId()}).then(data => {
                 if (data.length === 0) {
                     this.setState({isLoadingEnd: true});
                     return;
