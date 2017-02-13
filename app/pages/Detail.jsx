@@ -8,7 +8,8 @@ import {
     deletePost,
     postLike,
     deleteLike,
-    postCommentLike
+    postCommentLike,
+    getUser
 } from '../load';
 import Loading from '../components/Loading.jsx';
 import Item from '../components/Item';
@@ -352,7 +353,6 @@ class DetailCommentInput extends React.Component {
     render() {
         const commentStyles = {
             position: 'fixed',
-            borderTop: '0.8px solid #F0F0F0',
             boxSizing: 'border-box',
             width: '100%',
             display: 'flex',
@@ -360,7 +360,9 @@ class DetailCommentInput extends React.Component {
             backgroundColor: 'white',
             fontSize: '16px',
             padding: '13px 15px',
-            bottom: 0
+            bottom: 0,
+            borderTop: '0.5px solid rgba(0,0,0,0.1)',
+            boxShadow: '0.5px 0.5px 0.5px 0.5px rgba(0, 0, 0, 0.05)'
         };
         const inputStyles = {
             flex: '1 1 auto',
@@ -407,6 +409,15 @@ class DetailCommentInput extends React.Component {
 
     onInputBlur() {}
     onInputFocus() {
+        getUser().catch(err => {
+            console.log(err);
+            if (err.code === 1003) {
+                this.props.onShowNotice({message: '请登录！', level: 'error'});
+                setTimeout(() => {
+                    toLogin();
+                }, 1500);
+            }
+        });
         setTimeout(() => {
             document.body.scrollTop = document.body.scrollHeight;
         }, 400);

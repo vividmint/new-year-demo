@@ -58,7 +58,7 @@ class Item extends React.Component {
                 overflow: 'hidden',
                 lineHeight: '25px',
                 whiteSpace: 'pre-wrap',
-                textAlign: 'justify'
+                textAlign: 'justify',
             };
         let data = this.props.data;
         let foldComponent = this.state.isShowFoldButton?(<Fold foldText={this.state.isFold?'展开全文':'收起'} onToggleFold={this.onToggleFold}/>):null;

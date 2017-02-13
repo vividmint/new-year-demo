@@ -24,7 +24,8 @@ class Tab extends React.Component {
             flexDirection: 'row',
             alignItems: 'center',
             textAlign: 'center',
-            borderTop: '1px solid #F2F2F2',
+            borderTop: '0.5px solid rgba(0,0,0,0.1)',
+            boxShadow:'0.5px 0.5px 0.5px 0.5px rgba(0, 0, 0, 0.05)',
             fontSize: '32px',
             padding: '5px 0px 8px 0px',
             color: '#AAAAAA'

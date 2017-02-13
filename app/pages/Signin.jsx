@@ -28,13 +28,13 @@ class Signin extends React.Component {
                 flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
-                marginTop: 40
+                marginTop: 30
             },
             option = {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                border: '0.6px solid rgba(170,170,170,0.8)',
+                border: '0.6px solid rgba(0,0,0,0.2)',
                 padding: '10px 22px',
                 borderRadius: 70,
                 marginBottom: 25,

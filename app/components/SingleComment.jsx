@@ -15,9 +15,7 @@ class SingleComment extends React.Component {
         const styles = {
                 display:'flex',
                 flexDirection:'column',
-                padding:'0px 25px',
-                borderTop:'0.8px solid rgb(240, 240, 240)',
-
+                borderBottom: '0.5px solid rgba(0,0,0,0.1)',
             },
             top = {
                 display:'flex',
@@ -41,11 +39,11 @@ class SingleComment extends React.Component {
                 justifyContent:'center'
             },
             nickname = {
-                padding:'3px 0px',
+                padding:'2px 0px',
                 fontSize:14,
             },
             time = {
-                padding:'3px 0px',
+                padding:'2px 0px',
                 fontSize:12
             },
 

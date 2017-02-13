@@ -22,7 +22,7 @@ class BottomButtons extends React.Component {
             display: 'flex',
             justifyContent: 'flex-start',
             alignItems: 'center',
-            borderTop: '0.8px solid #F0F0F0',
+            borderTop: '0.5px solid rgba(0,0,0,0.1)',
             padding: '4px 0px 5px 0px',
             fontSize: '22px',
             color: '#AAAAAA'
