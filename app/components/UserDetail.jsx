@@ -18,7 +18,7 @@ class UserDetail extends React.Component {
                 flexDirection: 'column',
                 alignItems: 'center',
                 backgroundColor: '#F2F2F2',
-                color: 'rgba(0, 0, 0, 0.5)',
+                color: 'rgba(0, 0, 0, 0.8)',
             },
             userInfo = {
                 display: 'flex',
@@ -44,7 +44,6 @@ class UserDetail extends React.Component {
                 top: 8,
                 right: 10,
                 fontSize: 26,
-                color: 'rgba(0,0,0,0.8)'
             },
             userBottom = {
                 display: 'flex',
@@ -66,7 +65,8 @@ class UserDetail extends React.Component {
                 flex: 1
             },
             countName = {
-                paddingRight: 10
+                paddingRight: 10,
+                color:'rgba(0,0,0,0.5)'
             },
             count = {
                 color: 'rgba(0,0,0,0.8)',

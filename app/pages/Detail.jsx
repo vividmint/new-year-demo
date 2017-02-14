@@ -330,12 +330,11 @@ class Detail extends React.Component {
         }
     }
     onCommentToggleLike(params) {
-        console.log('kkk');
-        // postCommentLike({commentId: params.commentId,postId:params.postId}).then(() => {
-        //     this.props.onCommentToggleLike();
-        // }).catch(err => {
-        //     console.log(err);
-        // });
+        postCommentLike({commentId: params.commentId,postId:this.props.data.id}).then((data) => {
+            console.log(data);
+        }).catch(err => {
+            console.log(err);
+        });
     }
 
 }

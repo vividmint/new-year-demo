@@ -19,12 +19,12 @@ class SingleComment extends React.Component {
             },
             top = {
                 display:'flex',
-                padding:'8px 0px 4px 0px',
                 justifyContent:'space-between'
             },
             topLeft = {
                 display:'flex',
                 alignItems:'center',
+                padding:'8px 0px 4px 0px',
             },
             avatar = {
                 height:38,
@@ -39,29 +39,30 @@ class SingleComment extends React.Component {
                 justifyContent:'center'
             },
             nickname = {
-                padding:'2px 0px',
+                padding:'2px 0px 3px 0px',
                 fontSize:14,
             },
             time = {
-                padding:'2px 0px',
+                padding:'3px 0px 1px 0px',
                 fontSize:12
             },
 
             topRight = {
                 display:'flex',
                 color: '#AAAAAA',
-                padding:'0px 4px'
+                padding:'0px 2px',
+                alignItems:'center'
             },
             like = {
-                fontSize:25,
+                fontSize:22,
                 marginRight:6
             },
             likeCount = {
-                fontSize:18,
+                fontSize:16,
                 fontFamily:'sans-serif',
             },
             bottom = {
-                padding:'0px 0px 6px 0px',
+                padding:'0px 0px 5px 0px',
                 lineHeight:'22px',
                 fontSize:15,
                 textAlign:'justify'
@@ -72,7 +73,7 @@ class SingleComment extends React.Component {
           <div style={styles} onTouchTap={this.onShowCommentMenu}>
                 <div style={top}>
                   <div style={topLeft}>
-                    <img style={avatar} src={data.avatar} onTouchTap={this.toPerson} ></img>
+                    <img style={avatar} src={data.avatar} onTouchTap={this.toPersonHome} ></img>
                     <div style={leftRight}>
                       <div style={nickname} onTouchTap={this.toPersonHome}>{data.nickname}</div>
                       <div><Moment style={time} data={data}/></div>
@@ -96,8 +97,9 @@ class SingleComment extends React.Component {
         e.stopPropagation(); //阻止跳转个人用户页事件冒泡
 
     }
-    onCommentToggleLike(){
-        // this.onCommentToggleLike(this.props.data.id);
+    onCommentToggleLike(e){
+        e.stopPropagation(e); //阻止跳转个人用户页事件冒泡
+        this.props.onCommentToggleLike({commentId:this.props.data.id});
     }
 }
 export default SingleComment;

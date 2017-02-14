@@ -83,11 +83,11 @@ class SendText extends React.Component {
             send = {
                 color: '#AAAAAA',
                 textAlign: 'center',
-                fontSize: 16,
+                fontSize: 14,
                 borderStyle: 'solid',
                 borderWidth: 1,
                 borderColor: 'rgb(170, 170, 170)',
-                padding: '3px 13px',
+                padding: '2px 12px',
                 borderRadius: 20
             },
             _send = {
@@ -104,7 +104,7 @@ class SendText extends React.Component {
                     <div style={bottom}>
                         <div style={!this.state.text
                             ? send
-                            : Object.assign(send, _send)} onTouchTap={this.onSend}>发布</div>
+                            : Object.assign(send, _send)} onTouchTap={this.onSend}>{this.props.sendButtonText||'发布'}</div>
                         <div style={this.props.showCheckBox
                             ? bottomLeft
                             : {
@@ -142,7 +142,7 @@ class SendText extends React.Component {
     onSend() {
         // 发送post请求
         if (this.state.text === '') {
-            this.props.onShowNotice({message: '帖子内容不能为空！', level: 'error'});
+            this.props.onShowNotice({message: '内容不能为空！', level: 'error'});
         } else {
             this.props.showGlobalLoading();
             if (this.props.page === 'sendText' || this.props.page=== 'advise') {

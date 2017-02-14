@@ -76,12 +76,10 @@ export function getHash(key) {
     if (key === undefined) {
         return getHashObj();
     } else {
-        console.log('hash',getHashObj());
         return getHashObj()[key];
     }
 }
 export function getHashObj() {
-    console.log(window.location.hash,window.location.hash.substr(1));
     let hash = window.location.hash.substr(1);
     let hashObj = {};
     let keyValueArr = hash.split('&');

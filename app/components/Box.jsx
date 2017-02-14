@@ -13,6 +13,7 @@ import MdEvent from 'react-icons/lib/md/event';
 import FaBuildingO from 'react-icons/lib/fa/building-o';
 import FaSearch from 'react-icons/lib/fa/search';
 import FaBarChart from 'react-icons/lib/fa/bar-chart';
+import TiMessages from 'react-icons/lib/ti/messages';
 
 class Box extends React.Component {
     constructor(props) {
@@ -23,19 +24,17 @@ class Box extends React.Component {
         const styles = {
             display: 'flex',
             flexWrap: 'wrap',
-            justifyContent: 'space-between',
             borderBottom:'0.8px solid rgba(0,0,0,0.1)'
         };
 
         var itemStyle = {
-                padding: '25px 10px 10px 10px',
+                padding: '20px 10px 6px 10px',
                 display: 'flex',
                 flex: 1,
                 flexBasis: 'calc(100% / 3)',
                 flexGrow: 0,
                 alignItems: 'center',
                 flexDirection: 'column',
-                // backgroundColor:`${BASE_PRIMARY_COLOR}`
             },
             button = {
                 display: 'flex',
@@ -59,9 +58,10 @@ class Box extends React.Component {
             fontSize: 15,
             width: '100%',
             display: 'flex',
-            padding: '13px 8px 8px 8px',
+            padding: '10px 8px 8px 8px',
         };
         const ICON_MAP = {
+            'notice':<TiMessages style={icon}/>,
             'exam': <MdEventNote style={icon}/>,
             'examAgain': <MdEvent style={icon}/>,
             'schedule': <FaCalendar style={icon}/>,

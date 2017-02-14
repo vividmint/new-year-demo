@@ -125,7 +125,6 @@ class Home extends React.Component {
     }
     bindEvents(){
         window.addEventListener('scroll',this.onScroll);
-
     }
     onScroll(){
         if (this.state.isLoadingEnd) {

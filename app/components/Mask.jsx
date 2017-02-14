@@ -3,6 +3,10 @@ import React from 'react';
  * 蒙版
  */
 class Mask extends React.Component {
+    constructor(props){
+        super(props);
+    }
+
     render(){
         const styles={
             backgroundColor:'black',
@@ -11,16 +15,19 @@ class Mask extends React.Component {
             position:'fixed',
             left:0,
             top:0,
+            bottom:0,
+            right:0,
             zIndex:100,
             height:'100%',
-            width:'100%'
+            width:'100%',
         };
         const hide = {
             display:'none'
         };
         return(<div onTouchTap={()=>{
             this.props.onTap && this.props.onTap();
-        }} style={this.props.isMask?styles:hide}></div>);
+        }} style={this.props.isMask?styles:hide} ></div>);
     }
+
 }
 export default Mask;

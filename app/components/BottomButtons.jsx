@@ -1,6 +1,7 @@
 import React from 'react';
 import FaHeartO from 'react-icons/lib/fa/heart-o';
 import FaCommentO from 'react-icons/lib/fa/comment-o';
+import {BASE_PRIMARY_COLOR} from '../constans/styles';
 // import FaEllipsisH from 'react-icons/lib/fa/ellipsis-h';
 // import MdFavoriteOutline from 'react-icons/lib/md/favorite-outline';
 // import MdChatBubbleOutline from 'react-icons/lib/md/chat-bubble-outline';
@@ -9,12 +10,9 @@ import MdKeyboardControl from 'react-icons/lib/md/keyboard-control';
 class BottomButtons extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            // class: null
-        };
         this.onToggleLike = this.onToggleLike.bind(this);
         this.onClickComment = this.onClickComment.bind(this);
-        this.onToggleOther =  this.onToggleOther.bind(this);
+        this.onToggleOther = this.onToggleOther.bind(this);
     }
 
     render() {
@@ -34,23 +32,26 @@ class BottomButtons extends React.Component {
             justifyContent: 'center',
             marginRight: 24
         };
-        const number = {
+        const likeCount = Object.assign({
             flex: '1',
             fontSize: '18px',
             margin: '8px 0px 0px 8px'
+        }, this.props.style);
+        const _likeCount = {
+            color: `${BASE_PRIMARY_COLOR}`
         };
         const isLike = {
             marginTop: '4px',
-            color: '#42b983'
-
+            color: `${BASE_PRIMARY_COLOR}`
         };
         const unLike = {
             marginTop: '4px'
         };
-        const isComment = {
-            color: '#42b983'
+        const commentCount = {
+            flex: '1',
+            fontSize: '18px',
+            margin: '8px 0px 0px 8px'
         };
-        const unComment = {};
         const otherStyles = {
             marginTop: '2px',
             fontSize: '28px'
@@ -63,15 +64,15 @@ class BottomButtons extends React.Component {
                     <div style={this.props.data.like === 1
                         ? isLike
                         : unLike} onTouchTap={this.onToggleLike}><FaHeartO/></div>
-                    <div style={number}>{this.props.likeCount || 0}</div>
+                    <div style={this.props.data.like === 1
+                        ? Object.assign(likeCount, _likeCount)
+                        : likeCount}>{this.props.likeCount || 0}</div>
                 </div>
                 <div style={icon}>
-                    <div style={this.props.isShowCommentInput
-                        ? isComment
-                        : unComment} onTouchTap={this.onClickComment}><FaCommentO/></div>
-                    <div style={number}>{this.props.commentCount || 0}</div>
+                    <div onTouchTap={this.onClickComment}><FaCommentO/></div>
+                    <div style={commentCount}>{this.props.commentCount || 0}</div>
                 </div>
-                <div style={otherStyles} onTouchTap={this.onToggleOther} ><MdKeyboardControl/></div>
+                <div style={otherStyles} onTouchTap={this.onToggleOther}><MdKeyboardControl/></div>
             </div>
         );
         /**
@@ -81,9 +82,9 @@ class BottomButtons extends React.Component {
         */
 
     }
-    onClickComment(){
-      //点击评论按钮跳转帖子详情页
-        window.location.hash= `#page=detail&id=${this.props.data.id}`;
+    onClickComment() {
+        //点击评论按钮跳转帖子详情页
+        window.location.hash = `#page=detail&id=${this.props.data.id}`;
     }
     clickLike() {
         this.props.clickLike();

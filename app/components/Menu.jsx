@@ -1,21 +1,5 @@
 import React from 'react';
-
-/**
- *
- *
- *
- *  <Menu menus={[
- *  {
- *  text:"删除评论",
- *  onTap:()=>{
- *  console.log('tap')
- *  },
- *
- *  }
- *
- *  ]}/>
- */
-
+import {BASE_PRIMARY_COLOR} from '../constans/styles';
 
 class Menu extends React.Component {
     constructor(props){
@@ -25,11 +9,12 @@ class Menu extends React.Component {
         var menus = this.props.menus;
         var menusComponent = menus.map((v,i)=>{
             let style = Object.assign({
-                padding: '15px 0px',
-                backgroundColor: 'white',
-                borderBottomStyle: 'solid',
-                borderBottomWidth:0.8,
-                borderBottomColor:'rgb(242,242,242)'
+                padding: '13px 2px',
+                margin:'8px 0px',
+                backgroundColor: 'rgba(255,255,255,0.96)',
+                borderRadius:10,
+                color:`${BASE_PRIMARY_COLOR}`,
+                fontSize:17
             },v.style);
             if(i===(menus.length-1)){
                 style.borderBottom = 'none';

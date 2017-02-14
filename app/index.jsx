@@ -4,6 +4,7 @@ import {getHash, setHash, getTime} from './utils.js';
 import {REPORT_TEXT} from './constans/config';
 import Home from './pages/Home';
 import User from './pages/User';
+import UserNotice from './pages/UserNotice';
 import Signin from './pages/Signin';
 import SendText from './pages/SendText';
 import Detail from './pages/Detail.jsx';
@@ -34,13 +35,15 @@ class App extends React.Component {
             },
             noticeDialog: {
                 type: 'tips', //弹窗类型
+                isShowMenu:false
             },
             globalLoading: {
                 isShow: false,
                 isMask: true,
                 text: ''
             },
-            reportId:null
+            reportId:null,
+            userNoticeCount:null
 
         };
         this.onLoadList = this.onLoadList.bind(this); //载入列表
@@ -64,6 +67,8 @@ class App extends React.Component {
         this.showGlobalLoading = this.showGlobalLoading.bind(this);
         this.resetIdSets = this.resetIdSets.bind(this); //重置idSets
         this.onReportPost = this.onReportPost.bind(this);//当点击举报按钮
+        this.onLoadUserNoticeCount = this.onLoadUserNoticeCount.bind(this);//加载用户通知数
+
 
         window.onhashchange = () => {
             //当url里的hash发生变化的时候
@@ -85,17 +90,22 @@ class App extends React.Component {
         } else if (this.state.page === 'sendText') {
             pageContainer = (<SendText topText='发布' placeholder='写下你想说的话' showCheckBox={true} page={this.state.page}  showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onAddPost={this.onAddPost} data={this.state.data} userData={this.state.userData} onShowNotice={this.onShowNotice}/>);
         } else if (this.state.page === 'advise') {
-            pageContainer = (<SendText topText='反馈' showCheckBox={true} page={this.state.page} value='#建议#' showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onAddPost={this.onAddPost} data={this.state.data} userData={this.state.userData} onShowNotice={this.onShowNotice}/>);
+            pageContainer = (<SendText topText='反馈' sendButtonText='提交' showCheckBox={true} page={this.state.page} value='#建议#' showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onAddPost={this.onAddPost} data={this.state.data} userData={this.state.userData} onShowNotice={this.onShowNotice}/>);
         } else if (this.state.page === 'report') {
-            pageContainer = (<SendText topText={`${REPORT_TEXT}`} showCheckBox={false}  placeholder='报告描述' reportId={this.state.reportId}  page={this.state.page}  showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onAddPost={this.onAddPost} data={this.state.data} userData={this.state.userData} onShowNotice={this.onShowNotice}/>);
+            pageContainer = (<SendText topText={`${REPORT_TEXT}`} sendButtonText='提交' showCheckBox={false}  placeholder='报告描述' reportId={this.state.reportId}  page={this.state.page}  showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onAddPost={this.onAddPost} data={this.state.data} userData={this.state.userData} onShowNotice={this.onShowNotice}/>);
         }
         else if (this.state.page === 'index' || this.state.page === 'posted' || this.state.page === 'hot' || this.state.page === 'liked') {
             pageContainer = (<Home onReportPost={this.onReportPost} resetIdSets={this.resetIdSets} page={this.state.page} idSets={this.state.idSets} hotIdSets={this.state.hotIdSets} likedIdSets={this.state.likedIdSets} postedIdSets={this.state.postedIdSets} onShowNotice={this.onShowNotice} onToggleLike={this.onToggleLike} onRemoveNotice={this.onRemoveNotice} onToggleOther={this.onToggleOther} onLoading={this.onLoading} onLoadList={this.onLoadList} onLoadMore={this.onLoadMore} onLoadMoreError={this.onLoadMoreError} data={this.state.data} isLoadingMore={this.state.isLoadingMore} isShowMore={this.state.isShowMore} onRemovePost={this.onRemovePost} closeGlobalLoading={this.closeGlobalLoading} showGlobalLoading={this.showGlobalLoading}/>);
         } else if (this.state.page === 'signin') {
             pageContainer = (<Signin/>);
+        } else if(this.state.page ==='notice'){
+            pageContainer=(<UserNotice onLoadUserNoticeCount={this.onLoadUserNoticeCount}/>);
         }
+        let styles={
+            overflow:this.state.noticeDialog.isShowMenu?'hidden':''//控制页面是否可以滚动，menu弹窗出现时不能滚动
+        };
         return (
-            <div>
+            <div style={styles}>
                 {pageContainer}
                 <Notice onTapMask={this.onRemoveNotice} noticeDialog={this.state.noticeDialog}/>
                 <GlobalLoading loading={this.state.globalLoading}/>
@@ -106,7 +116,8 @@ class App extends React.Component {
         //更改弹窗的样式类型并展示
         this.setState({
             noticeDialog: {
-                type: params.type || 'tips'
+                type: params.type || 'tips',
+                isShowMenu:true
             }
         });
         //弹窗
@@ -220,7 +231,8 @@ class App extends React.Component {
         this.setState({
             noticeDialog: Object.assign(this.state.noticeDialog, {
                 isMask: false,
-                type: 'tips'
+                type: 'tips',
+                isShowMenu:false
             })
         });
         // console.log(this.state.noticeDialog);
@@ -317,10 +329,15 @@ class App extends React.Component {
             reportId:params.postId
         });
     }
+    onLoadUserNoticeCount(num){
+        this.setState({
+            userNoticeCount:num
+        });
+    }
 
 }
 
 render(
     <App style={{
-        height: '100%'
+        height: '100%',
     }}/>, document.querySelector('.container'));

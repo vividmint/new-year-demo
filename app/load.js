@@ -301,3 +301,18 @@ export function reportPost(params) {
         }
     });
 }
+/**
+ * 获取用户通知数
+ */
+export function getNoticeCount() {
+    return request({
+        url: '/api/notice/count'
+    }).then(result => {
+        if (result.code === 200) {
+            console.log(result);
+            return result.data;
+        } else {
+            return Promise.reject(result);
+        }
+    });
+}
