@@ -21,6 +21,7 @@ class Home extends React.Component {
         this.bindEvents = this.bindEvents.bind(this);
         this.removeEvents = this.removeEvents.bind(this);
         this.onScroll = this.onScroll.bind(this);
+        
         let idSets = null,
             type = this.props.page;
         if (type === 'index') {

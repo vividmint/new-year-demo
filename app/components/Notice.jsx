@@ -4,7 +4,9 @@ import Mask from './Mask';
 
 let _notificationSystem = null;
 let _currentNotice = {}; //当前弹窗
+
 export function popNotice(params) {
+    //展示弹窗
     var _params = Object.assign(params, {
         message: params.message,
         level: params.level,
@@ -17,12 +19,17 @@ export function popNotice(params) {
     });
     _currentNotice = _notificationSystem.addNotification(_params);
     return _currentNotice;
+
 }
+
 export function removeNotice(params) {
+    //移除弹窗
     params = params || _currentNotice;
     return _notificationSystem.removeNotification(params);
 }
+
 export class Notice extends React.Component {
+    //弹窗组件
     constructor(props) {
         super(props);
         _notificationSystem = null;

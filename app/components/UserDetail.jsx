@@ -19,6 +19,7 @@ class UserDetail extends React.Component {
                 alignItems: 'center',
                 backgroundColor: '#F2F2F2',
                 color: 'rgba(0, 0, 0, 0.8)',
+                width:'100%'
             },
             userInfo = {
                 display: 'flex',

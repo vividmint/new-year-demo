@@ -43,7 +43,11 @@ class App extends React.Component {
                 text: ''
             },
             reportId:null,
-            userNoticeCount:null
+            userNoticeCount:{
+                count:null,
+                likeCount:null,
+                replyCount:null
+            }
 
         };
         this.onLoadList = this.onLoadList.bind(this); //载入列表
@@ -117,7 +121,7 @@ class App extends React.Component {
         this.setState({
             noticeDialog: {
                 type: params.type || 'tips',
-                isShowMenu:true
+                isShowMenu:params.type==='menu'?true:false
             }
         });
         //弹窗
@@ -329,9 +333,13 @@ class App extends React.Component {
             reportId:params.postId
         });
     }
-    onLoadUserNoticeCount(num){
+    onLoadUserNoticeCount(params){
         this.setState({
-            userNoticeCount:num
+            userNoticeCount:{
+                count:params.count,
+                likeCount:params.likeCount,
+                replyCount:params.replyCount
+            }
         });
     }
 

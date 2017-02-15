@@ -13,7 +13,7 @@ import MdEvent from 'react-icons/lib/md/event';
 import FaBuildingO from 'react-icons/lib/fa/building-o';
 import FaSearch from 'react-icons/lib/fa/search';
 import FaBarChart from 'react-icons/lib/fa/bar-chart';
-import TiMessages from 'react-icons/lib/ti/messages';
+// import TiMessages from 'react-icons/lib/ti/messages';
 
 class Box extends React.Component {
     constructor(props) {
@@ -61,7 +61,7 @@ class Box extends React.Component {
             padding: '10px 8px 8px 8px',
         };
         const ICON_MAP = {
-            'notice':<TiMessages style={icon}/>,
+            // 'notice':<TiMessages style={icon}/>,
             'exam': <MdEventNote style={icon}/>,
             'examAgain': <MdEvent style={icon}/>,
             'schedule': <FaCalendar style={icon}/>,
