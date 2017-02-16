@@ -1,15 +1,14 @@
 import React from 'react';
-// import MdKeyboardControl from 'react-icons/lib/md/keyboard-control';
+import FaBellO from 'react-icons/lib/fa/bell-o';
+import FaAngleRight from 'react-icons/lib/fa/angle-right';
 import MdSettings from 'react-icons/lib/md/settings';
 import {setHash} from '../utils';
-import {signout,getIndexUrl} from '../business';
+import {signout, getIndexUrl} from '../business';
 import Menu from './Menu';
 
 class UserDetail extends React.Component {
     constructor(props) {
         super(props);
-        this.toUserLikeHash = this.toUserLikeHash.bind(this);
-        this.toUserPostHash = this.toUserPostHash.bind(this);
         this.onShowProfieMenu = this.onShowProfieMenu.bind(this);
     }
     render() {
@@ -19,7 +18,7 @@ class UserDetail extends React.Component {
                 alignItems: 'center',
                 backgroundColor: '#F2F2F2',
                 color: 'rgba(0, 0, 0, 0.8)',
-                width:'100%'
+                width: '100%'
             },
             userInfo = {
                 display: 'flex',
@@ -44,7 +43,7 @@ class UserDetail extends React.Component {
                 position: 'absolute',
                 top: 8,
                 right: 10,
-                fontSize: 26,
+                fontSize: 26
             },
             userBottom = {
                 display: 'flex',
@@ -57,31 +56,71 @@ class UserDetail extends React.Component {
                 justifyContent: 'center',
                 alignItems: 'center',
                 flex: 1,
-                borderRight: '0.5px solid rgb(224, 221, 221)'
+                borderRight: '0.5px solid rgb(224, 221, 221)',
+                textDecoration:'none'
             },
             right = {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                flex: 1
+                flex: 1,
+                textDecoration:'none'
             },
             countName = {
                 paddingRight: 10,
-                color:'rgba(0,0,0,0.5)'
+                color: 'rgba(0,0,0,0.5)'
             },
             count = {
                 color: 'rgba(0,0,0,0.8)',
                 fontSize: 18
+            },
+            bar = {
+                paddingBottom: '10px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '100%'
+            },
+            noticeBarStyle = {
+                backgroundColor: 'rgba(0,0,0,0.4)',
+                borderRadius: 5,
+                color: 'white',
+                padding: '6px 3px 6px 8px',
+                textDecoration:'none'
+            },
+            bell = {
+                marginRight: 15,
+                fontSize: 16,
+                marginTop: -2
+            },
+            text = {
+                fontSize: 15,
+                marginRight: 8
+            },
+            angle = {
+                marginTop: -4,
+                fontSize: 18
             };
+
         let userAvatar = null,
             posts = null,
             nickName = null,
-            like = null;
+            like = null,
+            noticeBar = null;
+
         if (this.props.userData) {
+            if (this.props.userNoticeCount) {
+                noticeBar = <div style={bar}>
+                    <a href={'#page=notice'} style={noticeBarStyle}><FaBellO style={bell}/>
+                        <span>
+                            <span style={text}>{this.props.userNoticeCount.count}条新消息</span><FaAngleRight style={angle}/></span>
+                    </a>
+                </div>;
+            }
             userAvatar = <img style={avatar} src={this.props.userData.avatar}></img>;
             nickName = <div style={nickName}>{this.props.userData.nickname}</div>;
-            posts = <div style={count} onTouchTap={this.toUserPostHash} >{this.props.userData.postsCount}</div>;
-            like = <div style={count} onTouchTap={this.toUserLikeHash} >{this.props.userData.likePostsCount}</div>;
+            posts = <div style={count} onTouchTap={this.toUserPostHash}>{this.props.userData.postsCount}</div>;
+            like = <div style={count} onTouchTap={this.toUserLikeHash}>{this.props.userData.likePostsCount}</div>;
         }
         return (
             <div style={styles}>
@@ -91,25 +130,18 @@ class UserDetail extends React.Component {
                         <MdSettings style={settings} onTouchTap={this.onShowProfieMenu}/> {nickName}
                     </div>
                     <div style={userBottom}>
-                        <div style={left}>
-                            <div style={countName} onTouchTap={this.toUserPostHash}>帖子</div>{posts}</div>
-                        <div style={right}>
-                            <div style={countName} onTouchTap={this.toUserLikeHash}>喜欢</div>{like}</div>
+                        <a href={'#page=posted'} style={left}>
+                            <div style={countName}>帖子</div>{posts}</a>
+                        <a href={'#page=liked'} style={right}>
+                            <div style={countName}>喜欢</div>{like}</a>
                     </div>
                 </div>
+                {noticeBar}
             </div>
         );
     }
 
-    toUserLikeHash() {
-        //跳转赞过的帖子列表
-        setHash('page=liked');
-    }
-    toUserPostHash() {
-        //跳转赞过的帖子列表
-        setHash('page=posted');
-    }
-    onShowProfieMenu(){
+    onShowProfieMenu() {
         let menus = [];
         menus.push({
             text: '反馈',
@@ -119,9 +151,16 @@ class UserDetail extends React.Component {
             }
         });
         menus.push({
+            text: '发现',
+            onTap: () => {
+                this.props.onRemoveNotice();
+                setHash('page=search');
+            }
+        });
+        menus.push({
             text: '退出登录',
             onTap: () => {
-                signout({redirectUrl:getIndexUrl()});
+                signout({redirectUrl: getIndexUrl()});
             }
         });
         this.props.onShowNotice({

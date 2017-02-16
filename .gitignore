@@ -6,6 +6,7 @@ npm-debug.log*
 # Runtime data
 pids
 dist
+test
 *.pid
 *.seed
 *.pid.lock

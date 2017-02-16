@@ -15,3 +15,5 @@ export const INDEX_PATH = '/beta/';
 export const LOGIN_URL = '/login';
 
 export const REPORT_TEXT = '报告';
+
+export const LOADING_CODE = -1001;

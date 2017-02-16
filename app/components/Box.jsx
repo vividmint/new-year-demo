@@ -13,7 +13,6 @@ import MdEvent from 'react-icons/lib/md/event';
 import FaBuildingO from 'react-icons/lib/fa/building-o';
 import FaSearch from 'react-icons/lib/fa/search';
 import FaBarChart from 'react-icons/lib/fa/bar-chart';
-// import TiMessages from 'react-icons/lib/ti/messages';
 
 class Box extends React.Component {
     constructor(props) {
@@ -24,7 +23,8 @@ class Box extends React.Component {
         const styles = {
             display: 'flex',
             flexWrap: 'wrap',
-            borderBottom:'0.8px solid rgba(0,0,0,0.1)'
+            borderBottom:'0.8px solid rgba(0,0,0,0.1)',
+            width: '100%',
         };
 
         var itemStyle = {

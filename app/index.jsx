@@ -7,6 +7,7 @@ import User from './pages/User';
 import UserNotice from './pages/UserNotice';
 import Signin from './pages/Signin';
 import SendText from './pages/SendText';
+import Search from './pages/Search';
 import Detail from './pages/Detail.jsx';
 import GlobalLoading from './components/GlobalLoading';
 import injectTapEventPlugin from 'react-tap-event-plugin';
@@ -28,11 +29,6 @@ class App extends React.Component {
             userData: null, //当前登录用户信息
             isShowMore: false, //是否展示加载更多按钮
             isLoadingMore: false, //是否正在加载更多
-            isLoadingCommentEnd: false, //是否没有更多评论了
-            showMoreComment: {
-                isShowMoreComment: false, //是否展示加载更多评论
-                isLoadingMoreComment: false, //是否正在加载更多评论
-            },
             noticeDialog: {
                 type: 'tips', //弹窗类型
                 isShowMenu:false
@@ -53,6 +49,7 @@ class App extends React.Component {
         this.onLoadList = this.onLoadList.bind(this); //载入列表
         this.refresh = this.refresh.bind(this); //刷新列表
         this.onLoadDetail = this.onLoadDetail.bind(this); //加载帖子详情页
+        this.onLoadDetailFail = this.onLoadDetailFail.bind(this);//帖子详情加载失败
         this.onToggleLike = this.onToggleLike.bind(this); //点赞帖子
         this.onToggleOther = this.onToggleOther.bind(this); //点击三点点
         this.onLoadMoreError = this.onLoadMoreError.bind(this); //
@@ -86,11 +83,11 @@ class App extends React.Component {
         let pageContainer = null;
         if (this.state.page === 'detail') {
             let id = getHash('id');
-            pageContainer = (<Detail onReportPost={this.onReportPost} showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onRemovePost={this.onRemovePost} onLoadMore={this.onLoadMore} onLoadCommentListEnd={this.onLoadCommentListEnd} onLoading={this.onLoading} onLoadMoreError={this.onLoadMoreError} isLoadingMore={this.state.isLoadingMore} onAddComment={this.onAddComment} onCommentToggleLike={this.onCommentToggleLike} onRemoveComment={this.onRemoveComment} onRemoveNotice={this.onRemoveNotice} onShowNotice={this.onShowNotice} onToggleLike={this.onToggleLike} onLoadDetail={this.onLoadDetail} commentData={this.state.commentData} onLoadCommentList={this.onLoadCommentList} data={this.state.data
+            pageContainer = (<Detail onLoadDetailFail={this.onLoadDetailFail} loading={this.state.globalLoading} onReportPost={this.onReportPost} showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onRemovePost={this.onRemovePost} onLoadMore={this.onLoadMore}  onLoadCommentListEnd={this.onLoadCommentListEnd} onLoading={this.onLoading} onLoadMoreError={this.onLoadMoreError} isLoadingMore={this.state.isLoadingMore} onAddComment={this.onAddComment} onCommentToggleLike={this.onCommentToggleLike} onRemoveComment={this.onRemoveComment} onRemoveNotice={this.onRemoveNotice} onShowNotice={this.onShowNotice} onToggleLike={this.onToggleLike} onLoadDetail={this.onLoadDetail} commentData={this.state.commentData} onLoadCommentList={this.onLoadCommentList} data={this.state.data
                 ? this.state.data[id]
                 : null}/>);
         } else if (this.state.page === 'user') {
-            pageContainer = (<User showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onRemoveNotice={this.onRemoveNotice} onShowNotice={this.onShowNotice} userData={this.state.userData} onLoadUser={this.onLoadUser} onLoadLikedPosts={this.onLoadLikedPosts} onLoadMore={this.onLoadMore} onLoadMoreError={this.onLoadMoreError} isLoadingMore={this.state.isLoadingMore} loading={this.state.globalLoading}/>);
+            pageContainer = (<User onLoadUserNoticeCount={this.onLoadUserNoticeCount} userNoticeCount={this.state.userNoticeCount} showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onRemoveNotice={this.onRemoveNotice} onShowNotice={this.onShowNotice} userData={this.state.userData} onLoadUser={this.onLoadUser} onLoadLikedPosts={this.onLoadLikedPosts} onLoadMore={this.onLoadMore} onLoadMoreError={this.onLoadMoreError} isLoadingMore={this.state.isLoadingMore} loading={this.state.globalLoading}/>);
         } else if (this.state.page === 'sendText') {
             pageContainer = (<SendText topText='发布' placeholder='写下你想说的话' showCheckBox={true} page={this.state.page}  showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onAddPost={this.onAddPost} data={this.state.data} userData={this.state.userData} onShowNotice={this.onShowNotice}/>);
         } else if (this.state.page === 'advise') {
@@ -103,10 +100,14 @@ class App extends React.Component {
         } else if (this.state.page === 'signin') {
             pageContainer = (<Signin/>);
         } else if(this.state.page ==='notice'){
-            pageContainer=(<UserNotice onLoadUserNoticeCount={this.onLoadUserNoticeCount}/>);
+            pageContainer=(<UserNotice onLoadUserNoticeCount={this.onLoadUserNoticeCount} userNoticeCount={this.state.userNoticeCount}/>);
+        } else if(this.state.page==='search'){
+            pageContainer=(<Search/>);
+        } else {
+            pageContainer=(<div>404页面不存在</div>);
         }
         let styles={
-            overflow:this.state.noticeDialog.isShowMenu?'hidden':''//控制页面是否可以滚动，menu弹窗出现时不能滚动
+            // overflowY:this.state.noticeDialog.isShowMenu?'hidden':''//控制页面是否可以滚动，menu弹窗出现时不能滚动
         };
         return (
             <div style={styles}>
@@ -132,8 +133,16 @@ class App extends React.Component {
     onLoadCommentListEnd(params) {
         //停止加载评论
         let data = this.state.data;
-        data[params.postId].isCommentListEnd = true;
+        data[params.postId].isLoadingCommentEnd = true;
         this.setState({data: data});
+    }
+    onLoadDetailFail(params){
+        let data = {};
+        data[params.postId] = {};
+        this.setState({
+            data
+        });
+      //加载帖子错误
     }
 
     onLoadCommentList(params) {
@@ -151,6 +160,7 @@ class App extends React.Component {
             data: data
         });
     }
+
     resetIdSets() {
         this.setState({idSets: null});
     }
@@ -184,7 +194,7 @@ class App extends React.Component {
             this.setState({data: params.data, postedIdSets: idSets, isShowMore: true, isLoadingMore: false});
 
         }
-        console.log(this.state);
+        // console.log(this.state);
 
     }
 

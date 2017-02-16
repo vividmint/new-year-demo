@@ -5,7 +5,8 @@ import {
     toLogin
 } from './business';
 import {
-    LIST_DEFAULT_LENTH
+    LIST_DEFAULT_LENTH,
+    LOADING_CODE
 } from './constans/config.js';
 const loadStatus = {
     getList: false,
@@ -101,20 +102,35 @@ export function deletePost(params) {
 获取评论列表
 */
 export function getComments(params) {
+    console.log('params',params);
+    console.log(loadStatus);
     if (loadStatus.getComments) {
-        return;
+        console.log('zzzzzz');
+        return Promise.reject({
+            code:LOADING_CODE,
+            message:'正在请求中'
+        });
     }
+    console.log('herexx',loadStatus);
     loadStatus.getComments = true;
-    let url = `/api/comments/?postId=${params.postId}&pageSize=8`;
+    console.log('herehy',loadStatus);
+    let url = `/api/comments/?postId=${params.postId}&pageSize=${LIST_DEFAULT_LENTH}`;
+    console.log('url1',url);
     if (params.fromId) {
+        console.log('url2');
         url += `&fromId=${params.fromId}`;
+        console.log('url3',url);
     }
+    console.log(url);
+    console.log('request',request);
     return request({
         url
     }).then(result => {
+        console.log('result',result);
         loadStatus.getComments = false;
         //获取当前帖子的评论列表
         if (result.code === 200) {
+            console.log('return',result.data);
             return result.data;
         } else {
             return Promise.reject(result);
@@ -309,7 +325,25 @@ export function getNoticeCount() {
         url: '/api/notice/count'
     }).then(result => {
         if (result.code === 200) {
-            console.log(result);
+            return result.data;
+        } else {
+            return Promise.reject(result);
+        }
+    });
+}
+
+/**
+ * 获取用户通知列表
+ */
+export function getNoticeList(params){
+    let url = `/api/notices/?pageSize=${LIST_DEFAULT_LENTH}`;
+    if (params.fromId) {
+        url += `&fromId=${params.fromId}`;
+    }
+    return request ({
+        url:url
+    }).then(result => {
+        if (result.code === 200) {
             return result.data;
         } else {
             return Promise.reject(result);

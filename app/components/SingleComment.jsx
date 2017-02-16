@@ -68,7 +68,6 @@ class SingleComment extends React.Component {
                 textAlign:'justify'
             };
         const data = this.props.data;
-        console.log(this.props.data);
         return (
           <div style={styles} onTouchTap={this.onShowCommentMenu}>
                 <div style={top}>
