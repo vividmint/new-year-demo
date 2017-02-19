@@ -1,12 +1,11 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import {getDocumentHeight} from '../utils.js';
+// import ReactDOM from 'react-dom';
 import GlobalLoading from '../components/GlobalLoading.jsx';
 import List from '../components/List.jsx';
 import Tab from '../components/Tab/Tab.jsx';
 import {getList, postLike, deleteLike, deletePost} from '../load';
 import {toLogin} from '../business';
-import {INDEX_LIST_LOAD_MORE_DISTANCE, REPORT_TEXT} from '../constans/config';
+import {REPORT_TEXT} from '../constans/config';
 import Menu from '../components/Menu';
 
 class Home extends React.Component {
@@ -19,9 +18,7 @@ class Home extends React.Component {
         this.onToggleOther = this.onToggleOther.bind(this);
         this.onDeletePost = this.onDeletePost.bind(this);
         this.onRefresh = this.onRefresh.bind(this);
-        // this.bindEvents = this.bindEvents.bind(this);
-        // this.removeEvents = this.removeEvents.bind(this);
-        // this.onScroll = this.onScroll.bind(this);
+
 
         let idSets = null,
             type = this.props.page;
@@ -50,8 +47,6 @@ class Home extends React.Component {
             }
             if (!nextProps.idSets) {
                 this.setState({idSets: null, isLoadingEnd: false});
-                console.log('state', this.state);
-                // this.props.onLoading();
                 this.getList({type, fromId: null});
                 return;
             }
@@ -104,7 +99,7 @@ class Home extends React.Component {
             return <div>没有帖子</div>;
         } else {
             return (
-                <div>
+                <div style={{height:'100%'}}>
                     <List data={this.props.data} idSets={this.state.idSets} onToggleLike={this.onToggleLike} onLoadMore={this.onLoadMore} isShowMore={this.props.isShowMore} isLoadingMore={this.props.isLoadingMore} onToggleOther={this.onToggleOther} isLoadingEnd={this.state.isLoadingEnd}/>
                     <Tab onRefresh={this.onRefresh} page={this.props.page}/>
                 </div>
@@ -119,34 +114,7 @@ class Home extends React.Component {
     }
 
 
-    // bindEvents() {
-    //     const list = ReactDOM.findDOMNode(this.refs.list);
-    //     console.log(list);
-    //     // list.addEventListener('scroll', this.onScroll);
-    //     // window.addEventListener('scroll', this.onScroll);
-    //
-    // }
-    // removeEvents() {
-    //     const list = ReactDOM.findDOMNode(this.refs.list);
-    //     list.removeEventListener('scroll', this.onScroll);
-    // }
-    // componentWillUnmount() {
-    //     this.removeEvents();
-    // }
-    //
-    // onScroll() {
-    //     if (this.state.isLoadingEnd) {
-    //         return;
-    //     }
-    //     //下拉刷新
-    //     let documentHeight = getDocumentHeight(); //整个页面的高度
-    //     let distance = documentHeight - (window.document.body.scrollTop + window.screen.height);
-    //     //window.screen.height  屏幕的高度
-    //     //window.document.body.scrollTop  屏幕顶部距离页面顶部的距离
-    //     if (distance <= INDEX_LIST_LOAD_MORE_DISTANCE && distance > 0) {
-    //         this.onLoadMore();
-    //     }
-    // }
+
     getList(params) {
         let type = params.type;
         getList({
@@ -183,9 +151,6 @@ class Home extends React.Component {
     }
     onRefresh() {
         this.props.resetIdSets();
-        // this.getList({
-        //     type:'index'
-        // });
     }
 
     getFromId() {

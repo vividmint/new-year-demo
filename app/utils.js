@@ -83,7 +83,7 @@ export function getHashObj() {
     let hash = window.location.hash.substr(1);
     let hashObj = {};
     let keyValueArr = hash.split('&');
-    keyValueArr.forEach(keyValue=>{
+    keyValueArr.forEach(keyValue => {
         let keyValueSmallArr = keyValue.split('=');
         hashObj[keyValueSmallArr[0]] = keyValueSmallArr[1] || '';
     });
@@ -113,8 +113,8 @@ export function setHash(hash) {
 export function setUrl(url) {
     window.location.href = url;
 }
-export function getDocumentHeight() {
-    let body = document.body,
+export function getDocumentHeight(params) {
+    let body = params.element || document.body,
         html = document.documentElement;
     let height = Math.max(body.scrollHeight, body.offsetHeight,
         html.clientHeight, html.scrollHeight, html.offsetHeight);
@@ -156,4 +156,19 @@ export function timeFromNow(date) {
         return interval + '分钟前';
     }
     return (Math.floor(seconds) + 1) + '秒前';
+}
+export function formatTime(time) {
+    let _time;
+    let nowYear = new Date().getYear();
+    let year = time.getYear();
+    let month = time.getMonth()+1;
+    let date = time.getDate();
+    let hour = ('0'+time.getHours()).toString().substr(-2);
+    let minute = ('0'+time.getMinutes()).toString().substr(-2);
+    if (year === nowYear) {
+        _time = month + '-' + date + ' ' + hour + ':' + minute;
+    } else {
+        _time = year + month + '-' + date + ' ' + hour + ':' + minute;
+    }
+    return _time;
 }

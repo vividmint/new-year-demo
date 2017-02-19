@@ -43,9 +43,20 @@ class App extends React.Component {
                 count:null,
                 likeCount:null,
                 replyCount:null
-            }
+            },
+            userNoticeData:null,
+            userNoticeIdSets:null
 
         };
+
+        /*
+        {
+        "2222":{
+        action:'likeCount',
+        content:222
+        }
+        }
+         */
         this.onLoadList = this.onLoadList.bind(this); //载入列表
         this.refresh = this.refresh.bind(this); //刷新列表
         this.onLoadDetail = this.onLoadDetail.bind(this); //加载帖子详情页
@@ -69,6 +80,7 @@ class App extends React.Component {
         this.resetIdSets = this.resetIdSets.bind(this); //重置idSets
         this.onReportPost = this.onReportPost.bind(this);//当点击举报按钮
         this.onLoadUserNoticeCount = this.onLoadUserNoticeCount.bind(this);//加载用户通知数
+        this.onLoadUserNoticeData = this.onLoadUserNoticeData.bind(this);//加载用户的通知列表
 
 
         window.onhashchange = () => {
@@ -91,16 +103,16 @@ class App extends React.Component {
         } else if (this.state.page === 'sendText') {
             pageContainer = (<SendText topText='发布' placeholder='写下你想说的话' showCheckBox={true} page={this.state.page}  showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onAddPost={this.onAddPost} data={this.state.data} userData={this.state.userData} onShowNotice={this.onShowNotice}/>);
         } else if (this.state.page === 'advise') {
-            pageContainer = (<SendText topText='反馈' sendButtonText='提交' showCheckBox={true} page={this.state.page} value='#建议#' showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onAddPost={this.onAddPost} data={this.state.data} userData={this.state.userData} onShowNotice={this.onShowNotice}/>);
+            pageContainer = (<SendText topText='反馈'  showCheckBox={true} page={this.state.page} value='#建议#' showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onAddPost={this.onAddPost} data={this.state.data} userData={this.state.userData} onShowNotice={this.onShowNotice}/>);
         } else if (this.state.page === 'report') {
-            pageContainer = (<SendText topText={`${REPORT_TEXT}`} sendButtonText='提交' showCheckBox={false}  placeholder='报告描述' reportId={this.state.reportId}  page={this.state.page}  showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onAddPost={this.onAddPost} data={this.state.data} userData={this.state.userData} onShowNotice={this.onShowNotice}/>);
+            pageContainer = (<SendText topText={`${REPORT_TEXT}`} showCheckBox={false}  placeholder='报告描述' reportId={this.state.reportId}  page={this.state.page}  showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onAddPost={this.onAddPost} data={this.state.data} userData={this.state.userData} onShowNotice={this.onShowNotice}/>);
         }
         else if (this.state.page === 'index' || this.state.page === 'posted' || this.state.page === 'hot' || this.state.page === 'liked') {
             pageContainer = (<Home onReportPost={this.onReportPost} resetIdSets={this.resetIdSets} page={this.state.page} idSets={this.state.idSets} hotIdSets={this.state.hotIdSets} likedIdSets={this.state.likedIdSets} postedIdSets={this.state.postedIdSets} onShowNotice={this.onShowNotice} onToggleLike={this.onToggleLike} onRemoveNotice={this.onRemoveNotice} onToggleOther={this.onToggleOther} onLoading={this.onLoading} onLoadList={this.onLoadList} onLoadMore={this.onLoadMore} onLoadMoreError={this.onLoadMoreError} data={this.state.data} isLoadingMore={this.state.isLoadingMore} isShowMore={this.state.isShowMore} onRemovePost={this.onRemovePost} closeGlobalLoading={this.closeGlobalLoading} showGlobalLoading={this.showGlobalLoading}/>);
         } else if (this.state.page === 'signin') {
             pageContainer = (<Signin/>);
         } else if(this.state.page ==='notice'){
-            pageContainer=(<UserNotice onLoadUserNoticeCount={this.onLoadUserNoticeCount} userNoticeCount={this.state.userNoticeCount}/>);
+            pageContainer=(<UserNotice isLoadingMore={this.state.isLoadingMore} onShowNotice={this.onShowNotice} userNoticeIdSets={this.state.userNoticeIdSets} userNoticeData={this.state.userNoticeData} onLoadUserNoticeData={this.onLoadUserNoticeData} userNoticeData={this.state.userNoticeData} onLoadMore={this.onLoadMore} isShowMore={this.props.isShowMore} onLoading={this.onLoading}/>);
         } else if(this.state.page==='search'){
             pageContainer=(<Search/>);
         } else {
@@ -350,6 +362,14 @@ class App extends React.Component {
                 likeCount:params.likeCount,
                 replyCount:params.replyCount
             }
+        });
+    }
+    onLoadUserNoticeData(params){
+        this.setState({
+            userNoticeData:params.data,
+            userNoticeIdSets:params.idSets,
+            isShowMore: true,
+            isLoadingMore: false
         });
     }
 

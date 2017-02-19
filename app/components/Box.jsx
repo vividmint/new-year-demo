@@ -13,6 +13,8 @@ import MdEvent from 'react-icons/lib/md/event';
 import FaBuildingO from 'react-icons/lib/fa/building-o';
 import FaSearch from 'react-icons/lib/fa/search';
 import FaBarChart from 'react-icons/lib/fa/bar-chart';
+import A from './A';
+
 
 class Box extends React.Component {
     constructor(props) {
@@ -102,10 +104,10 @@ class Box extends React.Component {
             }
             return (
                     <div key={'item_' + index} style={itemStyle}>
-                        <a style={button} href={item.href}>
+                        <A style={button} href={item.href}>
                             {ICON_MAP[item.key]}
                             <div style={name}>{item.text}</div>
-                        </a>
+                        </A>
                     </div>
             );
         });

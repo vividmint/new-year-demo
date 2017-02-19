@@ -1,6 +1,6 @@
 import React from 'react';
 import {getHash, setHash, getDocumentHeight} from '../utils.js';
-import {INDEX_LIST_LOAD_MORE_DISTANCE,REPORT_TEXT} from '../constans/config';
+import {INDEX_LIST_LOAD_MORE_DISTANCE, REPORT_TEXT} from '../constans/config';
 import {
     getPost,
     getComments,
@@ -47,11 +47,8 @@ class Detail extends React.Component {
         console.log(postId);
         if (!this.props.data) {
             getPost({postId: postId}).then(data => {
-                if(Array.isArray(data)){
-                    this.props.onLoadDetailFail({
-                        postId:postId,
-                        message:'帖子不存在'
-                    });
+                if (Array.isArray(data)) {
+                    this.props.onLoadDetailFail({postId: postId, message: '帖子不存在'});
                     console.log('帖子不存在');
                     return;
                 }
@@ -62,7 +59,7 @@ class Detail extends React.Component {
             });
 
         } else {
-            if (!this.props.data.commentIdSets&&!this.props.data.isLoadingCommentEnd) {
+            if (!this.props.data.commentIdSets && !this.props.data.isLoadingCommentEnd) {
                 //调用评论列表的api
                 this.getCommentList({postId});
             }
@@ -78,16 +75,17 @@ class Detail extends React.Component {
         const styles = {
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            height:'100%'
         };
         const main = {
             overflow: 'auto',
             margin: `0px 0px ${this.state.commentContainerHeight}px 0px`
         };
 
-        if (this.props.data!==null) {
+        if (this.props.data !== null) {
             let data = this.props.data;
-            if(Object.keys(data).length===0){
+            if (Object.keys(data).length === 0) {
                 return <div>帖子不存在</div>;
             }
             let commentList = data.commentIdSets
@@ -97,7 +95,9 @@ class Detail extends React.Component {
                     isMask: false
                 }}/>);
             return (
-                <div style={styles}>
+                <div style={styles} ref={listDom => {
+                    this.listDom = listDom;
+                }}>
                     <div style={main}>
                         <Item isShowFoldButton={false} onToggleLike={this.onToggleLike} data={data} onToggleOther={this.onToggleOther}/> {commentList}
                     </div>
@@ -122,16 +122,13 @@ class Detail extends React.Component {
     onScroll() {
         if (this.props.data.isLoadingCommentEnd) {
             return;
-        }else{
-            console.log('scroll');
-          //下拉刷新
-            let documentHeight = getDocumentHeight(); //整个页面的高度
-            let distance = documentHeight - (window.document.body.scrollTop + window.screen.height);
-          //window.screen.height  屏幕的高度
-          //window.document.body.scrollTop  屏幕顶部距离页面顶部的距离
+        } else {
+            let documentHeight = getDocumentHeight({element: this.listDom}); //整个页面的高度
+            let distance = documentHeight - (this.listDom.scrollTop + window.screen.height);
+            //window.screen.height  屏幕的高度
+            //window.document.body.scrollTop  屏幕顶部距离页面顶部的距离
             if (distance <= INDEX_LIST_LOAD_MORE_DISTANCE && distance > 0) {
-                console.log('yes scroll');
-                this.onLoadMoreComment({fromId:this.getFromId()});
+                this.props.onLoadMore();
             }
         }
     }
@@ -235,10 +232,10 @@ class Detail extends React.Component {
         console.log('here loadmore');
         //加载更多评论
         let postId = getHash('id');
-        console.log('params',params);
+        console.log('params', params);
         console.log(getComments);
-        getComments({postId:postId,fromId:params.fromId}).then(data => {
-            console.log('response',data);
+        getComments({postId: postId, fromId: params.fromId}).then(data => {
+            console.log('response', data);
             if (data.length === 0) {
                 this.props.onLoadCommentListEnd({postId});
                 return;
@@ -250,10 +247,10 @@ class Detail extends React.Component {
                 _data[id] = data[i];
                 commentIdSets.add(id);
             }
-            this.props.onLoadCommentList({commentIdSets, data: _data, postId,fromId:params.fromId});
+            this.props.onLoadCommentList({commentIdSets, data: _data, postId, fromId: params.fromId});
 
         }).catch((err) => {
-            console.log('err',err);
+            console.log('err', err);
         });
     }
 
@@ -357,7 +354,7 @@ class Detail extends React.Component {
         }
     }
     onCommentToggleLike(params) {
-        postCommentLike({commentId: params.commentId,postId:this.props.data.id}).then((data) => {
+        postCommentLike({commentId: params.commentId, postId: this.props.data.id}).then((data) => {
             console.log(data);
         }).catch(err => {
             console.log(err);

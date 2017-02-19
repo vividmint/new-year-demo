@@ -5,6 +5,7 @@ import MdSettings from 'react-icons/lib/md/settings';
 import {setHash} from '../utils';
 import {signout, getIndexUrl} from '../business';
 import Menu from './Menu';
+import A from './A';
 
 class UserDetail extends React.Component {
     constructor(props) {
@@ -111,10 +112,10 @@ class UserDetail extends React.Component {
         if (this.props.userData) {
             if (this.props.userNoticeCount) {
                 noticeBar = <div style={bar}>
-                    <a href={'#page=notice'} style={noticeBarStyle}><FaBellO style={bell}/>
+                    <A href={'#page=notice'} style={noticeBarStyle}><FaBellO style={bell}/>
                         <span>
                             <span style={text}>{this.props.userNoticeCount.count}条新消息</span><FaAngleRight style={angle}/></span>
-                    </a>
+                    </A>
                 </div>;
             }
             userAvatar = <img style={avatar} src={this.props.userData.avatar}></img>;
@@ -130,10 +131,10 @@ class UserDetail extends React.Component {
                         <MdSettings style={settings} onTouchTap={this.onShowProfieMenu}/> {nickName}
                     </div>
                     <div style={userBottom}>
-                        <a href={'#page=posted'} style={left}>
-                            <div style={countName}>帖子</div>{posts}</a>
-                        <a href={'#page=liked'} style={right}>
-                            <div style={countName}>喜欢</div>{like}</a>
+                        <A href={'#page=posted'} style={left}>
+                            <div style={countName}>帖子</div>{posts}</A>
+                        <A href={'#page=liked'} style={right}>
+                            <div style={countName}>喜欢</div>{like}</A>
                     </div>
                 </div>
                 {noticeBar}
