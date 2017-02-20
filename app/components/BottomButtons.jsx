@@ -2,9 +2,6 @@ import React from 'react';
 import FaHeartO from 'react-icons/lib/fa/heart-o';
 import FaCommentO from 'react-icons/lib/fa/comment-o';
 import {BASE_PRIMARY_COLOR} from '../constans/styles';
-// import FaEllipsisH from 'react-icons/lib/fa/ellipsis-h';
-// import MdFavoriteOutline from 'react-icons/lib/md/favorite-outline';
-// import MdChatBubbleOutline from 'react-icons/lib/md/chat-bubble-outline';
 import MdKeyboardControl from 'react-icons/lib/md/keyboard-control';
 
 class BottomButtons extends React.Component {
@@ -56,8 +53,7 @@ class BottomButtons extends React.Component {
             marginTop: '2px',
             fontSize: '28px'
         };
-        /** if(this.props.data){
-        */
+      
         return (
             <div style={styles} onTouchTap={this.handleClick.bind(this)}>
                 <div style={icon}>
@@ -75,11 +71,6 @@ class BottomButtons extends React.Component {
                 <div style={otherStyles} onTouchTap={this.onToggleOther}><MdKeyboardControl/></div>
             </div>
         );
-        /**
-        }else{
-            return(<loading/>);
-        }
-        */
 
     }
     onClickComment() {

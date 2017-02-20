@@ -1,9 +1,10 @@
 import React from 'react';
-import Item from './Item';
-import Button from './Button';
+import Item from '../Item';
+import Button from '../Button';
 import Loading from 'react-loading';
-import {INDEX_LIST_LOAD_MORE_DISTANCE} from '../constans/config';
-import {getDocumentHeight} from '../utils.js';
+import {INDEX_LIST_LOAD_MORE_DISTANCE} from '../../constans/config';
+import {getDocumentHeight} from '../../utils.js';
+import Css from './List.css';
 
 class List extends React.Component {
     constructor(props) {
@@ -16,7 +17,7 @@ class List extends React.Component {
         const styles = {
             overflow: 'scroll',
             flex: '0 1 auto',
-            height: '100%'
+            height: '100%',
         };
         const spinnerBox = {
             display: 'flex',
@@ -43,7 +44,7 @@ class List extends React.Component {
         return (
             <div ref={listDom=>{
                 this.listDom = listDom;
-            }} onScroll={this.onScroll} style={styles}>
+            }} className={Css.listContainer} onScroll={this.onScroll} style={styles}>
                 {ItemArr}
                 {moreButton}
                 <div style={spinnerBox}>{loading}</div>

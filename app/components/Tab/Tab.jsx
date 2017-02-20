@@ -2,7 +2,6 @@ import React from 'react';
 import TiHome from 'react-icons/lib/ti/home';
 import MdAddCircle from 'react-icons/lib/md/add-circle';
 import MdAccountCircle from 'react-icons/lib/md/account-circle';
-//import TiCompass from 'react-icons/lib/ti/compass';
 import {BASE_PRIMARY_COLOR} from '../../constans/styles';
 
 class Tab extends React.Component {
@@ -64,17 +63,6 @@ class Tab extends React.Component {
                     : false
             }
         ];
-        /**
-         * {
-         * type:"count",
-         * value:1866
-         * }
-         *
-         * {
-         * type:"dot",
-         * value:true
-         * }
-         */
 
         const tabMap = {
             'home': <TiHome style={iconStyle}/>,

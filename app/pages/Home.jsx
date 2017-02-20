@@ -1,7 +1,6 @@
 import React from 'react';
-// import ReactDOM from 'react-dom';
 import GlobalLoading from '../components/GlobalLoading.jsx';
-import List from '../components/List.jsx';
+import List from '../components/List';
 import Tab from '../components/Tab/Tab.jsx';
 import {getList, postLike, deleteLike, deletePost} from '../load';
 import {toLogin} from '../business';
@@ -101,7 +100,7 @@ class Home extends React.Component {
             return (
                 <div style={{height:'100%'}}>
                     <List data={this.props.data} idSets={this.state.idSets} onToggleLike={this.onToggleLike} onLoadMore={this.onLoadMore} isShowMore={this.props.isShowMore} isLoadingMore={this.props.isLoadingMore} onToggleOther={this.onToggleOther} isLoadingEnd={this.state.isLoadingEnd}/>
-                    <Tab onRefresh={this.onRefresh} page={this.props.page}/>
+                    <Tab onRefresh={this.onRefresh} page={this.props.page} count={this.props.userNoticeCount.count || null}/>
                 </div>
             );
         }

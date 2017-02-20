@@ -4,6 +4,7 @@ import {INDEX_LIST_LOAD_MORE_DISTANCE} from '../../constans/config';
 import FaHeartO from 'react-icons/lib/fa/heart-o';
 import FaCommentsO from 'react-icons/lib/fa/comments-o';
 import {formatTime, setHash, getDocumentHeight} from '../../utils';
+import {markAsRead} from '../../load';
 import Css from './UserNoticeList.css';
 import Button from '../Button';
 import Loading from 'react-loading';
@@ -13,6 +14,12 @@ class UserNoticeList extends React.Component {
         super(props);
         this.toDetailHash = this.toDetailHash.bind(this);
         this.onScroll = this.onScroll.bind(this);
+    }
+    componentDidMount() {
+        this.props.onMarkAsRead();
+        markAsRead().then(() => {}).catch(err => {
+            console.log(err);
+        });
     }
     render() {
 
@@ -134,7 +141,7 @@ class UserNoticeList extends React.Component {
                                 <div style={itemTop}>
                                     <div style={topLeft}>
                                         <FaCommentsO style={iconStyle}/>
-                                        <span style={message}>有人回复了你的帖子：</span>
+                                        <span style={message}>有人回复了你的帖子</span>
                                     </div>
                                     <div>
                                         <div style={timeStyle}>{_time}</div>
@@ -156,7 +163,7 @@ class UserNoticeList extends React.Component {
                 }
             }
             return (
-                <div style={{
+                <div className={Css.noticeContainer} style={{
                     height: '100%',
                     overflowY: 'scroll'
                 }} onScroll={this.onScroll} ref={listDom => {

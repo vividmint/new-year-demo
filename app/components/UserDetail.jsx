@@ -1,7 +1,8 @@
 import React from 'react';
 import FaBellO from 'react-icons/lib/fa/bell-o';
 import FaAngleRight from 'react-icons/lib/fa/angle-right';
-import MdSettings from 'react-icons/lib/md/settings';
+// import MdSettings from 'react-icons/lib/md/settings';
+import MdKeyboardControl from 'react-icons/lib/md/keyboard-control';
 import {setHash} from '../utils';
 import {signout, getIndexUrl} from '../business';
 import Menu from './Menu';
@@ -25,7 +26,7 @@ class UserDetail extends React.Component {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                padding: '15px 0px',
+                padding: '12px 0px',
                 width: '100%'
             },
 
@@ -42,9 +43,9 @@ class UserDetail extends React.Component {
             },
             settings = {
                 position: 'absolute',
-                top: 8,
+                top: 2,
                 right: 10,
-                fontSize: 26
+                fontSize: 32
             },
             userBottom = {
                 display: 'flex',
@@ -76,7 +77,7 @@ class UserDetail extends React.Component {
                 fontSize: 18
             },
             bar = {
-                paddingBottom: '10px',
+                paddingBottom: 12,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -102,7 +103,6 @@ class UserDetail extends React.Component {
                 marginTop: -4,
                 fontSize: 18
             };
-
         let userAvatar = null,
             posts = null,
             nickName = null,
@@ -110,7 +110,7 @@ class UserDetail extends React.Component {
             noticeBar = null;
 
         if (this.props.userData) {
-            if (this.props.userNoticeCount) {
+            if (this.props.userNoticeCount.count&&this.props.userNoticeCount.count!==0) {
                 noticeBar = <div style={bar}>
                     <A href={'#page=notice'} style={noticeBarStyle}><FaBellO style={bell}/>
                         <span>
@@ -128,7 +128,7 @@ class UserDetail extends React.Component {
                 <div style={userInfo}>
                     <div style={userTop}>
                         {userAvatar}
-                        <MdSettings style={settings} onTouchTap={this.onShowProfieMenu}/> {nickName}
+                        <MdKeyboardControl style={settings} onTouchTap={this.onShowProfieMenu}/> {nickName}
                     </div>
                     <div style={userBottom}>
                         <A href={'#page=posted'} style={left}>
@@ -152,10 +152,10 @@ class UserDetail extends React.Component {
             }
         });
         menus.push({
-            text: '发现',
+            text: '消息列表',
             onTap: () => {
                 this.props.onRemoveNotice();
-                setHash('page=search');
+                setHash('page=notice');
             }
         });
         menus.push({

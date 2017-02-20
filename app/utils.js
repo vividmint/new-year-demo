@@ -159,8 +159,8 @@ export function timeFromNow(date) {
 }
 export function formatTime(time) {
     let _time;
-    let nowYear = new Date().getYear();
-    let year = time.getYear();
+    let nowYear = new Date().getFullYear();
+    let year = time.getFullYear();
     let month = time.getMonth()+1;
     let date = time.getDate();
     let hour = ('0'+time.getHours()).toString().substr(-2);
@@ -168,7 +168,7 @@ export function formatTime(time) {
     if (year === nowYear) {
         _time = month + '-' + date + ' ' + hour + ':' + minute;
     } else {
-        _time = year + month + '-' + date + ' ' + hour + ':' + minute;
+        _time = year+ '-' + month + '-' + date + ' ' + hour + ':' + minute;
     }
     return _time;
 }

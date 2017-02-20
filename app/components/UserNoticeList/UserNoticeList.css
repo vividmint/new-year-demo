@@ -1,9 +1,12 @@
+.noticeContainer{
+  -webkit-overflow-scrolling:touch;
+}
 .preview {
-    height: 66px;
-    line-height:22px;
+    max-height: 44px;
+    line-height: 22px;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 2;
     overflow: hidden;
     text-overflow: ellipsis;
 }

@@ -102,35 +102,23 @@ export function deletePost(params) {
 获取评论列表
 */
 export function getComments(params) {
-    console.log('params',params);
-    console.log(loadStatus);
     if (loadStatus.getComments) {
-        console.log('zzzzzz');
         return Promise.reject({
             code:LOADING_CODE,
             message:'正在请求中'
         });
     }
-    console.log('herexx',loadStatus);
     loadStatus.getComments = true;
-    console.log('herehy',loadStatus);
     let url = `/api/comments/?postId=${params.postId}&pageSize=${LIST_DEFAULT_LENTH}`;
-    console.log('url1',url);
     if (params.fromId) {
-        console.log('url2');
         url += `&fromId=${params.fromId}`;
-        console.log('url3',url);
     }
-    console.log(url);
-    console.log('request',request);
     return request({
         url
     }).then(result => {
-        console.log('result',result);
         loadStatus.getComments = false;
         //获取当前帖子的评论列表
         if (result.code === 200) {
-            console.log('return',result.data);
             return result.data;
         } else {
             return Promise.reject(result);
@@ -197,6 +185,24 @@ export function postCommentLike(params) {
             toLogin();
             return Promise.reject(result);
 
+        }
+    });
+}
+/**
+ * 取消评论的赞
+ */
+export function deleteCommentLike(params){
+    return request({
+        method: 'DELETE',
+        url: '/api/like/comment',
+        body: {
+            id: params.commentId
+        }
+    }).then(result => {
+        if (result.code === 200) {
+            return Promise.resolve(result.data);
+        } else {
+            return Promise.reject(result);
         }
     });
 }
@@ -345,6 +351,21 @@ export function getNoticeList(params){
     }).then(result => {
         if (result.code === 200) {
             return result.data;
+        } else {
+            return Promise.reject(result);
+        }
+    });
+}
+
+/**
+ *把通知标记为已读
+ */
+export function markAsRead(){
+    return request ({
+        url:'/api/notice/status/?type=all&action=0'
+    }).then(result => {
+        if (result.code === 200) {
+            return result;
         } else {
             return Promise.reject(result);
         }

@@ -1,6 +1,7 @@
 import React from 'react';
-import {getHash, setHash, getDocumentHeight} from '../utils.js';
-import {INDEX_LIST_LOAD_MORE_DISTANCE, REPORT_TEXT} from '../constans/config';
+import Css from './Detail.css';
+import {getHash, setHash} from '../../utils.js';
+import {REPORT_TEXT} from '../../constans/config';
 import {
     getPost,
     getComments,
@@ -10,14 +11,15 @@ import {
     postLike,
     deleteLike,
     postCommentLike,
+    deleteCommentLike,
     getUser
-} from '../load';
-import GlobalLoading from '../components/GlobalLoading.jsx';
-import Item from '../components/Item';
+} from '../../load';
+import GlobalLoading from '../../components/GlobalLoading.jsx';
+import Item from '../../components/Item';
 import Textarea from 'react-textarea-autosize';
-import CommentList from '../components/CommentList';
-import {toLogin} from '../business';
-import Menu from '../components/Menu';
+import CommentList from '../../components/CommentList';
+import {toLogin} from '../../business';
+import Menu from '../../components/Menu';
 
 class Detail extends React.Component {
     constructor(props) {
@@ -35,16 +37,12 @@ class Detail extends React.Component {
         this.onCommentToggleLike = this.onCommentToggleLike.bind(this); //点赞评论
         this.onToggleOther = this.onToggleOther.bind(this); //当点击...
         this.onDeletePost = this.onDeletePost.bind(this); //当删除文章
-        this.bindEvents = this.bindEvents.bind(this);
-        this.removeEvents = this.removeEvents.bind(this);
-        this.onScroll = this.onScroll.bind(this);
 
     }
     componentDidMount() {
         document.body.scrollTop = 0;
         // console.log('ref',this.detailCommentRef);
         let postId = getHash('id');
-        console.log(postId);
         if (!this.props.data) {
             getPost({postId: postId}).then(data => {
                 if (Array.isArray(data)) {
@@ -64,11 +62,6 @@ class Detail extends React.Component {
                 this.getCommentList({postId});
             }
         }
-        this.bindEvents();
-
-    }
-    componentWillUnmount() {
-        this.removeEvents();
     }
 
     render() {
@@ -76,7 +69,7 @@ class Detail extends React.Component {
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
-            height:'100%'
+            height: '100%'
         };
         const main = {
             overflow: 'auto',
@@ -85,6 +78,7 @@ class Detail extends React.Component {
 
         if (this.props.data !== null) {
             let data = this.props.data;
+            console.log(data);
             if (Object.keys(data).length === 0) {
                 return <div>帖子不存在</div>;
             }
@@ -95,7 +89,7 @@ class Detail extends React.Component {
                     isMask: false
                 }}/>);
             return (
-                <div style={styles} ref={listDom => {
+                <div className={Css.detailContainer} style={styles} ref={listDom => {
                     this.listDom = listDom;
                 }}>
                     <div style={main}>
@@ -112,26 +106,7 @@ class Detail extends React.Component {
         }
 
     }
-    removeEvents() {
-        window.removeEventListener('scroll', this.onScroll);
-    }
-    bindEvents() {
-        window.addEventListener('scroll', this.onScroll);
 
-    }
-    onScroll() {
-        if (this.props.data.isLoadingCommentEnd) {
-            return;
-        } else {
-            let documentHeight = getDocumentHeight({element: this.listDom}); //整个页面的高度
-            let distance = documentHeight - (this.listDom.scrollTop + window.screen.height);
-            //window.screen.height  屏幕的高度
-            //window.document.body.scrollTop  屏幕顶部距离页面顶部的距离
-            if (distance <= INDEX_LIST_LOAD_MORE_DISTANCE && distance > 0) {
-                this.props.onLoadMore();
-            }
-        }
-    }
     onDeletePost(params) {
         this.props.showGlobalLoading();
         let itemId = params.id;
@@ -232,8 +207,6 @@ class Detail extends React.Component {
         console.log('here loadmore');
         //加载更多评论
         let postId = getHash('id');
-        console.log('params', params);
-        console.log(getComments);
         getComments({postId: postId, fromId: params.fromId}).then(data => {
             console.log('response', data);
             if (data.length === 0) {
@@ -354,11 +327,17 @@ class Detail extends React.Component {
         }
     }
     onCommentToggleLike(params) {
-        postCommentLike({commentId: params.commentId, postId: this.props.data.id}).then((data) => {
-            console.log(data);
-        }).catch(err => {
-            console.log(err);
-        });
+        this.props.onCommentToggleLike({commentId:params.commentId});
+        if(this.props.commentData.like===0){
+            postCommentLike({commentId: params.commentId, postId: this.props.data.id}).catch(err => {
+                console.log(err);
+            });
+        }else{
+            deleteCommentLike({commentId: params.commentId, postId: this.props.data.id}).catch(err => {
+                console.log(err);
+            });
+        }
+
     }
 
 }

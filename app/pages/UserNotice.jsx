@@ -1,5 +1,5 @@
 import React from 'react';
-import UserNoticeList from '../components/UserNoticeList/UserNoticeList.jsx';
+import UserNoticeList from '../components/UserNoticeList';
 import {getNoticeList} from '../load';
 import GlobalLoading from '../components/GlobalLoading.jsx';
 import Tab from '../components/Tab/Tab.jsx';
@@ -13,7 +13,6 @@ class UserNotice extends React.Component {
         this.getFromId = this.getFromId.bind(this);
 
         this.state = {
-            // userNoticeIdSets: null,
             isLoadingEnd: false
         };
 
@@ -31,7 +30,7 @@ class UserNotice extends React.Component {
         if (this.props.userNoticeIdSets !== null) {
             return (
                 <div style={styles}>
-                    <UserNoticeList onLoadMore={this.onLoadMore} isShowMore={this.props.isShowMore} isLoadingMore={this.props.isLoadingMore} data={this.props.userNoticeData} idSets={this.props.userNoticeIdSets}/>
+                    <UserNoticeList onMarkAsRead={this.props.onMarkAsRead} onLoadMore={this.onLoadMore} isShowMore={this.props.isShowMore} isLoadingMore={this.props.isLoadingMore} data={this.props.userNoticeData} idSets={this.props.userNoticeIdSets}/>
                     <Tab/>
                 </div>
             );
