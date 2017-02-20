@@ -29,7 +29,7 @@ if (isProduction()) {
 }
 
 plugins.push(new HtmlWebpackPlugin({
-    title: 'demo info',
+    title: 'scuinfo beta',
     template: './public/index.ejs', // Load a custom template (ejs by default see the FAQ for details)
 }));
 module.exports = {
