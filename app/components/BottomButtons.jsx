@@ -53,13 +53,13 @@ class BottomButtons extends React.Component {
             marginTop: '2px',
             fontSize: '28px'
         };
-      
+
         return (
             <div style={styles} onTouchTap={this.handleClick.bind(this)}>
-                <div style={icon}>
+                <div onTouchTap={this.onToggleLike} style={icon}>
                     <div style={this.props.data.like === 1
                         ? isLike
-                        : unLike} onTouchTap={this.onToggleLike}><FaHeartO/></div>
+                        : unLike} ><FaHeartO/></div>
                     <div style={this.props.data.like === 1
                         ? Object.assign(likeCount, _likeCount)
                         : likeCount}>{this.props.likeCount || 0}</div>

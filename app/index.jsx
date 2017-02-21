@@ -86,7 +86,7 @@ class App extends React.Component {
         if (this.state.page === 'detail') {
             let id = getHash('id');
             pageContainer = (<Detail onLoadDetailFail={this.onLoadDetailFail} loading={this.state.globalLoading} onReportPost={this.onReportPost} showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onRemovePost={this.onRemovePost} onLoadMore={this.onLoadMore} onLoadCommentListEnd={this.onLoadCommentListEnd} onLoading={this.onLoading} onLoadMoreError={this.onLoadMoreError} isLoadingMore={this.state.isLoadingMore} onAddComment={this.onAddComment} onCommentToggleLike={this.onCommentToggleLike} onRemoveComment={this.onRemoveComment} onRemoveNotice={this.onRemoveNotice} onShowNotice={this.onShowNotice} onToggleLike={this.onToggleLike} onLoadDetail={this.onLoadDetail} commentData={this.state.commentData} onLoadCommentList={this.onLoadCommentList} data={this.state.data
-                ? this.state.data[id]
+                ? (this.state.data[id]?this.state.data[id]:null)
                 : null}/>);
         } else if (this.state.page === 'user') {
             pageContainer = (<User onLoadUserNoticeCount={this.onLoadUserNoticeCount} userNoticeCount={this.state.userNoticeCount} showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onRemoveNotice={this.onRemoveNotice} onShowNotice={this.onShowNotice} userData={this.state.userData} onLoadUser={this.onLoadUser} onLoadLikedPosts={this.onLoadLikedPosts} onLoadMore={this.onLoadMore} onLoadMoreError={this.onLoadMoreError} isLoadingMore={this.state.isLoadingMore} loading={this.state.globalLoading}/>);
@@ -266,11 +266,12 @@ class App extends React.Component {
 
     onLoadDetail(params) {
         //加载详情页
-        let data = {};
-        if (this.state.data === null) {
+        let data = this.state.data || {};
+        if (this.state.data === null || (this.state.data && !this.state.data[params.data.id]) ) {
             data[params.data.id] = params.data;
             this.setState({data: data, isShowMore: true, isLoadingMore: false});
         }
+
     }
 
     onAddPost(params) {
