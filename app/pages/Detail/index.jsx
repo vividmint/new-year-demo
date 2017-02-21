@@ -12,7 +12,9 @@ import {
     deleteLike,
     postCommentLike,
     deleteCommentLike,
-    getUser
+    getUser,
+    block,
+    whiteList
 } from '../../load';
 import GlobalLoading from '../../components/GlobalLoading.jsx';
 import Item from '../../components/Item';
@@ -46,10 +48,10 @@ class Detail extends React.Component {
             getPost({postId: postId}).then(data => {
                 if (Array.isArray(data)) {
                     this.props.onShowNotice({message: '帖子不存在！', level: 'error'});
-                    setTimeout(()=>{
+                    setTimeout(() => {
                         this.props.onLoadDetailFail({postId: postId, message: '帖子不存在'});
                         return;
-                    },1500);
+                    }, 1500);
 
                 }
                 this.props.onLoadDetail({data});
@@ -131,6 +133,19 @@ class Detail extends React.Component {
                 text: '删除',
                 onTap: () => {
                     this.onDeletePost({id: itemId});
+                }
+            });
+        }
+        if (params.level === 1) {
+            menus.push({
+                text: '拉黑',
+                onTap: () => {
+                    block({postId: itemId});
+                }
+            }, {
+                text: '白名单',
+                onTap: () => {
+                    whiteList({postId: itemId});
                 }
             });
         }
@@ -327,12 +342,12 @@ class Detail extends React.Component {
         }
     }
     onCommentToggleLike(params) {
-        this.props.onCommentToggleLike({commentId:params.commentId});
-        if(this.props.commentData.like===0){
+        this.props.onCommentToggleLike({commentId: params.commentId});
+        if (this.props.commentData.like === 0) {
             postCommentLike({commentId: params.commentId, postId: this.props.data.id}).catch(err => {
                 console.log(err);
             });
-        }else{
+        } else {
             deleteCommentLike({commentId: params.commentId, postId: this.props.data.id}).catch(err => {
                 console.log(err);
             });

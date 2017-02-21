@@ -104,8 +104,8 @@ export function deletePost(params) {
 export function getComments(params) {
     if (loadStatus.getComments) {
         return Promise.reject({
-            code:LOADING_CODE,
-            message:'正在请求中'
+            code: LOADING_CODE,
+            message: '正在请求中'
         });
     }
     loadStatus.getComments = true;
@@ -191,7 +191,7 @@ export function postCommentLike(params) {
 /**
  * 取消评论的赞
  */
-export function deleteCommentLike(params){
+export function deleteCommentLike(params) {
     return request({
         method: 'DELETE',
         url: '/api/like/comment',
@@ -341,13 +341,13 @@ export function getNoticeCount() {
 /**
  * 获取用户通知列表
  */
-export function getNoticeList(params){
+export function getNoticeList(params) {
     let url = `/api/notices/?pageSize=${LIST_DEFAULT_LENTH}`;
     if (params.fromId) {
         url += `&fromId=${params.fromId}`;
     }
-    return request ({
-        url:url
+    return request({
+        url: url
     }).then(result => {
         if (result.code === 200) {
             return result.data;
@@ -360,9 +360,47 @@ export function getNoticeList(params){
 /**
  *把通知标记为已读
  */
-export function markAsRead(){
-    return request ({
-        url:'/api/notice/status/?type=all&action=0'
+export function markAsRead() {
+    return request({
+        url: '/api/notice/status/?type=all&action=0'
+    }).then(result => {
+        if (result.code === 200) {
+            return result;
+        } else {
+            return Promise.reject(result);
+        }
+    });
+}
+
+/**
+ * 拉黑
+ */
+export function block(params) {
+    return request({
+        method: 'POST',
+        url: '/api/block',
+        body: {
+            id: params.postId
+        },
+    }).then(result => {
+        if (result.code === 200) {
+            return result;
+        } else {
+            return Promise.reject(result);
+        }
+    });
+}
+
+/**
+ * 白名单
+ */
+export function whiteList(params){
+    return request({
+        method: 'POST',
+        url: '/api/white',
+        body: {
+            id: params.postId
+        },
     }).then(result => {
         if (result.code === 200) {
             return result;

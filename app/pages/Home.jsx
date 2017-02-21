@@ -2,7 +2,7 @@ import React from 'react';
 import GlobalLoading from '../components/GlobalLoading.jsx';
 import List from '../components/List';
 import Tab from '../components/Tab/Tab.jsx';
-import {getList, postLike, deleteLike, deletePost} from '../load';
+import {getList, postLike, deleteLike, deletePost, block,whiteList} from '../load';
 import {toLogin} from '../business';
 import {REPORT_TEXT} from '../constans/config';
 import Menu from '../components/Menu';
@@ -17,7 +17,6 @@ class Home extends React.Component {
         this.onToggleOther = this.onToggleOther.bind(this);
         this.onDeletePost = this.onDeletePost.bind(this);
         this.onRefresh = this.onRefresh.bind(this);
-
 
         let idSets = null,
             type = this.props.page;
@@ -98,7 +97,9 @@ class Home extends React.Component {
             return <div>没有帖子</div>;
         } else {
             return (
-                <div style={{height:'100%'}}>
+                <div style={{
+                    height: '100%'
+                }}>
                     <List data={this.props.data} idSets={this.state.idSets} onToggleLike={this.onToggleLike} onLoadMore={this.onLoadMore} isShowMore={this.props.isShowMore} isLoadingMore={this.props.isLoadingMore} onToggleOther={this.onToggleOther} isLoadingEnd={this.state.isLoadingEnd}/>
                     <Tab onRefresh={this.onRefresh} page={this.props.page} count={this.props.userNoticeCount.count || null}/>
                 </div>
@@ -253,6 +254,20 @@ class Home extends React.Component {
                 }
             });
         }
+        if (params.level === 1) {
+            menus.push({
+                text: '拉黑',
+                onTap: () => {
+                    block({postId: itemId});
+                }
+            }, {
+                text: '白名单',
+                onTap: () => {
+                    whiteList({postId: itemId});
+                }
+            });
+        }
+
         menus.push({
             text: `${REPORT_TEXT}`,
             onTap: () => {
