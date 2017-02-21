@@ -106,14 +106,11 @@ class App extends React.Component {
             pageContainer = (<Search/>);
         } else {
             pageContainer = (
-                <div>404页面不存在</div>
+                <div>404...页面不存在</div>
             );
         }
-        let styles = {
-            // overflowY:this.state.noticeDialog.isShowMenu?'hidden':''//控制页面是否可以滚动，menu弹窗出现时不能滚动
-        };
         return (
-            <div style={styles}>
+            <div>
                 {pageContainer}
                 <Notice onTapMask={this.onRemoveNotice} noticeDialog={this.state.noticeDialog}/>
                 <GlobalLoading loading={this.state.globalLoading}/>

@@ -41,14 +41,16 @@ class Detail extends React.Component {
     }
     componentDidMount() {
         document.body.scrollTop = 0;
-        // console.log('ref',this.detailCommentRef);
         let postId = getHash('id');
         if (!this.props.data) {
             getPost({postId: postId}).then(data => {
                 if (Array.isArray(data)) {
-                    this.props.onLoadDetailFail({postId: postId, message: '帖子不存在'});
-                    console.log('帖子不存在');
-                    return;
+                    this.props.onShowNotice({message: '帖子不存在！', level: 'error'});
+                    setTimeout(()=>{
+                        this.props.onLoadDetailFail({postId: postId, message: '帖子不存在'});
+                        return;
+                    },1500);
+
                 }
                 this.props.onLoadDetail({data});
                 this.getCommentList({postId});
@@ -78,7 +80,6 @@ class Detail extends React.Component {
 
         if (this.props.data !== null) {
             let data = this.props.data;
-            console.log(data);
             if (Object.keys(data).length === 0) {
                 return <div>帖子不存在</div>;
             }
@@ -104,7 +105,6 @@ class Detail extends React.Component {
                 isMask: false
             }}/>);
         }
-
     }
 
     onDeletePost(params) {

@@ -24,8 +24,9 @@ class UserNotice extends React.Component {
     }
 
     render() {
+        console.log(this.state.isLoadingEnd);
         const styles = {
-            height:'100%'
+            height: '100%'
         };
         if (this.props.userNoticeIdSets !== null) {
             return (
@@ -35,18 +36,23 @@ class UserNotice extends React.Component {
                 </div>
             );
         } else {
-            if(this.state.isLoadEnd){
-                return <div>没有更多消息了</div>;
+            if (this.state.isLoadingEnd) {
+                return (
+                    <div>没有更多消息了_(:зゝ∠)_
+                        <Tab/>
+                    </div>
+                );
+            } else {
+                return (
+                    <div>
+                        <GlobalLoading loading={{
+                            isShow: true,
+                            isMask: false
+                        }}/>
+                        <Tab/>
+                    </div>
+                );
             }
-            return (
-                <div>
-                    <GlobalLoading loading={{
-                        isShow: true,
-                        isMask: false
-                    }}/>
-                    <Tab/>
-                </div>
-            );
         }
     }
 
@@ -62,10 +68,9 @@ class UserNotice extends React.Component {
     }
 
     onLoadNoticeList() {
-        getNoticeList({
-            fromId:this.getFromId()
-        }).then(result => {
+        getNoticeList({fromId: this.getFromId()}).then(result => {
             if (result.length === 0) {
+                this.props.onShowNotice({message: '没有新消息了_(:зゝ∠)_', level: 'error'});
                 this.setState({isLoadingEnd: true});
                 return;
             }
@@ -96,7 +101,6 @@ class UserNotice extends React.Component {
             this.onLoadNoticeList();
         }
     }
-
 
 }
 export default UserNotice;

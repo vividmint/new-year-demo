@@ -107,12 +107,11 @@ class Home extends React.Component {
     }
     componentDidMount() {
         if (!this.state.idSets) {
+            sessionStorage.removeItem('overflowY');
             let type = this.state.type;
             this.getList({type});
         }
     }
-
-
 
     getList(params) {
         let type = params.type;

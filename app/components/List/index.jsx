@@ -10,7 +10,6 @@ class List extends React.Component {
     constructor(props) {
         super(props);
         this.onScroll = this.onScroll.bind(this);
-
     }
 
     render() {
@@ -42,7 +41,7 @@ class List extends React.Component {
             loading = <Loading type='spin' delay={0} color='#AAAAAA' height='25px' width='25px'/>;
         }
         return (
-            <div ref={listDom=>{
+            <div id="homeList" ref={listDom=>{
                 this.listDom = listDom;
             }} className={Css.listContainer} onScroll={this.onScroll} style={styles}>
                 {ItemArr}
@@ -50,6 +49,12 @@ class List extends React.Component {
                 <div style={spinnerBox}>{loading}</div>
             </div>
         );
+    }
+    componentDidMount(){
+        if(sessionStorage.getItem('overflowY')){
+            let y = sessionStorage.getItem('overflowY');
+            this.listDom.scrollTop = y;
+        }
     }
 
     onScroll() {
@@ -62,7 +67,10 @@ class List extends React.Component {
         }); //整个页面的高度
         let distance = documentHeight - (this.listDom.scrollTop + window.screen.height);
         //window.screen.height  屏幕的高度
-        //window.document.body.scrollTop  屏幕顶部距离页面顶部的距离
+        //this.listDom.scrollTop  屏幕顶部距离页面顶部的距离
+        let overflowY = this.listDom.scrollTop;
+        sessionStorage.setItem('overflowY',overflowY);//记录当前浏览位置
+
         if (distance <= INDEX_LIST_LOAD_MORE_DISTANCE && distance > 0) {
             this.props.onLoadMore();
         }
