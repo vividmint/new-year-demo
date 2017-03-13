@@ -2,7 +2,8 @@ import React from 'react';
 import {BASE_PRIMARY_COLOR} from '../../constans/styles';
 import {INDEX_LIST_LOAD_MORE_DISTANCE} from '../../constans/config';
 import FaHeartO from 'react-icons/lib/fa/heart-o';
-import FaCommentsO from 'react-icons/lib/fa/comments-o';
+// import FaCommentsO from 'react-icons/lib/fa/comments-o';
+import TiMessages from 'react-icons/lib/ti/messages';
 import {formatTime, setHash, getDocumentHeight} from '../../utils';
 import {markAsRead} from '../../load';
 import Css from './UserNoticeList.css';
@@ -140,7 +141,7 @@ class UserNoticeList extends React.Component {
                             <div style={item}>
                                 <div style={itemTop}>
                                     <div style={topLeft}>
-                                        <FaCommentsO style={iconStyle}/>
+                                        <TiMessages style={iconStyle}/>
                                         <span style={message}>有人回复了你的帖子</span>
                                     </div>
                                     <div>

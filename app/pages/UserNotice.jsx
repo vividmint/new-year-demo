@@ -24,7 +24,6 @@ class UserNotice extends React.Component {
     }
 
     render() {
-        console.log(this.state.isLoadingEnd);
         const styles = {
             height: '100%'
         };
