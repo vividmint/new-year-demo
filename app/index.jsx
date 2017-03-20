@@ -292,7 +292,8 @@ class App extends React.Component {
             likeCount: 0,
             like: 0,
             content: params.content,
-            date: getTime()
+            date: getTime(),
+            gender:params.gender
         };
         this.setState({
             idSets: new Set(list),
