@@ -12,7 +12,8 @@ class CommentList extends React.Component {
             display: 'flex',
             flexDirection: 'column',
             backgroundColor: 'white',
-            padding:'0px 25px'
+            padding:'0px 25px',
+            marginBottom:15
         };
         let commentComponentArr = [];
         for(let item of this.props.commentIdSets){

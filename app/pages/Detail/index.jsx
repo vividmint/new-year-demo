@@ -342,17 +342,16 @@ class Detail extends React.Component {
         }
     }
     onCommentToggleLike(params) {
-        this.props.onCommentToggleLike({commentId: params.commentId});
-        if (this.props.commentData.like === 0) {
+        if (this.props.commentData[params.commentId].like === 0) {
             postCommentLike({commentId: params.commentId, postId: this.props.data.id}).catch(err => {
                 console.log(err);
             });
-        } else {
+        } else if (this.props.commentData[params.commentId].like === 1) {
             deleteCommentLike({commentId: params.commentId, postId: this.props.data.id}).catch(err => {
                 console.log(err);
             });
         }
-
+        this.props.onCommentToggleLike({commentId: params.commentId});
     }
 
 }

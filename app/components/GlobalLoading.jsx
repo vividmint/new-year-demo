@@ -22,7 +22,7 @@ class GlobalLoading extends React.Component {
                 ? true
                 : this.props.loading.isMask}/>
             <div style={styles}>
-                <Loading delay={0} type='spin' color='rgba(0,0,0,0.8)' width='30px' height='30px'/> {loadingText}</div>
+                <Loading delay={0} type='spin' color='#AAAAAA' width='30px' height='30px'/> {loadingText}</div>
         </div>;
     }
 }

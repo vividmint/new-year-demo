@@ -59,7 +59,7 @@ class SingleComment extends React.Component {
             likeCount = {
                 fontSize: 16,
                 marginLeft:5,
-                marginTop:2
+                marginTop:3
             },
             likeActive = {
                 color: `${BASE_PRIMARY_COLOR}`

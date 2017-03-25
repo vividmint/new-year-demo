@@ -3,6 +3,7 @@ import TiHome from 'react-icons/lib/ti/home';
 import MdAddCircle from 'react-icons/lib/md/add-circle';
 import MdAccountCircle from 'react-icons/lib/md/account-circle';
 import {BASE_PRIMARY_COLOR} from '../../constans/styles';
+import {getHash, setHash} from '../../utils';
 
 class Tab extends React.Component {
     constructor(props) {
@@ -30,12 +31,13 @@ class Tab extends React.Component {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            textDecoration: 'none',
+            textDecoration: 'none'
         };
-        const iconStyle = {
+        const iconStyle = Object.assign({
             color: '#AAAAAA',
             fontSize: '32px'
-        };
+        }, this.props.style);
+
         let bubbleStyle = {
             height: 18,
             minWidth: 18,
@@ -45,18 +47,18 @@ class Tab extends React.Component {
             position: 'absolute',
             fontSize: 10,
             top: -3,
-            left:18,
+            left: 18,
             backgroundColor: `${BASE_PRIMARY_COLOR}`
         };
         const tabList = [
             {
-                href: '#page=index',
+                href: 'page=index',
                 key: 'home'
             }, {
-                href: '#page=sendText',
+                href: 'page=sendText',
                 key: 'plus'
             }, {
-                href: '#page=user',
+                href: 'page=user',
                 key: 'user',
                 bubble: this.props.count
                     ? true
@@ -71,7 +73,7 @@ class Tab extends React.Component {
         };
         const iconContainerStyle = {
             position: 'relative',
-            display:'inline'
+            display: 'inline'
         };
 
         let tabComponent = tabList.map((item, index) => {
@@ -80,12 +82,17 @@ class Tab extends React.Component {
                 bubble = <div style={bubbleStyle}>{this.getCountLength()}</div>;
             }
             return (
-              <div style={itemStyle} key={'icon_' + index}>
-                <a href={item.href}  style={iconContainerStyle}>
-                    {tabMap[item.key]}
-                    {bubble}
-                </a>
-              </div>
+                <div style={itemStyle} key={'icon_' + index}>
+                    <div onTouchTap={() => {
+                        setHash(item.href);
+                        if (getHash('page') === 'index') {
+                            this.props.onRefresh();
+                        }
+                    }} style={iconContainerStyle}>
+                        {tabMap[item.key]}
+                        {bubble}
+                    </div>
+                </div>
 
             );
 
@@ -96,13 +103,14 @@ class Tab extends React.Component {
             </div>
         );
     }
-    getCountLength(){
-        if(this.props.count>=10000){
-            let n = Math.floor(this.props.count/1000);
+    getCountLength() {
+        if (this.props.count >= 10000) {
+            let n = Math.floor(this.props.count / 1000);
             return `${n}k`;
-        }else{
+        } else {
             return this.props.count;
         }
     }
+
 }
 export default Tab;

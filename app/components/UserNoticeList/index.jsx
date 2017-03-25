@@ -2,7 +2,6 @@ import React from 'react';
 import {BASE_PRIMARY_COLOR} from '../../constans/styles';
 import {INDEX_LIST_LOAD_MORE_DISTANCE} from '../../constans/config';
 import FaHeartO from 'react-icons/lib/fa/heart-o';
-// import FaCommentsO from 'react-icons/lib/fa/comments-o';
 import TiMessages from 'react-icons/lib/ti/messages';
 import {formatTime, setHash, getDocumentHeight} from '../../utils';
 import {markAsRead} from '../../load';
@@ -82,8 +81,6 @@ class UserNoticeList extends React.Component {
                 backgroundColor: '#F2F2F2',
                 width: '100%',
                 height: 10,
-                borderTop: '0.2px solid rgba(0,0,0,0.04)',
-                borderBottom: '0.2px solid rgba(0,0,0,0.04)'
             },
             spinnerBox = {
                 display: 'flex',

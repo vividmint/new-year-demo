@@ -12,7 +12,14 @@ import Detail from './pages/Detail';
 import GlobalLoading from './components/GlobalLoading';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import {popNotice, removeNotice, Notice} from './components/Notice';
-injectTapEventPlugin(); //给所有组件添加onTouchTap事件
+injectTapEventPlugin({
+    shouldRejectClick: function(lastTouchEventTimestamp, clickEventTimestamp) {
+        // console.log(lastTouchEventTimestamp, new Date().getTime(), clickEventTimestamp);
+        if (lastTouchEventTimestamp && (clickEventTimestamp - lastTouchEventTimestamp < 300)) {
+            return true;
+        }
+    }
+}); //给所有组件添加onTouchTap事件
 
 class App extends React.Component {
     constructor(props) {
@@ -86,7 +93,9 @@ class App extends React.Component {
         if (this.state.page === 'detail') {
             let id = getHash('id');
             pageContainer = (<Detail onLoadDetailFail={this.onLoadDetailFail} loading={this.state.globalLoading} onReportPost={this.onReportPost} showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onRemovePost={this.onRemovePost} onLoadMore={this.onLoadMore} onLoadCommentListEnd={this.onLoadCommentListEnd} onLoading={this.onLoading} onLoadMoreError={this.onLoadMoreError} isLoadingMore={this.state.isLoadingMore} onAddComment={this.onAddComment} onCommentToggleLike={this.onCommentToggleLike} onRemoveComment={this.onRemoveComment} onRemoveNotice={this.onRemoveNotice} onShowNotice={this.onShowNotice} onToggleLike={this.onToggleLike} onLoadDetail={this.onLoadDetail} commentData={this.state.commentData} onLoadCommentList={this.onLoadCommentList} data={this.state.data
-                ? (this.state.data[id]?this.state.data[id]:null)
+                ? (this.state.data[id]
+                    ? this.state.data[id]
+                    : null)
                 : null}/>);
         } else if (this.state.page === 'user') {
             pageContainer = (<User onLoadUserNoticeCount={this.onLoadUserNoticeCount} userNoticeCount={this.state.userNoticeCount} showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onRemoveNotice={this.onRemoveNotice} onShowNotice={this.onShowNotice} userData={this.state.userData} onLoadUser={this.onLoadUser} onLoadLikedPosts={this.onLoadLikedPosts} onLoadMore={this.onLoadMore} onLoadMoreError={this.onLoadMoreError} isLoadingMore={this.state.isLoadingMore} loading={this.state.globalLoading}/>);
@@ -163,6 +172,7 @@ class App extends React.Component {
     }
 
     resetIdSets() {
+        sessionStorage.setItem('overflowY', 0); //list回到顶部
         this.setState({idSets: null});
     }
 
@@ -264,7 +274,7 @@ class App extends React.Component {
     onLoadDetail(params) {
         //加载详情页
         let data = this.state.data || {};
-        if (this.state.data === null || (this.state.data && !this.state.data[params.data.id]) ) {
+        if (this.state.data === null || (this.state.data && !this.state.data[params.data.id])) {
             data[params.data.id] = params.data;
             this.setState({data: data, isShowMore: true, isLoadingMore: false});
         }
@@ -293,7 +303,7 @@ class App extends React.Component {
             like: 0,
             content: params.content,
             date: getTime(),
-            gender:params.gender
+            gender: params.gender
         };
         this.setState({
             idSets: new Set(list),
@@ -351,9 +361,9 @@ class App extends React.Component {
     onLoadUserNoticeData(params) {
         this.setState({userNoticeData: params.data, userNoticeIdSets: params.idSets, isShowMore: true, isLoadingMore: false});
     }
-    onMarkAsRead(){
+    onMarkAsRead() {
         this.setState({
-            userNoticeCount:{
+            userNoticeCount: {
                 count: 0,
                 likeCount: 0,
                 replyCount: 0

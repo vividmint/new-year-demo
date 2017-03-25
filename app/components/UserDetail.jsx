@@ -20,13 +20,14 @@ class UserDetail extends React.Component {
                 alignItems: 'center',
                 backgroundColor: '#F2F2F2',
                 color: 'rgba(0, 0, 0, 0.8)',
-                width: '100%'
+                width: '100%',
+                paddingBottom:10
             },
             userInfo = {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                padding: '12px 0px',
+                padding: '12px 0px 16px 0px',
                 width: '100%'
             },
 
@@ -49,7 +50,7 @@ class UserDetail extends React.Component {
             },
             userBottom = {
                 display: 'flex',
-                paddingTop: 12,
+                paddingTop: 18,
                 textAlign: 'center',
                 width: '100%'
             },

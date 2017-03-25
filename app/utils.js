@@ -5,7 +5,6 @@ const PORT = 80;
 const HOST_PORT = `${HOST}:${PORT}`;
 
 
-
 export function request(params) {
     let url = `${HOST_PORT}${params.url}`;
     let method;
@@ -141,7 +140,7 @@ export function timeFromNow(date) {
     }
     interval = Math.floor(seconds / 2592000);
     if (interval >= 1) {
-        return interval + '月前';
+        return interval + '个月前';
     }
     interval = Math.floor(seconds / 86400);
     if (interval >= 1) {

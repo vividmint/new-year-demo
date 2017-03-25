@@ -2,7 +2,14 @@ import React from 'react';
 import GlobalLoading from '../components/GlobalLoading.jsx';
 import List from '../components/List';
 import Tab from '../components/Tab/Tab.jsx';
-import {getList, postLike, deleteLike, deletePost, block,whiteList} from '../load';
+import {
+    getList,
+    postLike,
+    deleteLike,
+    deletePost,
+    block,
+    whiteList
+} from '../load';
 import {toLogin} from '../business';
 import {REPORT_TEXT} from '../constans/config';
 import Menu from '../components/Menu';
@@ -149,6 +156,7 @@ class Home extends React.Component {
         });
     }
     onRefresh() {
+
         this.props.resetIdSets();
     }
 

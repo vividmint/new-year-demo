@@ -184,7 +184,6 @@ export function postCommentLike(params) {
         } else {
             toLogin();
             return Promise.reject(result);
-
         }
     });
 }

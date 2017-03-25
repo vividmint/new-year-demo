@@ -16,7 +16,7 @@ class List extends React.Component {
         const styles = {
             overflow: 'scroll',
             flex: '0 1 auto',
-            height: '100%',
+            height: '100%'
         };
         const spinnerBox = {
             display: 'flex',
@@ -41,7 +41,7 @@ class List extends React.Component {
             loading = <Loading type='spin' delay={0} color='#AAAAAA' height='25px' width='25px'/>;
         }
         return (
-            <div id="homeList" ref={listDom=>{
+            <div id="homeList" ref={listDom => {
                 this.listDom = listDom;
             }} className={Css.listContainer} onScroll={this.onScroll} style={styles}>
                 {ItemArr}
@@ -50,8 +50,8 @@ class List extends React.Component {
             </div>
         );
     }
-    componentDidMount(){
-        if(sessionStorage.getItem('overflowY')){
+    componentDidMount() {
+        if (sessionStorage.getItem('overflowY')) {
             let y = sessionStorage.getItem('overflowY');
             this.listDom.scrollTop = y;
         }
@@ -62,18 +62,19 @@ class List extends React.Component {
             return;
         }
         //下拉刷新
-        let documentHeight = getDocumentHeight({
-            element:this.listDom
-        }); //整个页面的高度
+        let documentHeight = getDocumentHeight({element: this.listDom}); //整个页面的高度
         let distance = documentHeight - (this.listDom.scrollTop + window.screen.height);
         //window.screen.height  屏幕的高度
         //this.listDom.scrollTop  屏幕顶部距离页面顶部的距离
         let overflowY = this.listDom.scrollTop;
-        sessionStorage.setItem('overflowY',overflowY);//记录当前浏览位置
+        sessionStorage.setItem('overflowY', overflowY); //记录当前浏览位置
 
         if (distance <= INDEX_LIST_LOAD_MORE_DISTANCE && distance > 0) {
             this.props.onLoadMore();
         }
+    }
+    onScrollTop() {
+        sessionStorage.setItem('overflowY', overflowY); //记录当前浏览位置
     }
 }
 
