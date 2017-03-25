@@ -33,22 +33,24 @@ class Tab extends React.Component {
             justifyContent: 'center',
             textDecoration: 'none'
         };
-        const iconStyle = Object.assign({
+        const iconStyle = {
             color: '#AAAAAA',
             fontSize: '32px'
-        }, this.props.style);
+        };
+
+        const activeStyle = Object.assign({},iconStyle, {color: `${BASE_PRIMARY_COLOR}`});
 
         let bubbleStyle = {
             height: 18,
             minWidth: 18,
-            padding: '2px 5px',
+            padding: '2px 4px 2px 5px',
             color: 'rgb(255,255,255)',
             borderRadius: 20,
             position: 'absolute',
             fontSize: 10,
             top: -3,
-            left: 18,
-            backgroundColor: `${BASE_PRIMARY_COLOR}`
+            left: 22,
+            backgroundColor: 'rgb(239,64,86)'
         };
         const tabList = [
             {
@@ -65,11 +67,16 @@ class Tab extends React.Component {
                     : false
             }
         ];
-
         const tabMap = {
-            'home': <TiHome style={iconStyle}/>,
-            'plus': <MdAddCircle style={iconStyle}/>,
-            'user': <MdAccountCircle style={iconStyle}/>
+            'home': <TiHome style={getHash('page') === 'index'
+                ? activeStyle
+                : iconStyle}/>,
+            'plus': <MdAddCircle style={getHash('page') === 'sendText'
+                ? activeStyle
+                : iconStyle}/>,
+            'user': <MdAccountCircle style={getHash('page') === 'user'
+                    ? activeStyle
+                    : iconStyle}/>
         };
         const iconContainerStyle = {
             position: 'relative',
@@ -106,7 +113,7 @@ class Tab extends React.Component {
     getCountLength() {
         if (this.props.count >= 10000) {
             let n = Math.floor(this.props.count / 1000);
-            return `${n}k`;
+            return `${n}k+`;
         } else {
             return this.props.count;
         }

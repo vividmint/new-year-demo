@@ -21,7 +21,7 @@ class UserDetail extends React.Component {
                 backgroundColor: '#F2F2F2',
                 color: 'rgba(0, 0, 0, 0.8)',
                 width: '100%',
-                paddingBottom:10
+                paddingBottom:6
             },
             userInfo = {
                 display: 'flex',

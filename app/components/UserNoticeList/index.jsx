@@ -22,7 +22,6 @@ class UserNoticeList extends React.Component {
         });
     }
     render() {
-
         let moreButton = null;
         if (this.props.isShowMore) {
             moreButton = <Button onTap={() => {
@@ -80,7 +79,7 @@ class UserNoticeList extends React.Component {
             bar = {
                 backgroundColor: '#F2F2F2',
                 width: '100%',
-                height: 10,
+                height: 10
             },
             spinnerBox = {
                 display: 'flex',
@@ -91,6 +90,7 @@ class UserNoticeList extends React.Component {
             };
 
         let likeItem = null,
+            likedAction = null,
             commentItem = null,
             noticeList = [];
 
@@ -99,7 +99,12 @@ class UserNoticeList extends React.Component {
             let data = this.props.data;
 
             for (let i = 0; i < idArr.length; ++i) {
-                if (data[idArr[i]].action === 'likePost') {
+                if (data[idArr[i]].action === 'likePost' || data[idArr[i]].action === 'likeComment') {
+                    if (data[idArr[i]].action === 'likePost') {
+                        likedAction = '帖子';
+                    } else if (data[idArr[i]].action === 'likeComment') {
+                        likedAction = '评论';
+                    }
                     let previewContent = data[idArr[i]].originContent;
                     let time = new Date(data[idArr[i]].date * 1000);
                     let _time = formatTime(time);
@@ -111,7 +116,7 @@ class UserNoticeList extends React.Component {
                                 <div style={itemTop}>
                                     <div style={topLeft}>
                                         <FaHeartO style={iconStyle}/>
-                                        <span style={message}>有人赞了你的帖子</span>
+                                        <span style={message}>有人赞了你的{likedAction}</span>
                                     </div>
                                     <div style={timeStyle}>{_time}</div>
                                 </div>
