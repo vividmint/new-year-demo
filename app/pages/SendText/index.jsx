@@ -83,11 +83,11 @@ class SendText extends React.Component {
             send = {
                 color: '#AAAAAA',
                 textAlign: 'center',
-                fontSize: 14,
+                fontSize: 15,
                 borderStyle: 'solid',
                 borderWidth: 1,
                 borderColor: 'rgb(170, 170, 170)',
-                padding: '2px 12px',
+                padding: '4px 12px',
                 borderRadius: 20
             },
             _send = {
@@ -104,7 +104,7 @@ class SendText extends React.Component {
                     <div style={bottom}>
                         <div style={!this.state.text
                             ? send
-                            : Object.assign(send, _send)} onTouchTap={this.onSend}>{this.props.sendButtonText||'发布'}</div>
+                            : Object.assign(send, _send)} onTouchTap={this.onSend}>SEND</div>
                         <div style={this.props.showCheckBox
                             ? bottomLeft
                             : {

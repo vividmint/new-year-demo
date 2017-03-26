@@ -14,7 +14,7 @@ class ItemTop extends React.Component {
             },
             userStyles = {
                 display: 'flex',
-                alignItems: 'center',
+                alignItems: 'center'
             };
         return (
 
@@ -23,7 +23,7 @@ class ItemTop extends React.Component {
                     <Avatar data={{
                         avatar: this.props.data.avatar
                     }}/>
-                  <UserName gender={this.props.data.gender} secret={this.props.data.secret} nickname={this.props.data.nickname}/>
+                    <UserName gender={this.props.data.gender} secret={this.props.data.secret} nickname={this.props.data.nickname}/>
                 </div>
                 <Moment data={{
                     date: this.props.data.date
@@ -33,14 +33,13 @@ class ItemTop extends React.Component {
     }
 }
 
-
 class Avatar extends React.Component {
     render() {
         const styles = {
-            height :'40px',
+            height: '40px',
             width: '40px',
-            marginRight:'15px',
-            borderRadius:'50%'
+            marginRight: '15px',
+            borderRadius: '50%'
         };
         return <div >
             <img style={styles} src={this.props.data.avatar}></img>
@@ -51,15 +50,17 @@ class Avatar extends React.Component {
 class UserName extends React.Component {
     render() {
         let nickname = null;
-        if(this.props.secret===0){
+        if (this.props.secret === 0) {
+          //实名
             nickname = this.props.nickname;
-        }else{
-            if (this.props.gender === 0) {
-                nickname = this.props.nickname+'·未知';
+        } else {
+          //匿名
+            if (this.props.gender === 1) {
+                nickname = '某同学·男';
+            } else if (this.props.gender === 2) {
+                nickname = '某同学·女';
             } else {
-                nickname = this.props.gender === 1
-                  ? this.props.nickname + '·男'
-                  : this.props.nickname + '·女';
+                nickname = '某同学·未知';
             }
         }
 

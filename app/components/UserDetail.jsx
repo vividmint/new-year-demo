@@ -1,10 +1,12 @@
 import React from 'react';
 import FaBellO from 'react-icons/lib/fa/bell-o';
 import FaAngleRight from 'react-icons/lib/fa/angle-right';
-import MdSettings from 'react-icons/lib/md/settings';
+// import MdSettings from 'react-icons/lib/md/settings';
+import MdKeyboardControl from 'react-icons/lib/md/keyboard-control';
 import {setHash} from '../utils';
 import {signout, getIndexUrl} from '../business';
 import Menu from './Menu';
+import A from './A';
 
 class UserDetail extends React.Component {
     constructor(props) {
@@ -19,13 +21,14 @@ class UserDetail extends React.Component {
                 alignItems: 'center',
                 backgroundColor: '#F2F2F2',
                 color: 'rgba(0, 0, 0, 0.8)',
-                width: '100%'
+                width: '100%',
+                paddingBottom:6
             },
             userInfo = {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                padding: '15px 0px',
+                padding: '12px 0px 16px 0px',
                 width: '100%'
             },
 
@@ -42,13 +45,13 @@ class UserDetail extends React.Component {
             },
             settings = {
                 position: 'absolute',
-                top: 8,
+                top: 2,
                 right: 10,
-                fontSize: 26
+                fontSize: 32
             },
             userBottom = {
                 display: 'flex',
-                paddingTop: 12,
+                paddingTop: 18,
                 textAlign: 'center',
                 width: '100%'
             },
@@ -76,7 +79,7 @@ class UserDetail extends React.Component {
                 fontSize: 18
             },
             bar = {
-                paddingBottom: '10px',
+                paddingBottom: 12,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -102,7 +105,6 @@ class UserDetail extends React.Component {
                 marginTop: -4,
                 fontSize: 18
             };
-
         let userAvatar = null,
             posts = null,
             nickName = null,
@@ -110,14 +112,21 @@ class UserDetail extends React.Component {
             noticeBar = null;
 
         if (this.props.userData) {
-            if (this.props.userNoticeCount) {
+            if (this.props.userNoticeCount.count&&this.props.userNoticeCount.count!==0) {
                 noticeBar = <div style={bar}>
+<<<<<<< HEAD
                     <div onTouchTap={()=>{
                             console.log('test');
                         }} style={noticeBarStyle}><FaBellO style={bell}/>
                         <span>
                             <span style={text}>{this.props.userNoticeCount.count}条新消息</span><FaAngleRight style={angle}/></span>
                     </div>
+=======
+                    <A href={'#page=notice'} style={noticeBarStyle}><FaBellO style={bell}/>
+                        <span>
+                            <span style={text}>{this.props.userNoticeCount.count}条新消息</span><FaAngleRight style={angle}/></span>
+                    </A>
+>>>>>>> 18a8ebe721b9edf097d34d76a3f874943b8c5505
                 </div>;
             }
             userAvatar = <img style={avatar} src={this.props.userData.avatar}></img>;
@@ -130,13 +139,13 @@ class UserDetail extends React.Component {
                 <div style={userInfo}>
                     <div style={userTop}>
                         {userAvatar}
-                        <MdSettings style={settings} onTouchTap={this.onShowProfieMenu}/> {nickName}
+                        <MdKeyboardControl style={settings} onTouchTap={this.onShowProfieMenu}/> {nickName}
                     </div>
                     <div style={userBottom}>
-                        <a href={'#page=posted'} style={left}>
-                            <div style={countName}>帖子</div>{posts}</a>
-                        <a href={'#page=liked'} style={right}>
-                            <div style={countName}>喜欢</div>{like}</a>
+                        <A href={'#page=posted'} style={left}>
+                            <div style={countName}>帖子</div>{posts}</A>
+                        <A href={'#page=liked'} style={right}>
+                            <div style={countName}>喜欢</div>{like}</A>
                     </div>
                 </div>
                 {noticeBar}
@@ -154,10 +163,10 @@ class UserDetail extends React.Component {
             }
         });
         menus.push({
-            text: '发现',
+            text: '消息列表',
             onTap: () => {
                 this.props.onRemoveNotice();
-                setHash('page=search');
+                setHash('page=notice');
             }
         });
         menus.push({

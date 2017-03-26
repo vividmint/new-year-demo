@@ -102,35 +102,23 @@ export function deletePost(params) {
 获取评论列表
 */
 export function getComments(params) {
-    console.log('params',params);
-    console.log(loadStatus);
     if (loadStatus.getComments) {
-        console.log('zzzzzz');
         return Promise.reject({
-            code:LOADING_CODE,
-            message:'正在请求中'
+            code: LOADING_CODE,
+            message: '正在请求中'
         });
     }
-    console.log('herexx',loadStatus);
     loadStatus.getComments = true;
-    console.log('herehy',loadStatus);
     let url = `/api/comments/?postId=${params.postId}&pageSize=${LIST_DEFAULT_LENTH}`;
-    console.log('url1',url);
     if (params.fromId) {
-        console.log('url2');
         url += `&fromId=${params.fromId}`;
-        console.log('url3',url);
     }
-    console.log(url);
-    console.log('request',request);
     return request({
         url
     }).then(result => {
-        console.log('result',result);
         loadStatus.getComments = false;
         //获取当前帖子的评论列表
         if (result.code === 200) {
-            console.log('return',result.data);
             return result.data;
         } else {
             return Promise.reject(result);
@@ -196,7 +184,24 @@ export function postCommentLike(params) {
         } else {
             toLogin();
             return Promise.reject(result);
-
+        }
+    });
+}
+/**
+ * 取消评论的赞
+ */
+export function deleteCommentLike(params) {
+    return request({
+        method: 'DELETE',
+        url: '/api/like/comment',
+        body: {
+            id: params.commentId
+        }
+    }).then(result => {
+        if (result.code === 200) {
+            return Promise.resolve(result.data);
+        } else {
+            return Promise.reject(result);
         }
     });
 }
@@ -335,16 +340,69 @@ export function getNoticeCount() {
 /**
  * 获取用户通知列表
  */
-export function getNoticeList(params){
+export function getNoticeList(params) {
     let url = `/api/notices/?pageSize=${LIST_DEFAULT_LENTH}`;
     if (params.fromId) {
         url += `&fromId=${params.fromId}`;
     }
-    return request ({
-        url:url
+    return request({
+        url: url
     }).then(result => {
         if (result.code === 200) {
             return result.data;
+        } else {
+            return Promise.reject(result);
+        }
+    });
+}
+
+/**
+ *把通知标记为已读
+ */
+export function markAsRead() {
+    return request({
+        url: '/api/notice/status/?type=all&action=0'
+    }).then(result => {
+        if (result.code === 200) {
+            return result;
+        } else {
+            return Promise.reject(result);
+        }
+    });
+}
+
+/**
+ * 拉黑
+ */
+export function block(params) {
+    return request({
+        method: 'POST',
+        url: '/api/block',
+        body: {
+            id: params.postId
+        },
+    }).then(result => {
+        if (result.code === 200) {
+            return result;
+        } else {
+            return Promise.reject(result);
+        }
+    });
+}
+
+/**
+ * 白名单
+ */
+export function whiteList(params){
+    return request({
+        method: 'POST',
+        url: '/api/white',
+        body: {
+            id: params.postId
+        },
+    }).then(result => {
+        if (result.code === 200) {
+            return result;
         } else {
             return Promise.reject(result);
         }

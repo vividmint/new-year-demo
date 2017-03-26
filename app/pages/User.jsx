@@ -5,7 +5,6 @@ import Tab from '../components/Tab/Tab';
 import UserDetail from '../components/UserDetail';
 import GlobalLoading from '../components/GlobalLoading.jsx';
 import Box from '../components/Box.jsx';
-import {BASE_PRIMARY_COLOR} from '../constans/styles';
 
 class User extends React.Component {
     constructor(props) {
@@ -87,7 +86,7 @@ class User extends React.Component {
             paddingBottom: 50,
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center'
+            alignItems: 'center',
         };
         if (this.props.userData) {
             return (

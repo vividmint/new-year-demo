@@ -1,6 +1,7 @@
 import React from 'react';
-import {getHash, setHash, getDocumentHeight} from '../utils.js';
-import {INDEX_LIST_LOAD_MORE_DISTANCE,REPORT_TEXT} from '../constans/config';
+import Css from './Detail.css';
+import {getHash, setHash} from '../../utils.js';
+import {REPORT_TEXT} from '../../constans/config';
 import {
     getPost,
     getComments,
@@ -10,14 +11,17 @@ import {
     postLike,
     deleteLike,
     postCommentLike,
-    getUser
-} from '../load';
-import GlobalLoading from '../components/GlobalLoading.jsx';
-import Item from '../components/Item';
+    deleteCommentLike,
+    getUser,
+    block,
+    whiteList
+} from '../../load';
+import GlobalLoading from '../../components/GlobalLoading.jsx';
+import Item from '../../components/Item';
 import Textarea from 'react-textarea-autosize';
-import CommentList from '../components/CommentList';
-import {toLogin} from '../business';
-import Menu from '../components/Menu';
+import CommentList from '../../components/CommentList';
+import {toLogin} from '../../business';
+import Menu from '../../components/Menu';
 
 class Detail extends React.Component {
     constructor(props) {
@@ -35,25 +39,20 @@ class Detail extends React.Component {
         this.onCommentToggleLike = this.onCommentToggleLike.bind(this); //点赞评论
         this.onToggleOther = this.onToggleOther.bind(this); //当点击...
         this.onDeletePost = this.onDeletePost.bind(this); //当删除文章
-        this.bindEvents = this.bindEvents.bind(this);
-        this.removeEvents = this.removeEvents.bind(this);
-        this.onScroll = this.onScroll.bind(this);
 
     }
     componentDidMount() {
         document.body.scrollTop = 0;
-        // console.log('ref',this.detailCommentRef);
         let postId = getHash('id');
-        console.log(postId);
         if (!this.props.data) {
             getPost({postId: postId}).then(data => {
-                if(Array.isArray(data)){
-                    this.props.onLoadDetailFail({
-                        postId:postId,
-                        message:'帖子不存在'
-                    });
-                    console.log('帖子不存在');
-                    return;
+                if (Array.isArray(data)) {
+                    this.props.onShowNotice({message: '帖子不存在！', level: 'error'});
+                    setTimeout(() => {
+                        this.props.onLoadDetailFail({postId: postId, message: '帖子不存在'});
+                        return;
+                    }, 1500);
+
                 }
                 this.props.onLoadDetail({data});
                 this.getCommentList({postId});
@@ -62,32 +61,28 @@ class Detail extends React.Component {
             });
 
         } else {
-            if (!this.props.data.commentIdSets&&!this.props.data.isLoadingCommentEnd) {
+            if (!this.props.data.commentIdSets && !this.props.data.isLoadingCommentEnd) {
                 //调用评论列表的api
                 this.getCommentList({postId});
             }
         }
-        this.bindEvents();
-
-    }
-    componentWillUnmount() {
-        this.removeEvents();
     }
 
     render() {
         const styles = {
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            height: '100%'
         };
         const main = {
             overflow: 'auto',
             margin: `0px 0px ${this.state.commentContainerHeight}px 0px`
         };
 
-        if (this.props.data!==null) {
+        if (this.props.data !== null) {
             let data = this.props.data;
-            if(Object.keys(data).length===0){
+            if (Object.keys(data).length === 0) {
                 return <div>帖子不存在</div>;
             }
             let commentList = data.commentIdSets
@@ -97,7 +92,9 @@ class Detail extends React.Component {
                     isMask: false
                 }}/>);
             return (
-                <div style={styles}>
+                <div className={Css.detailContainer} style={styles} ref={listDom => {
+                    this.listDom = listDom;
+                }}>
                     <div style={main}>
                         <Item isShowFoldButton={false} onToggleLike={this.onToggleLike} data={data} onToggleOther={this.onToggleOther}/> {commentList}
                     </div>
@@ -110,31 +107,8 @@ class Detail extends React.Component {
                 isMask: false
             }}/>);
         }
+    }
 
-    }
-    removeEvents() {
-        window.removeEventListener('scroll', this.onScroll);
-    }
-    bindEvents() {
-        window.addEventListener('scroll', this.onScroll);
-
-    }
-    onScroll() {
-        if (this.props.data.isLoadingCommentEnd) {
-            return;
-        }else{
-            console.log('scroll');
-          //下拉刷新
-            let documentHeight = getDocumentHeight(); //整个页面的高度
-            let distance = documentHeight - (window.document.body.scrollTop + window.screen.height);
-          //window.screen.height  屏幕的高度
-          //window.document.body.scrollTop  屏幕顶部距离页面顶部的距离
-            if (distance <= INDEX_LIST_LOAD_MORE_DISTANCE && distance > 0) {
-                console.log('yes scroll');
-                this.onLoadMoreComment({fromId:this.getFromId()});
-            }
-        }
-    }
     onDeletePost(params) {
         this.props.showGlobalLoading();
         let itemId = params.id;
@@ -159,6 +133,19 @@ class Detail extends React.Component {
                 text: '删除',
                 onTap: () => {
                     this.onDeletePost({id: itemId});
+                }
+            });
+        }
+        if (params.level === 1) {
+            menus.push({
+                text: '拉黑',
+                onTap: () => {
+                    block({postId: itemId});
+                }
+            }, {
+                text: '白名单',
+                onTap: () => {
+                    whiteList({postId: itemId});
                 }
             });
         }
@@ -235,10 +222,8 @@ class Detail extends React.Component {
         console.log('here loadmore');
         //加载更多评论
         let postId = getHash('id');
-        console.log('params',params);
-        console.log(getComments);
-        getComments({postId:postId,fromId:params.fromId}).then(data => {
-            console.log('response',data);
+        getComments({postId: postId, fromId: params.fromId}).then(data => {
+            console.log('response', data);
             if (data.length === 0) {
                 this.props.onLoadCommentListEnd({postId});
                 return;
@@ -250,10 +235,10 @@ class Detail extends React.Component {
                 _data[id] = data[i];
                 commentIdSets.add(id);
             }
-            this.props.onLoadCommentList({commentIdSets, data: _data, postId,fromId:params.fromId});
+            this.props.onLoadCommentList({commentIdSets, data: _data, postId, fromId: params.fromId});
 
         }).catch((err) => {
-            console.log('err',err);
+            console.log('err', err);
         });
     }
 
@@ -357,11 +342,16 @@ class Detail extends React.Component {
         }
     }
     onCommentToggleLike(params) {
-        postCommentLike({commentId: params.commentId,postId:this.props.data.id}).then((data) => {
-            console.log(data);
-        }).catch(err => {
-            console.log(err);
-        });
+        if (this.props.commentData[params.commentId].like === 0) {
+            postCommentLike({commentId: params.commentId, postId: this.props.data.id}).catch(err => {
+                console.log(err);
+            });
+        } else if (this.props.commentData[params.commentId].like === 1) {
+            deleteCommentLike({commentId: params.commentId, postId: this.props.data.id}).catch(err => {
+                console.log(err);
+            });
+        }
+        this.props.onCommentToggleLike({commentId: params.commentId});
     }
 
 }

@@ -48,10 +48,14 @@ plugins.push(
     })
 );
 plugins.push(new HtmlWebpackPlugin({
+<<<<<<< HEAD
     title: 'scuinfo - 四川大学校园匿名社区',
     reactFileName:vendorConfig.reactStuff.js,
     inlineSource:'.js',
     // reactDomFileName:vendorConfig.reactDom.js,
+=======
+    title: 'scuinfo beta',
+>>>>>>> 18a8ebe721b9edf097d34d76a3f874943b8c5505
     template: './public/index.ejs', // Load a custom template (ejs by default see the FAQ for details)
     minify: !isProduction() ? false : {
         collapseWhitespace: true,

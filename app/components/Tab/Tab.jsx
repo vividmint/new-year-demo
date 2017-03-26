@@ -2,8 +2,8 @@ import React from 'react';
 import TiHome from 'react-icons/lib/ti/home';
 import MdAddCircle from 'react-icons/lib/md/add-circle';
 import MdAccountCircle from 'react-icons/lib/md/account-circle';
-//import TiCompass from 'react-icons/lib/ti/compass';
 import {BASE_PRIMARY_COLOR} from '../../constans/styles';
+import {getHash, setHash} from '../../utils';
 
 class Tab extends React.Component {
     constructor(props) {
@@ -31,59 +31,56 @@ class Tab extends React.Component {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            textDecoration: 'none',
+            textDecoration: 'none'
         };
         const iconStyle = {
             color: '#AAAAAA',
             fontSize: '32px'
         };
+
+        const activeStyle = Object.assign({},iconStyle, {color: `${BASE_PRIMARY_COLOR}`});
+
         let bubbleStyle = {
             height: 18,
             minWidth: 18,
-            padding: '2px 5px',
+            padding: '2px 4px 2px 5px',
             color: 'rgb(255,255,255)',
             borderRadius: 20,
             position: 'absolute',
             fontSize: 10,
             top: -3,
-            left:18,
-            backgroundColor: `${BASE_PRIMARY_COLOR}`
+            left: 22,
+            backgroundColor: 'rgb(239,64,86)'
         };
         const tabList = [
             {
-                href: '#page=index',
+                href: 'page=index',
                 key: 'home'
             }, {
-                href: '#page=sendText',
+                href: 'page=sendText',
                 key: 'plus'
             }, {
-                href: '#page=user',
+                href: 'page=user',
                 key: 'user',
                 bubble: this.props.count
                     ? true
                     : false
             }
         ];
-        /**
-         * {
-         * type:"count",
-         * value:1866
-         * }
-         *
-         * {
-         * type:"dot",
-         * value:true
-         * }
-         */
-
         const tabMap = {
-            'home': <TiHome style={iconStyle}/>,
-            'plus': <MdAddCircle style={iconStyle}/>,
-            'user': <MdAccountCircle style={iconStyle}/>
+            'home': <TiHome style={getHash('page') === 'index'
+                ? activeStyle
+                : iconStyle}/>,
+            'plus': <MdAddCircle style={getHash('page') === 'sendText'
+                ? activeStyle
+                : iconStyle}/>,
+            'user': <MdAccountCircle style={getHash('page') === 'user'
+                    ? activeStyle
+                    : iconStyle}/>
         };
         const iconContainerStyle = {
             position: 'relative',
-            display:'inline'
+            display: 'inline'
         };
 
         let tabComponent = tabList.map((item, index) => {
@@ -92,12 +89,17 @@ class Tab extends React.Component {
                 bubble = <div style={bubbleStyle}>{this.getCountLength()}</div>;
             }
             return (
-              <div style={itemStyle} key={'icon_' + index}>
-                <a href={item.href}  style={iconContainerStyle}>
-                    {tabMap[item.key]}
-                    {bubble}
-                </a>
-              </div>
+                <div style={itemStyle} key={'icon_' + index}>
+                    <div onTouchTap={() => {
+                        setHash(item.href);
+                        if (getHash('page') === 'index') {
+                            this.props.onRefresh();
+                        }
+                    }} style={iconContainerStyle}>
+                        {tabMap[item.key]}
+                        {bubble}
+                    </div>
+                </div>
 
             );
 
@@ -108,13 +110,14 @@ class Tab extends React.Component {
             </div>
         );
     }
-    getCountLength(){
-        if(this.props.count>=10000){
-            let n = Math.floor(this.props.count/1000);
-            return `${n}k`;
-        }else{
+    getCountLength() {
+        if (this.props.count >= 10000) {
+            let n = Math.floor(this.props.count / 1000);
+            return `${n}k+`;
+        } else {
             return this.props.count;
         }
     }
+
 }
 export default Tab;

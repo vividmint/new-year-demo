@@ -10,9 +10,9 @@ class Menu extends React.Component {
         var menusComponent = menus.map((v,i)=>{
             let style = Object.assign({
                 padding: '13px 2px',
-                margin:'8px 0px',
-                backgroundColor: 'rgba(255,255,255,0.96)',
-                borderRadius:10,
+                margin:'8px',
+                backgroundColor: 'rgb(255,255,255)',
+                borderRadius:11,
                 color:`${BASE_PRIMARY_COLOR}`,
                 fontSize:17
             },v.style);
