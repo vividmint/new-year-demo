@@ -68,7 +68,6 @@ class UserNotice extends React.Component {
 
     onLoadNoticeList() {
         getNoticeList({fromId: this.getFromId()}).then(result => {
-            console.log(result);
             if (result.length === 0) {
                 this.props.onShowNotice({message: '没有新消息了_(:зゝ∠)_', level: 'error'});
                 this.setState({isLoadingEnd: true});

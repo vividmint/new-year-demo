@@ -38,7 +38,7 @@ class Tab extends React.Component {
             fontSize: '32px'
         };
 
-        const activeStyle = Object.assign({},iconStyle, {color: `${BASE_PRIMARY_COLOR}`});
+        const activeStyle = Object.assign({}, iconStyle, {color: `${BASE_PRIMARY_COLOR}`});
 
         let bubbleStyle = {
             height: 18,

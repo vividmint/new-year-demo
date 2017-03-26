@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
 const sourcePath = path.join(__dirname);
 const targetPath = path.join(__dirname, 'dist');
-const vendorConfig = require(path.join(targetPath,'vendor-config.json'));
+const vendorConfig = require(path.join(targetPath, 'vendor-config.json'));
 const isProduction = function() {
     return process.env.NODE_ENV === 'production';
 };
@@ -33,29 +33,22 @@ plugins.push(new webpack.DllReferencePlugin({
     context: sourcePath,
     manifest: require(path.join(targetPath, 'vendor', 'reactStuff-manifest.json'))
 }));
-plugins.push(new webpack.DllReferencePlugin({
-    context: sourcePath,
-    manifest: require(path.join(targetPath, 'vendor', 'reactDom-manifest.json'))
-}));
+
 
 plugins.push(
     new webpack.optimize.CommonsChunkPlugin({
         name: 'vendor',
-        minChunks: function (module) {
-       // this assumes your vendor imports exist in the node_modules directory
+        minChunks: function(module) {
+            // this assumes your vendor imports exist in the node_modules directory
             return module.context && module.context.indexOf('node_modules') !== -1;
         }
     })
 );
 plugins.push(new HtmlWebpackPlugin({
-<<<<<<< HEAD
     title: 'scuinfo - 四川大学校园匿名社区',
-    reactFileName:vendorConfig.reactStuff.js,
-    inlineSource:'.js',
+    reactFileName: vendorConfig.reactStuff.js,
+    inlineSource: '.js',
     // reactDomFileName:vendorConfig.reactDom.js,
-=======
-    title: 'scuinfo beta',
->>>>>>> 18a8ebe721b9edf097d34d76a3f874943b8c5505
     template: './public/index.ejs', // Load a custom template (ejs by default see the FAQ for details)
     minify: !isProduction() ? false : {
         collapseWhitespace: true,
@@ -77,7 +70,7 @@ module.exports = {
         filename: 'bundles/[name].[chunkhash].bundle.js',
         chunkFilename: 'chunks/[name].[chunkhash].chunk.js',
         path: targetPath,
-        publicPath:'/dist/'
+        publicPath: '/dist/'
     },
     module: {
         rules: [{
@@ -117,7 +110,7 @@ module.exports = {
         compress: true,
         port: 9002, //端口设定
         host: '0.0.0.0',
-        proxy:{
+        proxy: {
             '/api': {
                 // target: 'http://scuinfo.com',
                 target: 'http://127.0.0.1:4150',

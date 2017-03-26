@@ -10,7 +10,6 @@ import A from './A';
 
 class UserDetail extends React.Component {
     constructor(props) {
-        console.log('t');
         super(props);
         this.onShowProfieMenu = this.onShowProfieMenu.bind(this);
     }
@@ -22,7 +21,7 @@ class UserDetail extends React.Component {
                 backgroundColor: '#F2F2F2',
                 color: 'rgba(0, 0, 0, 0.8)',
                 width: '100%',
-                paddingBottom:6
+                paddingBottom: 6
             },
             userInfo = {
                 display: 'flex',
@@ -61,14 +60,14 @@ class UserDetail extends React.Component {
                 alignItems: 'center',
                 flex: 1,
                 borderRight: '0.5px solid rgb(224, 221, 221)',
-                textDecoration:'none'
+                textDecoration: 'none'
             },
             right = {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 flex: 1,
-                textDecoration:'none'
+                textDecoration: 'none'
             },
             countName = {
                 paddingRight: 10,
@@ -90,7 +89,7 @@ class UserDetail extends React.Component {
                 borderRadius: 5,
                 color: 'white',
                 padding: '6px 3px 6px 8px',
-                textDecoration:'none'
+                textDecoration: 'none'
             },
             bell = {
                 marginRight: 15,
@@ -112,21 +111,17 @@ class UserDetail extends React.Component {
             noticeBar = null;
 
         if (this.props.userData) {
-            if (this.props.userNoticeCount.count&&this.props.userNoticeCount.count!==0) {
+            if (this.props.userNoticeCount.count && this.props.userNoticeCount.count !== 0) {
                 noticeBar = <div style={bar}>
-<<<<<<< HEAD
-                    <div onTouchTap={()=>{
-                            console.log('test');
-                        }} style={noticeBarStyle}><FaBellO style={bell}/>
+                    <div onTouchTap={() => {
+                    }} style={noticeBarStyle}><FaBellO style={bell}/>
                         <span>
                             <span style={text}>{this.props.userNoticeCount.count}条新消息</span><FaAngleRight style={angle}/></span>
                     </div>
-=======
                     <A href={'#page=notice'} style={noticeBarStyle}><FaBellO style={bell}/>
                         <span>
                             <span style={text}>{this.props.userNoticeCount.count}条新消息</span><FaAngleRight style={angle}/></span>
                     </A>
->>>>>>> 18a8ebe721b9edf097d34d76a3f874943b8c5505
                 </div>;
             }
             userAvatar = <img style={avatar} src={this.props.userData.avatar}></img>;
