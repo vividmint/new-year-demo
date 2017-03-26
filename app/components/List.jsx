@@ -3,7 +3,7 @@ import Item from './Item';
 import Button from './Button';
 import Loading from 'react-loading';
 import ReactDOM from 'react-dom';
-import {getDocumentHeight} from '../utils.js';
+import {getDocumentHeight,getHash} from '../utils.js';
 import {INDEX_LIST_LOAD_MORE_DISTANCE} from '../constans/config';
 
 class List extends React.Component {
@@ -57,7 +57,31 @@ class List extends React.Component {
             marginBottom: 50,
             paddingBottom: 10
         };
+        const titles = {
+            display:'flex',
+            justifyContent:'center',
+            margin:'15px 0px 10px 0px',
+        };
+        const title = {
+            border:'1px solid skyblue',
+            padding:'3px 10px',
+            color:'#AAAAAA'
+        };
+        const active = Object.assign({},title,{
+            color:'white',
+            backgroundColor:'skyblue'
+        });
         let ItemArr = [];
+        let page = getHash('page');
+        let nav = null;
+        console.log(page);
+
+        nav = <div style={titles}>
+            <div style={page ==='index'?active:title}>最新</div>
+            <div style={page ==='hot'?active:title}>热门</div>
+
+        </div>;
+
         for (let id of this.props.idSets) {
             ItemArr.push(<Item key={'item' + id} onToggleLike={this.props.onToggleLike} data={this.props.data[id]} onToggleOther={this.props.onToggleOther}/>);
         }
@@ -76,6 +100,7 @@ class List extends React.Component {
             <div ref={dom=>{
                 this.listDom = dom;
             }} onScroll={this.onScroll.bind(this)} style={styles}>
+            {nav}
                 {ItemArr}
                 {moreButton}
                 <div style={spinnerBox}>{loading}</div>

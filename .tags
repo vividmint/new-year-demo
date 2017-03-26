@@ -1,0 +1,5 @@
+const	/Users/yangguobao/project/scuinfov5/webpack.config.js	/^const vendorConfig = require(path.join(targetPath,'vendor-config.json'));$/;"	function	line:7
+minChunks	/Users/yangguobao/project/scuinfov5/webpack.config.js	/^        minChunks: function (module) {$/;"	function	line:44
+module.exports.context	/Users/yangguobao/project/scuinfov5/webpack.config.js	/^module.exports = {$/;"	property	line:69
+module.exports.entry	/Users/yangguobao/project/scuinfov5/webpack.config.js	/^    context: sourcePath, \/\/上下文$/;"	property	line:70
+module.exports.output	/Users/yangguobao/project/scuinfov5/webpack.config.js	/^    entry: '.\/app\/index.jsx',$/;"	property	line:71

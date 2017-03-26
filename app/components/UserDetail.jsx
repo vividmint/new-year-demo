@@ -8,6 +8,7 @@ import Menu from './Menu';
 
 class UserDetail extends React.Component {
     constructor(props) {
+        console.log('t');
         super(props);
         this.onShowProfieMenu = this.onShowProfieMenu.bind(this);
     }
@@ -111,10 +112,12 @@ class UserDetail extends React.Component {
         if (this.props.userData) {
             if (this.props.userNoticeCount) {
                 noticeBar = <div style={bar}>
-                    <a href={'#page=notice'} style={noticeBarStyle}><FaBellO style={bell}/>
+                    <div onTouchTap={()=>{
+                            console.log('test');
+                        }} style={noticeBarStyle}><FaBellO style={bell}/>
                         <span>
                             <span style={text}>{this.props.userNoticeCount.count}条新消息</span><FaAngleRight style={angle}/></span>
-                    </a>
+                    </div>
                 </div>;
             }
             userAvatar = <img style={avatar} src={this.props.userData.avatar}></img>;

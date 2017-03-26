@@ -1,7 +1,7 @@
 import qs from 'querystring';
 
-const HOST = 'http://scuinfo.com';
-const PORT = 80;
+const HOST = `${location.protocol}//${location.hostname}` || 'http://scuinfo.com';
+const PORT = location.port;
 const HOST_PORT = `${HOST}:${PORT}`;
 
 

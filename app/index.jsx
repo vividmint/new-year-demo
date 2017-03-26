@@ -2,13 +2,7 @@ import React from 'react';
 import {render} from 'react-dom';
 import {getHash, setHash, getTime} from './utils.js';
 import {REPORT_TEXT} from './constans/config';
-import Home from './pages/Home';
-import User from './pages/User';
-import UserNotice from './pages/UserNotice';
-import Signin from './pages/Signin';
-import SendText from './pages/SendText';
-import Search from './pages/Search';
-import Detail from './pages/Detail.jsx';
+import 'es6-promise/auto';
 import GlobalLoading from './components/GlobalLoading';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import {popNotice, removeNotice, Notice} from './components/Notice';
@@ -16,9 +10,14 @@ injectTapEventPlugin(); //给所有组件添加onTouchTap事件
 
 class App extends React.Component {
     constructor(props) {
+        console.log('here');
+
         super(props);
         const page = getHash('page') || 'index'; //当前页面,默认首页
         this.state = {
+            currentComponent: (() => {
+                return null
+            }), //当前组件
             data: null, //所有的内容
             idSets: null, //帖子列表的id集合
             hotIdSets: null, //热门帖子列表id集合
@@ -31,25 +30,25 @@ class App extends React.Component {
             isLoadingMore: false, //是否正在加载更多
             noticeDialog: {
                 type: 'tips', //弹窗类型
-                isShowMenu:false
+                isShowMenu: false
             },
             globalLoading: {
                 isShow: false,
                 isMask: true,
                 text: ''
             },
-            reportId:null,
-            userNoticeCount:{
-                count:null,
-                likeCount:null,
-                replyCount:null
+            reportId: null,
+            userNoticeCount: {
+                count: null,
+                likeCount: null,
+                replyCount: null
             }
 
         };
         this.onLoadList = this.onLoadList.bind(this); //载入列表
         this.refresh = this.refresh.bind(this); //刷新列表
         this.onLoadDetail = this.onLoadDetail.bind(this); //加载帖子详情页
-        this.onLoadDetailFail = this.onLoadDetailFail.bind(this);//帖子详情加载失败
+        this.onLoadDetailFail = this.onLoadDetailFail.bind(this); //帖子详情加载失败
         this.onToggleLike = this.onToggleLike.bind(this); //点赞帖子
         this.onToggleOther = this.onToggleOther.bind(this); //点击三点点
         this.onLoadMoreError = this.onLoadMoreError.bind(this); //
@@ -67,62 +66,116 @@ class App extends React.Component {
         this.closeGlobalLoading = this.closeGlobalLoading.bind(this);
         this.showGlobalLoading = this.showGlobalLoading.bind(this);
         this.resetIdSets = this.resetIdSets.bind(this); //重置idSets
-        this.onReportPost = this.onReportPost.bind(this);//当点击举报按钮
-        this.onLoadUserNoticeCount = this.onLoadUserNoticeCount.bind(this);//加载用户通知数
-
-
+        this.onReportPost = this.onReportPost.bind(this); //当点击举报按钮
+        this.onLoadUserNoticeCount = this.onLoadUserNoticeCount.bind(this); //加载用户通知数
+        this.onLoadPage = this.onLoadPage.bind(this);//异步加载页面
         window.onhashchange = () => {
             //当url里的hash发生变化的时候
-            let page = getHash('page') || 'index'; //获取当前hash值
-            if (page !== this.state.page) {
-                this.setState({page: page});
-            }
-        };
+            this.onLoadPage({
+                page:getHash("page")
+            });
+        }
+    }
+
+    componentDidMount() {
+        this.onLoadPage({
+            page:getHash("page")
+        });
     }
     render() {
-        let pageContainer = null;
-        if (this.state.page === 'detail') {
-            let id = getHash('id');
-            pageContainer = (<Detail onLoadDetailFail={this.onLoadDetailFail} loading={this.state.globalLoading} onReportPost={this.onReportPost} showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onRemovePost={this.onRemovePost} onLoadMore={this.onLoadMore}  onLoadCommentListEnd={this.onLoadCommentListEnd} onLoading={this.onLoading} onLoadMoreError={this.onLoadMoreError} isLoadingMore={this.state.isLoadingMore} onAddComment={this.onAddComment} onCommentToggleLike={this.onCommentToggleLike} onRemoveComment={this.onRemoveComment} onRemoveNotice={this.onRemoveNotice} onShowNotice={this.onShowNotice} onToggleLike={this.onToggleLike} onLoadDetail={this.onLoadDetail} commentData={this.state.commentData} onLoadCommentList={this.onLoadCommentList} data={this.state.data
-                ? this.state.data[id]
-                : null}/>);
-        } else if (this.state.page === 'user') {
-            pageContainer = (<User onLoadUserNoticeCount={this.onLoadUserNoticeCount} userNoticeCount={this.state.userNoticeCount} showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onRemoveNotice={this.onRemoveNotice} onShowNotice={this.onShowNotice} userData={this.state.userData} onLoadUser={this.onLoadUser} onLoadLikedPosts={this.onLoadLikedPosts} onLoadMore={this.onLoadMore} onLoadMoreError={this.onLoadMoreError} isLoadingMore={this.state.isLoadingMore} loading={this.state.globalLoading}/>);
-        } else if (this.state.page === 'sendText') {
-            pageContainer = (<SendText topText='发布' placeholder='写下你想说的话' showCheckBox={true} page={this.state.page}  showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onAddPost={this.onAddPost} data={this.state.data} userData={this.state.userData} onShowNotice={this.onShowNotice}/>);
-        } else if (this.state.page === 'advise') {
-            pageContainer = (<SendText topText='反馈' sendButtonText='提交' showCheckBox={true} page={this.state.page} value='#建议#' showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onAddPost={this.onAddPost} data={this.state.data} userData={this.state.userData} onShowNotice={this.onShowNotice}/>);
-        } else if (this.state.page === 'report') {
-            pageContainer = (<SendText topText={`${REPORT_TEXT}`} sendButtonText='提交' showCheckBox={false}  placeholder='报告描述' reportId={this.state.reportId}  page={this.state.page}  showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onAddPost={this.onAddPost} data={this.state.data} userData={this.state.userData} onShowNotice={this.onShowNotice}/>);
-        }
-        else if (this.state.page === 'index' || this.state.page === 'posted' || this.state.page === 'hot' || this.state.page === 'liked') {
-            pageContainer = (<Home onReportPost={this.onReportPost} resetIdSets={this.resetIdSets} page={this.state.page} idSets={this.state.idSets} hotIdSets={this.state.hotIdSets} likedIdSets={this.state.likedIdSets} postedIdSets={this.state.postedIdSets} onShowNotice={this.onShowNotice} onToggleLike={this.onToggleLike} onRemoveNotice={this.onRemoveNotice} onToggleOther={this.onToggleOther} onLoading={this.onLoading} onLoadList={this.onLoadList} onLoadMore={this.onLoadMore} onLoadMoreError={this.onLoadMoreError} data={this.state.data} isLoadingMore={this.state.isLoadingMore} isShowMore={this.state.isShowMore} onRemovePost={this.onRemovePost} closeGlobalLoading={this.closeGlobalLoading} showGlobalLoading={this.showGlobalLoading}/>);
-        } else if (this.state.page === 'signin') {
-            pageContainer = (<Signin/>);
-        } else if(this.state.page ==='notice'){
-            pageContainer=(<UserNotice onLoadUserNoticeCount={this.onLoadUserNoticeCount} userNoticeCount={this.state.userNoticeCount}/>);
-        } else if(this.state.page==='search'){
-            pageContainer=(<Search/>);
-        } else {
-            pageContainer=(<div>404页面不存在</div>);
-        }
-        let styles={
-            // overflowY:this.state.noticeDialog.isShowMenu?'hidden':''//控制页面是否可以滚动，menu弹窗出现时不能滚动
-        };
+        let currentComponent = this.state.currentComponent;
         return (
-            <div style={styles}>
-                {pageContainer}
+            <div>
+                {currentComponent()}
                 <Notice onTapMask={this.onRemoveNotice} noticeDialog={this.state.noticeDialog}/>
                 <GlobalLoading loading={this.state.globalLoading}/>
             </div>
         );
+    }
+    onLoadPage(options) {
+        options = Object.assign({}, options);
+        let page = options.page || 'index'; //获取当前hash值
+        this.setState({page: page});
+        if (page === 'detail') {
+            import ('./pages/Detail.jsx').then((pageModule) => {
+                let id = getHash('id');
+                this.setState({
+                    currentComponent: () => (<pageModule.default onLoadDetailFail={this.onLoadDetailFail} loading={this.state.globalLoading} onReportPost={this.onReportPost} showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onRemovePost={this.onRemovePost} onLoadMore={this.onLoadMore} onLoadCommentListEnd={this.onLoadCommentListEnd} onLoading={this.onLoading} onLoadMoreError={this.onLoadMoreError} isLoadingMore={this.state.isLoadingMore} onAddComment={this.onAddComment} onCommentToggleLike={this.onCommentToggleLike} onRemoveComment={this.onRemoveComment} onRemoveNotice={this.onRemoveNotice} onShowNotice={this.onShowNotice} onToggleLike={this.onToggleLike} onLoadDetail={this.onLoadDetail} commentData={this.state.commentData} onLoadCommentList={this.onLoadCommentList} data={this.state.data
+                        ? this.state.data[id]
+                        : null}/>)
+                })
+            })
+        }
+        if (page === 'index' || page === 'posted' || page === 'hot' || page === 'liked') {
+            import ('./pages/Home.jsx').then((pageModule) => {
+                this.setState({
+                    currentComponent: () => (<pageModule.default onReportPost={this.onReportPost} resetIdSets={this.resetIdSets} page={this.state.page} idSets={this.state.idSets} hotIdSets={this.state.hotIdSets} likedIdSets={this.state.likedIdSets} postedIdSets={this.state.postedIdSets} onShowNotice={this.onShowNotice} onToggleLike={this.onToggleLike} onRemoveNotice={this.onRemoveNotice} onToggleOther={this.onToggleOther} onLoading={this.onLoading} onLoadList={this.onLoadList} onLoadMore={this.onLoadMore} onLoadMoreError={this.onLoadMoreError} data={this.state.data} isLoadingMore={this.state.isLoadingMore} isShowMore={this.state.isShowMore} onRemovePost={this.onRemovePost} closeGlobalLoading={this.closeGlobalLoading} showGlobalLoading={this.showGlobalLoading}/>)
+                })
+            })
+        }
+
+        if(page=== 'user'){
+            import ('./pages/User.jsx').then((pageModule) => {
+                this.setState({
+                    currentComponent: () => (<pageModule.default onLoadUserNoticeCount={this.onLoadUserNoticeCount} userNoticeCount={this.state.userNoticeCount} showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onRemoveNotice={this.onRemoveNotice} onShowNotice={this.onShowNotice} userData={this.state.userData} onLoadUser={this.onLoadUser} onLoadLikedPosts={this.onLoadLikedPosts} onLoadMore={this.onLoadMore} onLoadMoreError={this.onLoadMoreError} isLoadingMore={this.state.isLoadingMore} loading={this.state.globalLoading}/>)
+                })
+            })
+        }
+        if(page==='sendText'){
+            import ('./pages/SendText').then((pageModule) => {
+                this.setState({
+                    currentComponent: () => (<pageModule.default topText='发布' placeholder='写下你想说的话' showCheckBox={true} page={this.state.page} showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onAddPost={this.onAddPost} data={this.state.data} userData={this.state.userData} onShowNotice={this.onShowNotice}/>)
+                })
+            })
+
+        }
+        if(page==='advise'){
+            import ('./pages/SendText').then((pageModule) => {
+                this.setState({
+                    currentComponent: () => (<pageModule.default topText='反馈' sendButtonText='提交' showCheckBox={true} page={this.state.page} value='#建议#' showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onAddPost={this.onAddPost} data={this.state.data} userData={this.state.userData} onShowNotice={this.onShowNotice}/>)
+                })
+            })
+
+        }
+        if(page==='report'){
+            import ('./pages/SendText').then((pageModule) => {
+                this.setState({
+                    currentComponent: () => (<pageModule.default topText={`${REPORT_TEXT}`} sendButtonText='提交' showCheckBox={false} placeholder='报告描述' reportId={this.state.reportId} page={this.state.page} showGlobalLoading={this.showGlobalLoading} closeGlobalLoading={this.closeGlobalLoading} onAddPost={this.onAddPost} data={this.state.data} userData={this.state.userData} onShowNotice={this.onShowNotice}/>)
+                })
+            })
+
+        }
+        if(page==='signin'){
+            import ('./pages/Signin.jsx').then((pageModule) => {
+                this.setState({
+                    currentComponent: () => (<pageModule.default />)
+                })
+            })
+        }
+        if(page==='notice'){
+            import ('./pages/UserNotice.jsx').then((pageModule) => {
+                this.setState({
+                    currentComponent: () => (<pageModule.default onLoadUserNoticeCount={this.onLoadUserNoticeCount} userNoticeCount={this.state.userNoticeCount}/>)
+                })
+            })
+        }
+
+        if(page==='search'){
+            import ('./pages/Search.jsx').then((pageModule) => {
+                this.setState({
+                    currentComponent: () => (<pageModule.default />)
+                })
+            })
+        }
     }
     onShowNotice(params) {
         //更改弹窗的样式类型并展示
         this.setState({
             noticeDialog: {
                 type: params.type || 'tips',
-                isShowMenu:params.type==='menu'?true:false
+                isShowMenu: params.type === 'menu'
+                    ? true
+                    : false
             }
         });
         //弹窗
@@ -136,13 +189,11 @@ class App extends React.Component {
         data[params.postId].isLoadingCommentEnd = true;
         this.setState({data: data});
     }
-    onLoadDetailFail(params){
+    onLoadDetailFail(params) {
         let data = {};
         data[params.postId] = {};
-        this.setState({
-            data
-        });
-      //加载帖子错误
+        this.setState({data});
+        //加载帖子错误
     }
 
     onLoadCommentList(params) {
@@ -246,7 +297,7 @@ class App extends React.Component {
             noticeDialog: Object.assign(this.state.noticeDialog, {
                 isMask: false,
                 type: 'tips',
-                isShowMenu:false
+                isShowMenu: false
             })
         });
         // console.log(this.state.noticeDialog);
@@ -338,17 +389,15 @@ class App extends React.Component {
             }, params)
         });
     }
-    onReportPost(params){
-        this.setState({
-            reportId:params.postId
-        });
+    onReportPost(params) {
+        this.setState({reportId: params.postId});
     }
-    onLoadUserNoticeCount(params){
+    onLoadUserNoticeCount(params) {
         this.setState({
-            userNoticeCount:{
-                count:params.count,
-                likeCount:params.likeCount,
-                replyCount:params.replyCount
+            userNoticeCount: {
+                count: params.count,
+                likeCount: params.likeCount,
+                replyCount: params.replyCount
             }
         });
     }
@@ -357,5 +406,5 @@ class App extends React.Component {
 
 render(
     <App style={{
-        height: '100%',
-    }}/>, document.querySelector('.container'));
+    height: '100%'
+}}/>, document.querySelector('.container'));
