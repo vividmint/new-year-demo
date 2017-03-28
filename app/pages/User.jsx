@@ -57,16 +57,17 @@ class User extends React.Component {
                 text: '查询课程',
                 href: '/course',
                 key: 'searchCourse'
-            }, {
-                text: '空教室',
-                href: 'ttp://scuinfo.com/classroom',
-                key: 'room'
             }
+            // {
+            //     text: '空教室',
+            //     href: 'ttp://scuinfo.com/classroom',
+            //     key: 'room'
+            // }
         ];
         const entertainmentService = [
             {
                 text: '神奇海螺',
-                href: '/fm',
+                href: 'http://music.163.com/#/djradio?id=1136006',
                 key: 'fm'
             }, {
                 text: '绩点',
