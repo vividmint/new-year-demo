@@ -11,6 +11,8 @@ class Tab extends React.Component {
     }
 
     render() {
+        let page = getHash('page');
+
         const styles = Object.assign({
             position: 'fixed',
             display: 'flex',
@@ -54,7 +56,7 @@ class Tab extends React.Component {
         };
         const tabList = [
             {
-                href: 'page=index',
+                href: page==='hot'?'page=hot':'page=index',
                 key: 'home'
             }, {
                 href: 'page=sendText',
@@ -68,13 +70,13 @@ class Tab extends React.Component {
             }
         ];
         const tabMap = {
-            'home': <TiHome style={getHash('page') === 'index'
+            'home': <TiHome style={(page === 'index' || page === undefined || page === '' || page === 'hot')
                 ? activeStyle
                 : iconStyle}/>,
-            'plus': <MdAddCircle style={getHash('page') === 'sendText'
+            'plus': <MdAddCircle style={page === 'sendText'
                 ? activeStyle
                 : iconStyle}/>,
-            'user': <MdAccountCircle style={getHash('page') === 'user'
+            'user': <MdAccountCircle style={page === 'user'
                     ? activeStyle
                     : iconStyle}/>
         };
@@ -85,6 +87,8 @@ class Tab extends React.Component {
 
         let tabComponent = tabList.map((item, index) => {
             let bubble = null;
+            let page = getHash('page');
+
             if (item.bubble) {
                 bubble = <div style={bubbleStyle}>{this.getCountLength()}</div>;
             }
@@ -92,8 +96,8 @@ class Tab extends React.Component {
                 <div style={itemStyle} key={'icon_' + index}>
                     <div onTouchTap={() => {
                         setHash(item.href);
-                        if (getHash('page') === 'index') {
-                            this.props.onRefresh();
+                        if (page === 'index' || page === 'hot') {
+                            this.props.onRefresh && this.props.onRefresh();
                         }
                     }} style={iconContainerStyle}>
                         {tabMap[item.key]}

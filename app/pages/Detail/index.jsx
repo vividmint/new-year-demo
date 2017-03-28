@@ -79,7 +79,6 @@ class Detail extends React.Component {
             overflow: 'auto',
             margin: `0px 0px ${this.state.commentContainerHeight}px 0px`
         };
-
         if (this.props.data !== null) {
             let data = this.props.data;
             if (Object.keys(data).length === 0) {
@@ -134,6 +133,14 @@ class Detail extends React.Component {
                 onTap: () => {
                     this.onDeletePost({id: itemId});
                 }
+            }, {
+                text: `${REPORT_TEXT}`,
+                onTap: () => {
+                    console.log('tap remove');
+                    this.props.onRemoveNotice();
+                    this.props.onReportPost({postId: itemId});
+                    window.location.hash = ('page=report');
+                }
             });
         }
         if (params.level === 1) {
@@ -150,20 +157,12 @@ class Detail extends React.Component {
             });
         }
         menus.push({
-            text: `${REPORT_TEXT}`,
-            onTap: () => {
-                console.log('tap remove');
-                this.props.onRemoveNotice();
-                this.props.onReportPost({postId: itemId});
-                window.location.hash = ('page=report');
-            }
-        });
-        menus.push({
             text: '取消',
             onTap: () => {
                 this.props.onRemoveNotice();
             }
         });
+
         this.props.onShowNotice({
             type: 'menu',
             level: 'success',
@@ -172,7 +171,6 @@ class Detail extends React.Component {
             position: 'bc',
             children: (<Menu menus={menus}/>)
         });
-
     }
     onPostComment(params) {
         //发布评论
@@ -249,14 +247,7 @@ class Detail extends React.Component {
 
     onShowCommentMenu(id) {
         //弹出评论菜单
-        let menus = [
-            {
-                text: `${REPORT_TEXT}`,
-                onTap: () => {
-                    console.log('tap reply');
-                }
-            }
-        ];
+        let menus = [];
         let comment = this.props.commentData[id];
         if (comment.author) {
             //是作者
@@ -266,24 +257,21 @@ class Detail extends React.Component {
                     console.log('tap remove');
                     this.onDeleteComment({postId: this.props.data.id, commentId: comment.id});
                 }
+            }, {
+                text: '取消',
+                onTap: () => {
+                    this.props.onRemoveNotice();
+                }
+            });
+            this.props.onShowNotice({
+                type: 'menu',
+                level: 'success',
+                dismissible: true,
+                autoDismiss: 0,
+                position: 'bc',
+                children: (<Menu menus={menus}/>)
             });
         }
-
-        menus.push({
-            text: '取消',
-            onTap: () => {
-                this.props.onRemoveNotice();
-            }
-        });
-
-        this.props.onShowNotice({
-            type: 'menu',
-            level: 'success',
-            dismissible: true,
-            autoDismiss: 0,
-            position: 'bc',
-            children: (<Menu menus={menus}/>)
-        });
     }
 
     onDeleteComment(params) {

@@ -1,12 +1,10 @@
 import React from 'react';
 import FaBellO from 'react-icons/lib/fa/bell-o';
 import FaAngleRight from 'react-icons/lib/fa/angle-right';
-// import MdSettings from 'react-icons/lib/md/settings';
 import MdKeyboardControl from 'react-icons/lib/md/keyboard-control';
 import {setHash} from '../utils';
 import {signout, getIndexUrl} from '../business';
 import Menu from './Menu';
-import A from './A';
 
 class UserDetail extends React.Component {
     constructor(props) {
@@ -114,14 +112,12 @@ class UserDetail extends React.Component {
             if (this.props.userNoticeCount.count && this.props.userNoticeCount.count !== 0) {
                 noticeBar = <div style={bar}>
                     <div onTouchTap={() => {
-                    }} style={noticeBarStyle}><FaBellO style={bell}/>
+                        setHash('page=notice');
+                    }} style={noticeBarStyle}>
+                    <FaBellO style={bell}/>
                         <span>
                             <span style={text}>{this.props.userNoticeCount.count}条新消息</span><FaAngleRight style={angle}/></span>
                     </div>
-                    <A href={'#page=notice'} style={noticeBarStyle}><FaBellO style={bell}/>
-                        <span>
-                            <span style={text}>{this.props.userNoticeCount.count}条新消息</span><FaAngleRight style={angle}/></span>
-                    </A>
                 </div>;
             }
             userAvatar = <img style={avatar} src={this.props.userData.avatar}></img>;
@@ -137,10 +133,14 @@ class UserDetail extends React.Component {
                         <MdKeyboardControl style={settings} onTouchTap={this.onShowProfieMenu}/> {nickName}
                     </div>
                     <div style={userBottom}>
-                        <A href={'#page=posted'} style={left}>
-                            <div style={countName}>帖子</div>{posts}</A>
-                        <A href={'#page=liked'} style={right}>
-                            <div style={countName}>喜欢</div>{like}</A>
+                        <div onTouchTap={() => {
+                            setHash('page=posted');
+                        }} style={left}>
+                            <div style={countName}>帖子</div>{posts}</div>
+                        <div onTouchTap={() => {
+                            setHash('page=liked');
+                        }} style={right}>
+                            <div style={countName}>喜欢</div>{like}</div>
                     </div>
                 </div>
                 {noticeBar}

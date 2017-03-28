@@ -15,10 +15,10 @@ const loadStatus = {
 获取首页帖子列表
 */
 export function getList(params) {
-    if (loadStatus.getList) {
-        return;
-    }
-    loadStatus.getList = true;
+    // if (loadStatus.getList) {
+    //     return;
+    // }
+    // loadStatus.getList = true;
     let url = '/api/posts';
     if (params.type === 'hot') {
         url = '/api/hot';

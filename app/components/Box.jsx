@@ -1,9 +1,8 @@
 /* * 九宫格
  */
 import React from 'react';
-import {BASE_PRIMARY_COLOR} from '../constans/styles';
+import {setUrl} from '../utils';
 import FaMusic from 'react-icons/lib/fa/music';
-import FaBomb from 'react-icons/lib/fa/bomb';
 import MdShoppingCart from 'react-icons/lib/md/shopping-cart';
 import FaLineChart from 'react-icons/lib/fa/line-chart';
 import FaCalendar from 'react-icons/lib/fa/calendar';
@@ -13,7 +12,6 @@ import MdEvent from 'react-icons/lib/md/event';
 import FaBuildingO from 'react-icons/lib/fa/building-o';
 import FaSearch from 'react-icons/lib/fa/search';
 import FaBarChart from 'react-icons/lib/fa/bar-chart';
-import A from './A';
 
 
 class Box extends React.Component {
@@ -72,7 +70,6 @@ class Box extends React.Component {
             'score': <FaBarChart style={icon}/>,
             'book': <FaBook style={icon}/>,
             'secondaryMarket': <MdShoppingCart style={icon}/>,
-            'hot': <FaBomb style={icon}/>,
             'fm': <FaMusic style={icon}/>,
             'gpa': <FaLineChart style={icon}/>
         };
@@ -104,10 +101,12 @@ class Box extends React.Component {
             }
             return (
                     <div key={'item_' + index} style={itemStyle}>
-                        <A style={button} href={item.href}>
+                        <div style={button} onTouchTap={() => {
+                            setUrl(`${item.href}`);
+                        }}>
                             {ICON_MAP[item.key]}
                             <div style={name}>{item.text}</div>
-                        </A>
+                        </div>
                     </div>
             );
         });

@@ -45,8 +45,6 @@ class SendText extends React.Component {
             },
 
             inputStyles = {
-                // flex: '1 1 auto',
-                // flexGrow: 'auto',
                 fontSize: 16,
                 boxSizing: 'border-box',
                 resize: 'none',

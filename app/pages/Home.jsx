@@ -1,19 +1,19 @@
 import React from 'react';
 import GlobalLoading from '../components/GlobalLoading.jsx';
 import List from '../components/List';
-import Tab from '../components/Tab/Tab.jsx';
+import Tab from '../components/Tab';
 import {
     getList,
     postLike,
     deleteLike,
     deletePost,
     block,
-    whiteList
+    whiteList,
+    getNoticeCount
 } from '../load';
 import {toLogin} from '../business';
 import {REPORT_TEXT} from '../constans/config';
 import Menu from '../components/Menu';
-import {BASE_PRIMARY_COLOR} from '../constans/styles';
 
 class Home extends React.Component {
     constructor(props) {
@@ -24,7 +24,6 @@ class Home extends React.Component {
         this.onToggleLike = this.onToggleLike.bind(this);
         this.onToggleOther = this.onToggleOther.bind(this);
         this.onDeletePost = this.onDeletePost.bind(this);
-        this.onRefresh = this.onRefresh.bind(this);
 
         let idSets = null,
             type = this.props.page;
@@ -91,58 +90,38 @@ class Home extends React.Component {
         this.setState({type, idSets});
     }
     render() {
-        const titles = {
-            fontSize: 14,
-            display: 'flex',
-            justifyContent: 'center',
-            // margin: '10px 0px',
-            padding:'10px',
-            borderBottom:'0.5px solid rgba(0, 0, 0, 0.0980392)'
-            // backgroundColor:`${BASE_PRIMARY_COLOR}`
-        };
-        const title = {
-            border: `1px solid ${BASE_PRIMARY_COLOR}`,
-            padding: '2px 20px',
-            color: '#AAAAAA',
-            // borderRadius:5,
-        };
-
-        const titleRight = {
-            borderTop: `1px solid ${BASE_PRIMARY_COLOR}`,
-            borderRight:`1px solid ${BASE_PRIMARY_COLOR}`,
-            borderBottom:`1px solid ${BASE_PRIMARY_COLOR}`,
-            padding: '2px 20px',
-            color: '#AAAAAA',
-        };
+        let isLoadingMore = this.props.loadingState.isLoadingMore;
+        let isLoading = this.props.loadingState.isLoading;
+        let isShowMore = this.props.loadingState.isShowMore;
 
         if (this.state.idSets === null) {
-            return (
-                <div>
-                    <GlobalLoading loading={{
-                        isShow: true,
-                        isMask: false
-                    }}/>
-                    <Tab/>
-                </div>
-            );
+            if (this.state.isLoadingEnd) {
+                return (
+                    <div>没有帖子_(:зゝ∠)_
+                        <Tab/>
+                    </div>
+                );
+            } else {
+                return (
+                    <div>
+                        <GlobalLoading loading={{
+                            isShow: true,
+                            isMask: false
+                        }}/>
+                        <Tab/>
+                    </div>
+                );
+            }
+
         } else if (this.state.idSets && this.state.idSets.size === 0) {
             return <div>没有帖子</div>;
         } else {
-            let type = this.props.page;
-            let nav = null;
-            if (type === 'index' || type === 'hot') {
-                nav = <div style={titles}>
-                    <div style={title}>最新</div>
-                    <div style={titleRight}>热门</div>
-                </div>;
-            }
             return (
                 <div style={{
                     height: '100%'
                 }}>
-                    {nav}
-                    <List data={this.props.data} idSets={this.state.idSets} onToggleLike={this.onToggleLike} onLoadMore={this.onLoadMore} isShowMore={this.props.isShowMore} isLoadingMore={this.props.isLoadingMore} onToggleOther={this.onToggleOther} isLoadingEnd={this.state.isLoadingEnd}/>
-                    <Tab onRefresh={this.onRefresh} page={this.props.page} count={this.props.userNoticeCount.count || null}/>
+                    <List data={this.props.data} idSets={this.state.idSets} onToggleLike={this.onToggleLike} onLoadMore={this.onLoadMore} isShowMore={isShowMore} isLoadingMore={isLoadingMore} onToggleOther={this.onToggleOther} isLoadingEnd={this.state.isLoadingEnd}/>
+                    <Tab onRefresh={this.props.onRefresh} page={this.props.page} count={this.props.userNoticeCount.count}/>
                 </div>
             );
         }
@@ -152,6 +131,13 @@ class Home extends React.Component {
             sessionStorage.removeItem('overflowY');
             let type = this.state.type;
             this.getList({type});
+        }
+        if (this.props.userData === null) {
+            getNoticeCount().then(data => {
+                this.props.onLoadUserNoticeCount({count: data.count, likeCount: data.likeCount, replyCount: data.replyCount});
+            }).catch(err => {
+                console.log(err);
+            });
         }
     }
 
@@ -189,10 +175,6 @@ class Home extends React.Component {
             console.log(err);
         });
     }
-    onRefresh() {
-
-        this.props.resetIdSets();
-    }
 
     getFromId() {
         //获取加载更多时候的初始帖子id
@@ -208,8 +190,8 @@ class Home extends React.Component {
     onLoadMore() {
         //当加载更多时
         let type = this.state.type;
-        if (this.props.isLoadingMore === false) {
-            this.props.onLoading();
+        if (this.props.loadingState.isLoadingMore === false) {
+            this.props.onLoading(type);
             getList({type: type, fromId: this.getFromId()}).then(data => {
                 if (data.length === 0) {
                     this.setState({isLoadingEnd: true});

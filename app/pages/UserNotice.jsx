@@ -2,12 +2,13 @@ import React from 'react';
 import UserNoticeList from '../components/UserNoticeList';
 import {getNoticeList} from '../load';
 import GlobalLoading from '../components/GlobalLoading.jsx';
-import Tab from '../components/Tab/Tab.jsx';
+import Tab from '../components/Tab';
 import {toLogin} from '../business';
 
 class UserNotice extends React.Component {
     constructor(props) {
         super(props);
+
         this.onLoadNoticeList = this.onLoadNoticeList.bind(this);
         this.onLoadMore = this.onLoadMore.bind(this);
         this.getFromId = this.getFromId.bind(this);
@@ -30,14 +31,14 @@ class UserNotice extends React.Component {
         if (this.props.userNoticeIdSets !== null) {
             return (
                 <div style={styles}>
-                    <UserNoticeList onMarkAsRead={this.props.onMarkAsRead} onLoadMore={this.onLoadMore} isShowMore={this.props.isShowMore} isLoadingMore={this.props.isLoadingMore} data={this.props.userNoticeData} idSets={this.props.userNoticeIdSets}/>
+                    <UserNoticeList isLoadingEnd={this.state.isLoadingEnd} onMarkAsRead={this.props.onMarkAsRead} onLoadMore={this.onLoadMore} loadingState={this.props.loadingState} data={this.props.userNoticeData} idSets={this.props.userNoticeIdSets}/>
                     <Tab/>
                 </div>
             );
         } else {
             if (this.state.isLoadingEnd) {
                 return (
-                    <div>没有更多消息了_(:зゝ∠)_
+                    <div>没有消息_(:зゝ∠)_
                         <Tab/>
                     </div>
                 );
@@ -67,9 +68,10 @@ class UserNotice extends React.Component {
     }
 
     onLoadNoticeList() {
+
         getNoticeList({fromId: this.getFromId()}).then(result => {
             if (result.length === 0) {
-                this.props.onShowNotice({message: '没有新消息了_(:зゝ∠)_', level: 'error'});
+                this.props.onShowNotice({message: '没有消息_(:зゝ∠)_', level: 'error'});
                 this.setState({isLoadingEnd: true});
                 return;
             }
@@ -95,8 +97,8 @@ class UserNotice extends React.Component {
 
     onLoadMore() {
         //当加载更多时
-        if (this.props.isLoadingMore === false) {
-            this.props.onLoading();
+        if (this.props.loadingState.isLoadingMore === false) {
+            this.props.onLoading('notice');
             this.onLoadNoticeList();
         }
     }

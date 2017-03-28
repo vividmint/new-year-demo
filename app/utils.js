@@ -1,8 +1,8 @@
 import qs from 'querystring';
 
-const HOST = `${location.protocol}//${location.hostname}` || 'http://scuinfo.com';
-const PORT = location.port;
-const HOST_PORT = `${HOST}:${PORT}`;
+export const HOST = `${location.protocol}//${location.hostname}` || 'http://scuinfo.com';
+export const PORT = location.port;
+export const HOST_PORT = `${HOST}:${PORT}`;
 
 
 export function request(params) {
@@ -110,7 +110,8 @@ export function setHash(hash) {
     window.location.hash = '#' + hash;
 }
 export function setUrl(url) {
-    window.location.href = url;
+    let result = /http/.test(url);
+    window.location.href = result ? url:`${HOST}${url}`;
 }
 export function getDocumentHeight(params) {
     let body = params.element || document.body,
@@ -160,14 +161,14 @@ export function formatTime(time) {
     let _time;
     let nowYear = new Date().getFullYear();
     let year = time.getFullYear();
-    let month = time.getMonth()+1;
+    let month = time.getMonth() + 1;
     let date = time.getDate();
-    let hour = ('0'+time.getHours()).toString().substr(-2);
-    let minute = ('0'+time.getMinutes()).toString().substr(-2);
+    let hour = ('0' + time.getHours()).toString().substr(-2);
+    let minute = ('0' + time.getMinutes()).toString().substr(-2);
     if (year === nowYear) {
         _time = month + '-' + date + ' ' + hour + ':' + minute;
     } else {
-        _time = year+ '-' + month + '-' + date + ' ' + hour + ':' + minute;
+        _time = year + '-' + month + '-' + date + ' ' + hour + ':' + minute;
     }
     return _time;
 }

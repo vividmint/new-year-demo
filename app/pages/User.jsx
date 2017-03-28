@@ -1,7 +1,7 @@
 import React from 'react';
 import {getUser, getNoticeCount} from '../load';
 import {toLogin} from '../business';
-import Tab from '../components/Tab/Tab';
+import Tab from '../components/Tab';
 import UserDetail from '../components/UserDetail';
 import GlobalLoading from '../components/GlobalLoading.jsx';
 import Box from '../components/Box.jsx';
@@ -55,7 +55,7 @@ class User extends React.Component {
                 key: 'book'
             }, {
                 text: '查询课程',
-                href: 'http://scuinfo.com/course',
+                href: '/course',
                 key: 'searchCourse'
             }, {
                 text: '空教室',
@@ -73,10 +73,6 @@ class User extends React.Component {
                 href: 'http://gpa.fyscu.com/',
                 key: 'gpa'
             }, {
-                text: '热门帖',
-                href: '#page=hot',
-                key: 'hot'
-            }, {
                 text: '跳蚤市场',
                 href: 'http://xiaoqu.qq.com/mobile/barindex.html?_bid=128&_wv=1027&bid=130899',
                 key: 'secondaryMarket'
@@ -86,7 +82,7 @@ class User extends React.Component {
             paddingBottom: 50,
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center',
+            alignItems: 'center'
         };
         if (this.props.userData) {
             return (

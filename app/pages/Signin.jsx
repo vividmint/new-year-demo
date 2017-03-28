@@ -1,7 +1,7 @@
 import React from 'react';
 import FaWechat from 'react-icons/lib/fa/wechat';
 import FaWeibo from 'react-icons/lib/fa/weibo';
-import Tab from '../components/Tab/Tab';
+import Tab from '../components/Tab';
 import {LOGIN_URL} from '../constans/config.js';
 import {getHash,getBrowerType} from '../utils';
 

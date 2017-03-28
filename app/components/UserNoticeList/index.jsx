@@ -8,6 +8,7 @@ import {markAsRead} from '../../load';
 import Css from './UserNoticeList.css';
 import Button from '../Button';
 import Loading from 'react-loading';
+import GlobalLoading from '../GlobalLoading';
 
 class UserNoticeList extends React.Component {
     constructor(props) {
@@ -20,16 +21,20 @@ class UserNoticeList extends React.Component {
         markAsRead().then(() => {}).catch(err => {
             console.log(err);
         });
+        if (sessionStorage.getItem('overflowY')) {
+            let y = sessionStorage.getItem('overflowY');
+            this.listDom.scrollTop = y;
+        }
     }
     render() {
         let moreButton = null;
-        if (this.props.isShowMore) {
+        if (this.props.loadingState.isShowMore) {
             moreButton = <Button onTap={() => {
                 this.props.onLoadMore();
             }} text="查看更多"/>;
         }
         let loading = null;
-        if (this.props.isLoadingMore) {
+        if (this.props.loadingState.isLoadingMore) {
             loading = <Loading type='spin' delay={0} color='#AAAAAA' height='25px' width='25px'/>;
         }
 
@@ -88,12 +93,14 @@ class UserNoticeList extends React.Component {
                 marginBottom: 50,
                 paddingBottom: 10
             };
+        const noMoreStyle = {
+            color:'#AAAAAA'
+        };
 
         let likeItem = null,
             likedAction = null,
             commentItem = null,
             noticeList = [];
-
         if (this.props.idSets !== null) {
             let idArr = Array.from(this.props.idSets);
             let data = this.props.data;
@@ -105,6 +112,7 @@ class UserNoticeList extends React.Component {
                     } else if (data[idArr[i]].action === 'likeComment') {
                         likedAction = '评论';
                     }
+
                     let previewContent = data[idArr[i]].originContent;
                     let time = new Date(data[idArr[i]].date * 1000);
                     let _time = formatTime(time);
@@ -132,6 +140,7 @@ class UserNoticeList extends React.Component {
                     );
                     noticeList.push(likeItem);
                 }
+
                 if (data[idArr[i]].action === 'replyPost') {
                     let time = new Date(data[idArr[i]].date * 1000);
                     let _time = formatTime(time);
@@ -165,6 +174,12 @@ class UserNoticeList extends React.Component {
                     noticeList.push(commentItem);
                 }
             }
+
+            let noMore = null;
+            if (this.props.isLoadingEnd) {
+                noMore = <div style={noMoreStyle}>没有更多帖子了_(:зゝ∠)_</div>;
+                loading = null;
+            }
             return (
                 <div className={Css.noticeContainer} style={{
                     height: '100%',
@@ -174,9 +189,11 @@ class UserNoticeList extends React.Component {
                 }}>
                     {noticeList}
                     {moreButton}
-                    <div style={spinnerBox}>{loading}</div>
+                    <div style={spinnerBox}>{loading}{noMore}</div>
                 </div>
             );
+        } else {
+            return (<GlobalLoading/>);
         }
     }
     onScroll() {
@@ -188,6 +205,9 @@ class UserNoticeList extends React.Component {
         let distance = documentHeight - (this.listDom.scrollTop + window.screen.height);
         //window.screen.height  屏幕的高度
         //window.document.body.scrollTop  屏幕顶部距离页面顶部的距离
+
+        let overflowY = this.listDom.scrollTop;
+        sessionStorage.setItem('overflowY', overflowY); //记录当前浏览位置
         if (distance <= INDEX_LIST_LOAD_MORE_DISTANCE && distance > 0) {
             this.props.onLoadMore();
         }
