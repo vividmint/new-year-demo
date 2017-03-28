@@ -82,7 +82,9 @@ class User extends React.Component {
             paddingBottom: 50,
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center'
+            alignItems: 'center',
+            backgroundColor:'#F2F2F2',
+            height:'100%'
         };
         if (this.props.userData) {
             return (

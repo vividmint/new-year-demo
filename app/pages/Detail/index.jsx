@@ -127,19 +127,20 @@ class Detail extends React.Component {
     onToggleOther(params) {
         let itemId = params.id;
         let menus = [];
+        menus.push({
+            text: `${REPORT_TEXT}`,
+            onTap: () => {
+                console.log('tap remove');
+                this.props.onRemoveNotice();
+                this.props.onReportPost({postId: itemId});
+                window.location.hash = ('page=report');
+            }
+        });
         if (params.author === 1 || params.level === 1) {
             menus.push({
                 text: '删除',
                 onTap: () => {
                     this.onDeletePost({id: itemId});
-                }
-            }, {
-                text: `${REPORT_TEXT}`,
-                onTap: () => {
-                    console.log('tap remove');
-                    this.props.onRemoveNotice();
-                    this.props.onReportPost({postId: itemId});
-                    window.location.hash = ('page=report');
                 }
             });
         }

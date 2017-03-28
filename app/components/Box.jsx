@@ -25,6 +25,7 @@ class Box extends React.Component {
             flexWrap: 'wrap',
             borderBottom:'0.8px solid rgba(0,0,0,0.1)',
             width: '100%',
+            backgroundColor:'white'
         };
 
         var itemStyle = {
