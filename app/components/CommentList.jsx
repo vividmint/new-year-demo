@@ -13,7 +13,7 @@ class CommentList extends React.Component {
             flexDirection: 'column',
             backgroundColor: 'white',
             padding:'0px 25px',
-            marginBottom:15 
+            marginBottom:15,
         };
         let commentComponentArr = [];
         for(let item of this.props.commentIdSets){

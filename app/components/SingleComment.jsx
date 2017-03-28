@@ -15,7 +15,7 @@ class SingleComment extends React.Component {
         const styles = {
                 display: 'flex',
                 flexDirection: 'column',
-                borderBottom: '0.5px solid rgba(0,0,0,0.1)'
+                borderBottom: '0.5px solid rgba(0,0,0,0.1)',
             },
             top = {
                 display: 'flex',

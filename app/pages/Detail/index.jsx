@@ -74,7 +74,7 @@ class Detail extends React.Component {
             flexDirection: 'column',
             justifyContent: 'space-between',
             height: '100%',
-            backgroundColor:'white'
+            backgroundColor:'white',
         };
         const main = {
             overflow: 'auto',

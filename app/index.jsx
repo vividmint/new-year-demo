@@ -483,5 +483,5 @@ class App extends React.Component {
 
 render(
     <App style={{
-    height: '100%'
+    height: '100%',
 }}/>, document.querySelector('.container'));
