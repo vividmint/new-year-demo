@@ -84,7 +84,6 @@ class User extends React.Component {
             flexDirection: 'column',
             alignItems: 'center',
             backgroundColor:'#F2F2F2',
-            height:'100%'
         };
         if (this.props.userData) {
             return (

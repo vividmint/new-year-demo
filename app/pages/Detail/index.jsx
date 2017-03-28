@@ -73,7 +73,8 @@ class Detail extends React.Component {
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
-            height: '100%'
+            height: '100%',
+            backgroundColor:'white'
         };
         const main = {
             overflow: 'auto',
@@ -149,11 +150,15 @@ class Detail extends React.Component {
                 text: '拉黑',
                 onTap: () => {
                     block({postId: itemId});
+                    this.props.onRemoveNotice();
+                    this.props.onShowNotice({message: '拉黑成功！', level: 'success'});
                 }
             }, {
                 text: '白名单',
                 onTap: () => {
                     whiteList({postId: itemId});
+                    this.props.onRemoveNotice();
+                    this.props.onShowNotice({message: '已设置白名单！', level: 'success'});
                 }
             });
         }

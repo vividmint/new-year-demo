@@ -18,7 +18,8 @@ class List extends React.Component {
         const styles = {
             overflow: 'scroll',
             flex: '0 1 auto',
-            height: '100%'
+            height: '100%',
+            backgroundColor:'white'
         };
         const spinnerBox = {
             display: 'flex',

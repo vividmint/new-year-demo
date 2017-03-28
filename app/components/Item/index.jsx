@@ -51,7 +51,8 @@ class Item extends React.Component {
     render() {
         let styles = {
                 padding: '12px 25px 4px 25px',
-                borderBottom: '15px solid #F2F2F2'
+                borderBottom: '15px solid #F2F2F2',
+                backgroundColor:'white'
             },
             contentStyles = {
                 padding: '4px 0px 10px 0px',
