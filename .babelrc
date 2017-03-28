@@ -1,7 +1,9 @@
 {
   "plugins": [
+    "transform-runtime",
     "transform-class-properties",
-    "syntax-dynamic-import"
+    "syntax-dynamic-import",
+    "transform-object-assign"
   ],
   "presets": [
     ["es2015", { "modules": false }],
