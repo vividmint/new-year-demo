@@ -47,7 +47,7 @@ plugins.push(
 plugins.push(new HtmlWebpackPlugin({
     title: 'scuinfo - 四川大学校园匿名社区',
     reactFileName: vendorConfig.reactStuff.js,
-    inlineSource: '.js',
+    // inlineSource: '.js',
     // reactDomFileName:vendorConfig.reactDom.js,
     template: './public/index.ejs', // Load a custom template (ejs by default see the FAQ for details)
     minify: !isProduction() ? false : {
@@ -62,7 +62,7 @@ plugins.push(new HtmlWebpackPlugin({
 
 }));
 
-plugins.push(new HtmlWebpackInlineSourcePlugin());
+// plugins.push(new HtmlWebpackInlineSourcePlugin());
 module.exports = {
     context: sourcePath, //上下文
     entry: './app/index.jsx',
