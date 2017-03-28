@@ -39,7 +39,8 @@ class UserNoticeList extends React.Component {
         }
 
         const item = {
-                padding: '0px 25px'
+                padding: '0px 25px',
+                backgroundColor:'white'
             },
             itemTop = {
                 display: 'flex',

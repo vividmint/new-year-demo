@@ -11,7 +11,9 @@ class Signin extends React.Component {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                width: '100%'
+                width: '100%',
+                backgroundColor:'white',
+                height:'100%'
             },
             top = {
                 backgroundColor: '#F2F2F2',
