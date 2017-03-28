@@ -29,10 +29,10 @@ if (isProduction()) {
     );
 
 }
-// plugins.push(new webpack.DllReferencePlugin({
-//     context: sourcePath,
-//     manifest: require(path.join(targetPath, 'vendor', 'reactStuff-manifest.json'))
-// }));
+plugins.push(new webpack.DllReferencePlugin({
+    context: sourcePath,
+    manifest: require(path.join(targetPath, 'vendor', 'reactStuff-manifest.json'))
+}));
 
 
 plugins.push(
