@@ -46,6 +46,7 @@ class Home extends React.Component {
     componentWillReceiveProps(nextProps) {
         let type = nextProps.page,
             idSets = null;
+  
         if (type === 'index') {
             if (nextProps.idSets === this.state.idSets) {
                 return;

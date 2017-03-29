@@ -54,7 +54,7 @@ class SingleComment extends React.Component {
             }, this.props.style),
 
             like = {
-                fontSize: 22,
+                fontSize: 23,
             },
             likeCount = {
                 fontSize: 16,
@@ -67,7 +67,7 @@ class SingleComment extends React.Component {
             bottom = {
                 padding: '0px 0px 5px 0px',
                 lineHeight: '22px',
-                fontSize: 15,
+                fontSize: 16,
                 textAlign: 'justify'
             };
         const data = this.props.data;

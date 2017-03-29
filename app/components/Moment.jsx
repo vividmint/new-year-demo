@@ -8,8 +8,8 @@ class Moment extends React.Component {
     render() {
         const styles = Object.assign({
             color:'#b3b3b3',
-            fontSize:'14px',
             letterSpacing:'0.8px',
+            fontSize:15
         },this.props.style);
         if (this.props.data.date) {
             return (

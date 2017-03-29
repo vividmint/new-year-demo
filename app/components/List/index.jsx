@@ -19,7 +19,7 @@ class List extends React.Component {
             overflow: 'scroll',
             flex: '0 1 auto',
             height: '100%',
-            backgroundColor:'white'
+            backgroundColor: 'white'
         };
         const spinnerBox = {
             display: 'flex',
@@ -29,7 +29,7 @@ class List extends React.Component {
             paddingBottom: 10
         };
         const noMoreStyle = {
-            color:'#AAAAAA'
+            color: '#AAAAAA'
         };
         const titles = {
             display: 'flex',
@@ -87,7 +87,6 @@ class List extends React.Component {
         let loading = null;
         let noMore = null;
 
-
         if (this.props.isLoadingMore) {
             loading = <Loading type='spin' delay={0} color='#AAAAAA' height='25px' width='25px'/>;
         }
@@ -110,6 +109,7 @@ class List extends React.Component {
         if (sessionStorage.getItem('overflowY')) {
             let y = sessionStorage.getItem('overflowY');
             this.listDom.scrollTop = y;
+            console.log(y,'back to index');
         }
     }
 
@@ -122,7 +122,9 @@ class List extends React.Component {
         let distance = documentHeight - (this.listDom.scrollTop + window.screen.height);
         //window.screen.height  屏幕的高度
         //this.listDom.scrollTop  屏幕顶部距离页面顶部的距离
+        // let overflowY = Math.max(this.listDom.scrollTop,documentHeight);
         let overflowY = this.listDom.scrollTop;
+        // console.log(overflowY,'to user');
         sessionStorage.setItem('overflowY', overflowY); //记录当前浏览位置
 
         if (distance <= INDEX_LIST_LOAD_MORE_DISTANCE && distance > 0) {

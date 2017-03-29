@@ -11,11 +11,10 @@ class Fold extends React.Component {
             border: '1px solid #AAAAAA',
             color: '#AAAAAA',
             borderRadius: '35px',
-            height: '25px',
             textAlign: 'center',
             lineHeight: '25px',
             fontSize: '14px',
-            padding: '0px 15px',
+            padding: '2px 20px',
             cursor: 'pointer',
             margin:'0px 0px 15px 0px'
         };

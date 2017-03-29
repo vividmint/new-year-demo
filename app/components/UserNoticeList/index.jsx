@@ -17,14 +17,11 @@ class UserNoticeList extends React.Component {
         this.onScroll = this.onScroll.bind(this);
     }
     componentDidMount() {
+        this.listDom.scrollTop = 0;
         this.props.onMarkAsRead();
         markAsRead().then(() => {}).catch(err => {
             console.log(err);
         });
-        if (sessionStorage.getItem('overflowY')) {
-            let y = sessionStorage.getItem('overflowY');
-            this.listDom.scrollTop = y;
-        }
     }
     render() {
         let moreButton = null;
@@ -40,7 +37,7 @@ class UserNoticeList extends React.Component {
 
         const item = {
                 padding: '0px 25px',
-                backgroundColor:'white'
+                backgroundColor: 'white'
             },
             itemTop = {
                 display: 'flex',
@@ -95,7 +92,7 @@ class UserNoticeList extends React.Component {
                 paddingBottom: 10
             };
         const noMoreStyle = {
-            color:'#AAAAAA'
+            color: '#AAAAAA'
         };
 
         let likeItem = null,

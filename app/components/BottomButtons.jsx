@@ -15,7 +15,7 @@ class BottomButtons extends React.Component {
     render() {
         const styles = {
             display: 'flex',
-            justifyContent: 'flex-start',
+            justifyContent: 'space-between',
             alignItems: 'center',
             borderTop: '0.5px solid rgba(0,0,0,0.1)',
             padding: '4px 0px 5px 0px',
@@ -27,7 +27,10 @@ class BottomButtons extends React.Component {
             alignItems: 'center',
             textAlign: 'center',
             justifyContent: 'center',
-            marginRight: 24
+            marginLeft: 24
+        };
+        const right = {
+            display: 'flex'
         };
         const likeCount = Object.assign({
             flex: '1',
@@ -56,19 +59,21 @@ class BottomButtons extends React.Component {
 
         return (
             <div style={styles} onTouchTap={this.handleClick.bind(this)}>
-                <div onTouchTap={this.onToggleLike} style={icon}>
-                    <div style={this.props.data.like === 1
-                        ? isLike
-                        : unLike} ><FaHeartO/></div>
-                    <div style={this.props.data.like === 1
-                        ? Object.assign(likeCount, _likeCount)
-                        : likeCount}>{this.props.likeCount || 0}</div>
-                </div>
-                <div style={icon}>
-                    <div onTouchTap={this.onClickComment}><FaCommentO/></div>
-                    <div style={commentCount}>{this.props.commentCount || 0}</div>
-                </div>
                 <div style={otherStyles} onTouchTap={this.onToggleOther}><MdKeyboardControl/></div>
+                <div style={right}>
+                    <div style={icon}>
+                        <div onTouchTap={this.onClickComment}><FaCommentO/></div>
+                        <div style={commentCount}>{this.props.commentCount || 0}</div>
+                    </div>
+                    <div onTouchTap={this.onToggleLike} style={icon}>
+                        <div style={this.props.data.like === 1
+                            ? isLike
+                            : unLike}><FaHeartO/></div>
+                        <div style={this.props.data.like === 1
+                            ? Object.assign(likeCount, _likeCount)
+                            : likeCount}>{this.props.likeCount || 0}</div>
+                    </div>
+                </div>
             </div>
         );
 

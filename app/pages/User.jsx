@@ -58,11 +58,6 @@ class User extends React.Component {
                 href: '/course',
                 key: 'searchCourse'
             }
-            // {
-            //     text: '空教室',
-            //     href: 'ttp://scuinfo.com/classroom',
-            //     key: 'room'
-            // }
         ];
         const entertainmentService = [
             {
@@ -89,7 +84,7 @@ class User extends React.Component {
         if (this.props.userData) {
             return (
                 <div style={styles}>
-                    <UserDetail userNoticeCount={this.props.userNoticeCount} onRemoveNotice={this.props.onRemoveNotice} onShowNotice={this.props.onShowNotice} userData={this.props.userData} onAdvise={this.onAdvise}/>
+                    <UserDetail onLoadNight={this.props.onLoadNight} userNoticeCount={this.props.userNoticeCount} onRemoveNotice={this.props.onRemoveNotice} onShowNotice={this.props.onShowNotice} userData={this.props.userData} onAdvise={this.onAdvise}/>
                     <Box list={classService} title="scuinfo服务"/>
                     <Box list={entertainmentService} title="其他"/>
                     <Tab count={this.props.userNoticeCount.count || null}/>

@@ -114,7 +114,7 @@ class UserDetail extends React.Component {
                     <div onTouchTap={() => {
                         setHash('page=notice');
                     }} style={noticeBarStyle}>
-                    <FaBellO style={bell}/>
+                        <FaBellO style={bell}/>
                         <span>
                             <span style={text}>{this.props.userNoticeCount.count}条新消息</span><FaAngleRight style={angle}/></span>
                     </div>
@@ -164,6 +164,13 @@ class UserDetail extends React.Component {
                 setHash('page=notice');
             }
         });
+        // menus.push({
+        //     text: '夜间模式',
+        //     onTap: () => {
+        //         this.props.onRemoveNotice();
+        //         // this.props.onLoadNight();
+        //     }
+        // });
         menus.push({
             text: '退出登录',
             onTap: () => {

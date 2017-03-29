@@ -2,6 +2,7 @@ import React from 'react';
 import Css from './Detail.css';
 import {getHash, setHash} from '../../utils.js';
 import {REPORT_TEXT} from '../../constans/config';
+import FaAngleLeft from 'react-icons/lib/fa/angle-left';
 import {
     getPost,
     getComments,
@@ -16,6 +17,7 @@ import {
     block,
     whiteList
 } from '../../load';
+import {BASE_PRIMARY_COLOR} from '../../constans/styles';
 import GlobalLoading from '../../components/GlobalLoading.jsx';
 import Item from '../../components/Item';
 import Textarea from 'react-textarea-autosize';
@@ -39,6 +41,7 @@ class Detail extends React.Component {
         this.onCommentToggleLike = this.onCommentToggleLike.bind(this); //点赞评论
         this.onToggleOther = this.onToggleOther.bind(this); //当点击...
         this.onDeletePost = this.onDeletePost.bind(this); //当删除文章
+        this.goBack = this.goBack.bind(this);
 
     }
     componentDidMount() {
@@ -74,11 +77,33 @@ class Detail extends React.Component {
             flexDirection: 'column',
             justifyContent: 'space-between',
             height: '100%',
-            backgroundColor:'white',
+            backgroundColor: 'white'
         };
         const main = {
             overflow: 'auto',
             margin: `0px 0px ${this.state.commentContainerHeight}px 0px`
+        };
+        const top = {
+            display: 'flex',
+            padding: '4px 15px',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'rgba(0,0,0,0.8)',
+            backgroundColor: `${BASE_PRIMARY_COLOR}`,
+            color: 'white'
+        };
+        const backButton = {
+            display: 'flex',
+            alignItems: 'center'
+        };
+        const icon = {
+            fontSize: 34,
+            marginRight:-8,
+            marginBottom:2
+        };
+        const title = {
+            flex: 1,
+            transform: 'translate(-50%, -50%, 0);'
         };
         if (this.props.data !== null) {
             let data = this.props.data;
@@ -96,6 +121,13 @@ class Detail extends React.Component {
                     this.listDom = listDom;
                 }}>
                     <div style={main}>
+                        <div style={top}>
+                            <div style={backButton} onTouchTap={this.goBack}>
+                                <FaAngleLeft style={icon}/>
+                                <div>首页</div>
+                            </div>
+                            <div style={title}></div>
+                        </div>
                         <Item isShowFoldButton={false} onToggleLike={this.onToggleLike} data={data} onToggleOther={this.onToggleOther}/> {commentList}
                     </div>
                     <DetailCommentInput onPostComment={this.onPostComment} onShowNotice={this.props.onShowNotice} onHeightChange={this.onHeightChange}/>
@@ -109,6 +141,9 @@ class Detail extends React.Component {
         }
     }
 
+    goBack(){
+        setHash('page=index');
+    }
     onDeletePost(params) {
         this.props.showGlobalLoading();
         let itemId = params.id;

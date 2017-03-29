@@ -53,6 +53,8 @@ class Item extends React.Component {
                 padding: '12px 25px 4px 25px',
                 borderBottom: '15px solid #F2F2F2',
                 backgroundColor:'white'
+                // backgroundColor:'rgba(0,0,0,0.8)',
+                // color:'#AAAAAA'
             },
             contentStyles = {
                 padding: '4px 0px 10px 0px',
@@ -60,6 +62,7 @@ class Item extends React.Component {
                 lineHeight: '25px',
                 whiteSpace: 'pre-wrap',
                 textAlign: 'justify',
+                fontSize:17
             };
         let data = this.props.data;
         let foldComponent = this.state.isShowFoldButton?(<Fold foldText={this.state.isFold?'展开全文':'收起'} onToggleFold={this.onToggleFold}/>):null;
