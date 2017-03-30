@@ -1,5 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
+const AssetsPlugin = require('assets-webpack-plugin');
+const ManifestPlugin = require('webpack-manifest-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
 const sourcePath = path.join(__dirname);
@@ -61,7 +63,8 @@ plugins.push(new HtmlWebpackPlugin({
     }
 
 }));
-
+plugins.push(new AssetsPlugin({filename: 'files.json', path:path.join(targetPath)}));
+plugins.push(new ManifestPlugin());
 // plugins.push(new HtmlWebpackInlineSourcePlugin());
 module.exports = {
     context: sourcePath, //上下文

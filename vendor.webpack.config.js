@@ -1,7 +1,9 @@
 var webpack = require('webpack');
 var path = require('path');
-const AssetsPlugin = require('assets-webpack-plugin');
+const ManifestPlugin = require('webpack-manifest-plugin');
 const sourcePath = path.join(__dirname);
+const AssetsPlugin = require('assets-webpack-plugin');
+
 const targetPath = path.join(__dirname, 'dist');
 module.exports = {
     entry: {
