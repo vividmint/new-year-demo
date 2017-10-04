@@ -15,7 +15,7 @@ export function toLogin(params){
 export function signout(params){
     params = params || {};
     let redirectUrl = params.redirectUrl || getCurrentUrl();
-    setUrl(`http://scuinfo.com/signout?redirect=${encodeURIComponent(redirectUrl)}`);
+    setUrl(`http://xxx.com/signout?redirect=${encodeURIComponent(redirectUrl)}`);
 
 }
 /**
