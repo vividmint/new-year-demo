@@ -115,7 +115,7 @@ module.exports = {
         host: '0.0.0.0',
         proxy: {
             '/api': {
-                // target: 'http://scuinfo.com',
+                // target: 'http://xxx.com',
                 target: 'http://127.0.0.1:4150',
                 changeOrigin: true
             }
