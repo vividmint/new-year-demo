@@ -47,7 +47,7 @@ plugins.push(
     })
 );
 plugins.push(new HtmlWebpackPlugin({
-    title: 'scuinfo - 四川大学校园匿名社区',
+    title: 'xxx',
     reactFileName: vendorConfig.reactStuff.js,
     // inlineSource: '.js',
     // reactDomFileName:vendorConfig.reactDom.js,
