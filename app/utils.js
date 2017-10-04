@@ -1,6 +1,6 @@
 import qs from 'querystring';
 
-export const HOST = `${location.protocol}//${location.hostname}` || 'http://scuinfo.com';
+export const HOST = `${location.protocol}//${location.hostname}` || 'http://xxx.com';
 export const PORT = location.port;
 export const HOST_PORT = `${HOST}:${PORT}`;
 
